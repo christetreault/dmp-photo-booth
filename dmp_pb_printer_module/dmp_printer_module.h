@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 	
-#include "../DMP_Photo_Booth/global_defines.h"
+#include "../dmp_photo_booth/global_defines.h"
 	
 #include <stdio.h>
 #include <string.h>
