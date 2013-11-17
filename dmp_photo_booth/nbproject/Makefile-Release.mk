@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/configuration.o \
 	${OBJECTDIR}/console_queue.o \
 	${OBJECTDIR}/error_handling.o \
 	${OBJECTDIR}/main.o \
@@ -49,7 +50,8 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${TESTDIR}/TestFiles/f1 \
-	${TESTDIR}/TestFiles/f2
+	${TESTDIR}/TestFiles/f2 \
+	${TESTDIR}/TestFiles/f3
 
 # C Compiler Flags
 CFLAGS=
@@ -74,6 +76,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/configuration.o: configuration.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration.o configuration.c
 
 ${OBJECTDIR}/console_queue.o: console_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -123,6 +130,10 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/module_tests/module_tests.o ${OBJECTFILES:%.
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
 
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/module_callbacks_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} 
+
 
 ${TESTDIR}/console_queue_tests/console_queue_tests.o: console_queue_tests/console_queue_tests.c 
 	${MKDIR} -p ${TESTDIR}/console_queue_tests
@@ -135,6 +146,25 @@ ${TESTDIR}/module_tests/module_tests.o: module_tests/module_tests.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -I. -MMD -MP -MF $@.d -o ${TESTDIR}/module_tests/module_tests.o module_tests/module_tests.c
 
+
+${TESTDIR}/tests/module_callbacks_tests.o: tests/module_callbacks_tests.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/module_callbacks_tests.o tests/module_callbacks_tests.c
+
+
+${OBJECTDIR}/configuration_nomain.o: ${OBJECTDIR}/configuration.o configuration.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/configuration.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration_nomain.o configuration.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/configuration.o ${OBJECTDIR}/configuration_nomain.o;\
+	fi
 
 ${OBJECTDIR}/console_queue_nomain.o: ${OBJECTDIR}/console_queue.o console_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -233,6 +263,7 @@ ${OBJECTDIR}/user_interface_nomain.o: ${OBJECTDIR}/user_interface.o user_interfa
 	then  \
 	    ${TESTDIR}/TestFiles/f1 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
+	    ${TESTDIR}/TestFiles/f3 || true; \
 	else  \
 	    ./${TEST} || true; \
 	fi

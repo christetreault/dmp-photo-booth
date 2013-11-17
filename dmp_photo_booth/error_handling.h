@@ -47,6 +47,7 @@ extern "C" {
      */
 	gint dmp_pb_set_error_code_return(gint to_set);
 
+
 #ifdef	__cplusplus
 }
 #endif
