@@ -60,23 +60,23 @@ static gint dmp_pb_load_printer_module(GString * module_location)
 	if (dmp_pb_printer_module != NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_ALREADY_LOADED);
 	dmp_pb_printer_module = g_module_open(module_location->str, G_MODULE_BIND_LAZY);
 	if (dmp_pb_printer_module == NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_LOAD_UNLOAD_FAILED);
-	
-	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_print", (gpointer *) &dmp_pm_print))
+
+	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_print", (gpointer *) & dmp_pm_print))
 	{
 		dmp_pb_printer_module = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_edit_config", (gpointer *) &dmp_pm_edit_config))
+	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_edit_config", (gpointer *) & dmp_pm_edit_config))
 	{
 		dmp_pb_printer_module = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_load_config", (gpointer *) &dmp_pm_load_config))
+	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_load_config", (gpointer *) & dmp_pm_load_config))
 	{
 		dmp_pb_printer_module = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_get_config_location", (gpointer *) &dmp_pm_get_config_location))
+	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_get_config_location", (gpointer *) & dmp_pm_get_config_location))
 	{
 		dmp_pb_printer_module = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
@@ -95,37 +95,37 @@ static gint dmp_pb_load_trigger_module(GString * module_location)
 {
 	if (!g_module_supported()) return dmp_pb_set_error_code_return(DMP_PB_G_MODULE_NOT_SUPPORTED);
 	if (!dmp_pb_trigger_module_consistent) return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
-	
+
 	if (dmp_pb_trigger_module != NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_ALREADY_LOADED);
 	dmp_pb_trigger_module = g_module_open(module_location->str, G_MODULE_BIND_LAZY);
 	if (dmp_pb_trigger_module == NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_LOAD_UNLOAD_FAILED);
-	
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_add_trigger_handler", (gpointer *) &dmp_tm_add_trigger_handler))
+
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_add_trigger_handler", (gpointer *) & dmp_tm_add_trigger_handler))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_set_countdown", (gpointer *) &dmp_tm_set_countdown))
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_set_countdown", (gpointer *) & dmp_tm_set_countdown))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_edit_config", (gpointer *) &dmp_tm_edit_config))
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_edit_config", (gpointer *) & dmp_tm_edit_config))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_load_config", (gpointer *) &dmp_tm_load_config))
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_load_config", (gpointer *) & dmp_tm_load_config))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_get_config_location", (gpointer *) &dmp_tm_get_config_location))
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_get_config_location", (gpointer *) & dmp_tm_get_config_location))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	
+
 	dmp_pb_trigger_module_consistent = TRUE;
 	return DMP_PB_SUCCESS;
 }
@@ -139,37 +139,37 @@ static gint dmp_pb_load_camera_module(GString * module_location)
 {
 	if (!g_module_supported()) return dmp_pb_set_error_code_return(DMP_PB_G_MODULE_NOT_SUPPORTED);
 	if (!dmp_pb_camera_module_consistent) return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
-	
+
 	if (dmp_pb_camera_module != NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_ALREADY_LOADED);
 	dmp_pb_camera_module = g_module_open(module_location->str, G_MODULE_BIND_LAZY);
 	if (dmp_pb_camera_module == NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_LOAD_UNLOAD_FAILED);
-	
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_capture", (gpointer *) &dmp_cm_capture))
+
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_capture", (gpointer *) & dmp_cm_capture))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_download", (gpointer *) &dmp_cm_download))
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_download", (gpointer *) & dmp_cm_download))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_edit_config", (gpointer *) &dmp_cm_edit_config))
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_edit_config", (gpointer *) & dmp_cm_edit_config))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_load_config", (gpointer *) &dmp_cm_load_config))
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_load_config", (gpointer *) & dmp_cm_load_config))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_get_config_location", (gpointer *) &dmp_cm_get_config_location))
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_get_config_location", (gpointer *) & dmp_cm_get_config_location))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		return dmp_pb_set_error_code_return(DMP_PB_MODULE_IN_INCONSISTENT_STATE);
 	}
-	
+
 	dmp_pb_camera_module_consistent = TRUE;
 	return DMP_PB_SUCCESS;
 }
@@ -209,10 +209,10 @@ static gint dmp_pb_unload_printer_module()
 	dmp_pm_edit_config = NULL;
 	dmp_pm_get_config_location = NULL;
 	dmp_pm_load_config = NULL;
-	
+
 	dmp_pb_printer_module_consistent = TRUE;
 	return DMP_PB_SUCCESS;
-	
+
 }
 
 /**
@@ -222,7 +222,7 @@ static gint dmp_pb_unload_printer_module()
 static gint dmp_pb_unload_trigger_module()
 {
 	if (!g_module_supported()) return dmp_pb_set_error_code_return(DMP_PB_G_MODULE_NOT_SUPPORTED);
-	
+
 	if (dmp_pb_trigger_module == NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_NOT_LOADED);
 	if (!g_module_close(dmp_pb_trigger_module)) return dmp_pb_set_error_code_return(DMP_PB_MODULE_LOAD_UNLOAD_FAILED);
 
@@ -244,7 +244,7 @@ static gint dmp_pb_unload_trigger_module()
 static gint dmp_pb_unload_camera_module()
 {
 	if (!g_module_supported()) return dmp_pb_set_error_code_return(DMP_PB_G_MODULE_NOT_SUPPORTED);
-	
+
 	if (dmp_pb_camera_module == NULL) return dmp_pb_set_error_code_return(DMP_PB_MODULE_NOT_LOADED);
 	if (!g_module_close(dmp_pb_camera_module)) return dmp_pb_set_error_code_return(DMP_PB_MODULE_LOAD_UNLOAD_FAILED);
 
@@ -315,7 +315,7 @@ gint dmp_pb_load_module_config(dmp_pb_module_type type)
 {
 	gint result;
 	if (result = dmp_pb_check_module_state(type) != DMP_PB_SUCCESS) return result;
-	
+
 	switch (type)
 	{
 		case DMP_PB_PRINTER_MODULE:
