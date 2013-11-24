@@ -43,3 +43,19 @@ int dmp_pm_load_config()
 	
 	return DMP_PB_SUCCESS;
 }
+
+
+int dmp_pm_initialize()
+{
+	return DMP_PB_SUCCESS;
+}
+
+int dmp_pm_is_initialized()
+{
+	return !0;
+}
+
+int dmp_pm_finalize()
+{
+	return DMP_PB_SUCCESS;
+}

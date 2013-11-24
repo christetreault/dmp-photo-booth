@@ -51,6 +51,24 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_pm_install_console(int (*c_cb)(char * message));
+	
+		/**
+	 * initializes the module
+     * @return DMP_PB_SUCCESS, or an error code
+     */
+	int dmp_pm_initialize();
+	
+	/**
+	 * checks to see if the module is initialized
+     * @return 0 if not initialized, !0 if initialized
+     */
+	int dmp_pm_is_initialized();
+	
+	/**
+	 * finalizes the module
+     * @return DMP_PB_SUCCESS, or an error code
+     */
+	int dmp_pm_finalize();
 
 #ifdef	__cplusplus
 }
