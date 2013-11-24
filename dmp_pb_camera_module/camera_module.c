@@ -50,3 +50,18 @@ int dmp_cm_load_config()
 	
 	return DMP_PB_SUCCESS;
 }
+
+int dmp_cm_initialize()
+{
+	return DMP_PB_SUCCESS;
+}
+
+int dmp_cm_is_initialized()
+{
+	return !0;
+}
+
+int dmp_cm_finalize()
+{
+	return DMP_PB_SUCCESS;
+}
