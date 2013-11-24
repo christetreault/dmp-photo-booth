@@ -55,3 +55,18 @@ int dmp_tm_load_config()
 	
 	return DMP_PB_SUCCESS;
 }
+
+int dmp_tm_initialize()
+{
+	return DMP_PB_SUCCESS;
+}
+
+int dmp_tm_is_initialized()
+{
+	return !0;
+}
+
+int dmp_tm_finalize()
+{
+	return DMP_PB_SUCCESS;
+}
