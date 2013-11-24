@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <glib.h>
 
 #include "module.h"
 #include "user_interface.h"
@@ -14,7 +15,6 @@
 
 int main(int argc, char** argv)
 {
-
 	gint return_value = DMP_PB_SUCCESS;
 	gtk_init(&argc, &argv);
 	return_value = dmp_pb_console_queue_init();

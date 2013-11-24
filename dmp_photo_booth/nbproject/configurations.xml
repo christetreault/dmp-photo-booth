@@ -4,7 +4,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>configuration.h</itemPath>
       <itemPath>console_queue.h</itemPath>
       <itemPath>error_handling.h</itemPath>
       <itemPath>global_defines.h</itemPath>
@@ -20,7 +19,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>configuration.c</itemPath>
       <itemPath>console_queue.c</itemPath>
       <itemPath>error_handling.c</itemPath>
       <itemPath>main.c</itemPath>
@@ -73,10 +71,6 @@
           <commandLine>`pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0`</commandLine>
         </linkerTool>
       </compileType>
-      <item path="configuration.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="configuration.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="console_queue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">
@@ -196,10 +190,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="configuration.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="configuration.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="console_queue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">

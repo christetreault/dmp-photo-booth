@@ -62,6 +62,18 @@ extern "C" {
 
 	/* Attempted an operation that by design does not work */
 #define DMP_PB_NO_OP 14
+	
+	/* Attempted to load config while config already loaded */
+#define DMP_PB_CONFIG_ALREADY_LOADED 15
+	
+	/* Attempted to access config while config not loaded */
+#define DMP_PB_CONFIG_NOT_LOADED 16
+	
+	/* Module not initialized */
+#define DMP_PB_MODULE_NOT_INITIALIZED 17
+	
+	/* Module already initialized */
+#define DMP_PB_MODULE_ALREADY_INITIALIZED 18
 
 
 #ifdef	__cplusplus

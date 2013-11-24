@@ -7,6 +7,5 @@ void dmp_pb_trigger_handler()
 
 int dmp_pb_console_write_callback(char * message)
 {
-	GString * to_write = g_string_new(message);
-	return dmp_pb_console_queue_push(to_write);
+	return dmp_pb_console_queue_push(g_string_new(message));
 }

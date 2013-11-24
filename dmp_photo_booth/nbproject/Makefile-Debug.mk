@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/configuration.o \
 	${OBJECTDIR}/console_queue.o \
 	${OBJECTDIR}/error_handling.o \
 	${OBJECTDIR}/main.o \
@@ -76,11 +75,6 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0`
-
-${OBJECTDIR}/configuration.o: configuration.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration.o configuration.c
 
 ${OBJECTDIR}/console_queue.o: console_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -152,19 +146,6 @@ ${TESTDIR}/tests/module_callbacks_tests.o: tests/module_callbacks_tests.c
 	${RM} $@.d
 	$(COMPILE.c) -g -I. `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${TESTDIR}/tests/module_callbacks_tests.o tests/module_callbacks_tests.c
 
-
-${OBJECTDIR}/configuration_nomain.o: ${OBJECTDIR}/configuration.o configuration.c 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/configuration.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration_nomain.o configuration.c;\
-	else  \
-	    ${CP} ${OBJECTDIR}/configuration.o ${OBJECTDIR}/configuration_nomain.o;\
-	fi
 
 ${OBJECTDIR}/console_queue_nomain.o: ${OBJECTDIR}/console_queue.o console_queue.c 
 	${MKDIR} -p ${OBJECTDIR}

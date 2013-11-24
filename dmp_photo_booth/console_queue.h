@@ -24,10 +24,9 @@ extern "C" {
 	typedef struct _GtkTextBuffer GtkTextBuffer;
 
 	/**
-	 * Makes a copy of the passed-in string and pushes it to the queue. The
-	 * message must be null-terminated. If the push fails because the queue
-	 * is not initialized, the passed-in GString is freed.This function is 
-	 * thread safe
+	 * Pushes the passed-in string into the queue. If the push fails because 
+	 * the queue is not initialized, the passed-in GString is freed. This 
+	 * function is thread safe
 	 * @param message the message to push
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
