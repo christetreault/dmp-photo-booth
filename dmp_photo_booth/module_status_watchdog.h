@@ -28,16 +28,14 @@ extern "C" {
 	/**
 	 * Initializes the Module Status Watchdog
 	 * @param in_status_icons The status icons struct for use by the watchdog
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_mwd_init(dmp_pb_ui_status_icons * in_status_icons);
+	void dmp_pb_mwd_init(dmp_pb_ui_status_icons * in_status_icons);
 
 	/**
 	 * Finalizes the Module Status Watchdog, freeing the queue and signaling
 	 * the thread to die
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_mwd_finalize();
+	void dmp_pb_mwd_finalize();
 
 	/**
 	 * Handles 1 message in the queue. 

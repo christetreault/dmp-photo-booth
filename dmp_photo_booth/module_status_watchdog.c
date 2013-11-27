@@ -22,7 +22,7 @@ static gpointer dmp_pb_mwd_thread_function(gpointer user_data)
 
 	while (!dmp_pb_mwd_thread_should_die)
 	{
-		return_status = (dmp_pb_is_loaded(DMP_PB_PRINTER_MODULE) && dmp_pb_is_consistent(DMP_PB_PRINTER_MODULE));
+		return_status = (dmp_pb_check_module_state(DMP_PB_PRINTER_MODULE) == DMP_PB_MODULE_READY);
 		if (return_status != recorded_printer_status)
 		{
 			recorded_printer_status = return_status;
@@ -30,7 +30,7 @@ static gpointer dmp_pb_mwd_thread_function(gpointer user_data)
 			else g_async_queue_push(thread_queue_ref, GINT_TO_POINTER(DMP_PB_MWD_PRINTER_DOWN));
 		}
 
-		return_status = (dmp_pb_is_loaded(DMP_PB_TRIGGER_MODULE) && dmp_pb_is_consistent(DMP_PB_TRIGGER_MODULE));
+		return_status = (dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE) == DMP_PB_MODULE_READY);
 		if (return_status != recorded_trigger_status)
 		{
 			recorded_trigger_status = return_status;
@@ -38,7 +38,7 @@ static gpointer dmp_pb_mwd_thread_function(gpointer user_data)
 			else g_async_queue_push(thread_queue_ref, GINT_TO_POINTER(DMP_PB_MWD_TRIGGER_DOWN));
 		}
 
-		return_status = (dmp_pb_is_loaded(DMP_PB_CAMERA_MODULE) && dmp_pb_is_consistent(DMP_PB_CAMERA_MODULE));
+		return_status = (dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE) == DMP_PB_MODULE_READY);
 		if (return_status != recorded_camera_status)
 		{
 			recorded_camera_status = return_status;
@@ -51,24 +51,16 @@ static gpointer dmp_pb_mwd_thread_function(gpointer user_data)
 	return NULL;
 }
 
-gint dmp_pb_mwd_init(dmp_pb_ui_status_icons * in_status_icons)
+void dmp_pb_mwd_init(dmp_pb_ui_status_icons * in_status_icons)
 {
-	if (in_status_icons == NULL) dmp_pb_set_error_code_return(DMP_PB_NULL_POINTER);
+	g_assert(in_status_icons != NULL);
 	dmp_pb_mwd_status_icons = in_status_icons;
 	dmp_pb_mwd_status_queue = g_async_queue_new();
 
 	dmp_pb_module_watchdog_thread = g_thread_new("MWD Thread", dmp_pb_mwd_thread_function, NULL);
-
-	return DMP_PB_SUCCESS;
 }
 
-gint dmp_pb_mwd_push(gint to_push)
-{
-	g_async_queue_push(dmp_pb_mwd_status_queue, GINT_TO_POINTER(to_push));
-	return DMP_PB_SUCCESS;
-}
-
-gboolean dmp_pb_mwd_handle_message(gpointer user_data) //TODO: do I need to call repaint method?
+gboolean dmp_pb_mwd_handle_message(gpointer user_data)
 {
 	gint message = GPOINTER_TO_INT(g_async_queue_try_pop(dmp_pb_mwd_status_queue));
 
@@ -96,11 +88,10 @@ gboolean dmp_pb_mwd_handle_message(gpointer user_data) //TODO: do I need to call
 	return G_SOURCE_CONTINUE;
 }
 
-gint dmp_pb_mwd_finalize()
+void dmp_pb_mwd_finalize()
 {
 	dmp_pb_mwd_thread_should_die = TRUE;
 	g_thread_join(dmp_pb_module_watchdog_thread);
 	g_async_queue_unref(dmp_pb_mwd_status_queue);
-	return DMP_PB_SUCCESS;
 }
 

@@ -5,7 +5,6 @@
  * Created on October 9, 2013, 12:57 PM
  */
 
-//TODO: Should unload functions set pointer to null on DLERROR failures?
 
 #ifndef MODULE_H
 #define	MODULE_H
@@ -25,41 +24,52 @@ extern "C" {
 	typedef enum {
 		DMP_PB_PRINTER_MODULE, DMP_PB_CAMERA_MODULE, DMP_PB_TRIGGER_MODULE
 	} dmp_pb_module_type;
+	
+	/**
+	 * Enumeration of Module GError codes
+	 */
+	typedef enum {
+		G_MODULE_LOAD_FAILURE
+	} dmp_pb_module_error;
+	
+	/**
+	 * Enumeration of Module states
+	 */
+	typedef enum {
+		DMP_PB_MODULE_IN_INCONSISTENT_STATE, 
+		DMP_PB_MODULE_NOT_LOADED, 
+		DMP_PB_MODULE_NOT_INITIALIZED,
+		DMP_PB_MODULE_READY
+	} dmp_pb_module_state;
 
 	/**
 	 * loads a module
 	 * @param to_load the type of module to be loaded
 	 * @param module_location the location on the filesystem of the module
-	 * @return DMP_PB_SUCCESS, or an error code
+	 * @throws DMP_PB_MODULE_ERROR::G_MODULE_LOAD_FAILURE
 	 */
-	gint dmp_pb_load_module(dmp_pb_module_type to_load, GString * module_location);
+	void dmp_pb_load_module(dmp_pb_module_type to_load, GString * module_location, GError ** error);
 	/**
 	 * unloads a module
 	 * @param to_unload the module type to be unloaded
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_unload_module(dmp_pb_module_type to_unload);
+	void dmp_pb_unload_module(dmp_pb_module_type to_unload);
 	/**
 	 * replaces the currently loaded module with the new module to load
 	 * @param to_swap the module type to swap out
 	 * @param new_module_location the location of the new module to load
-	 * @return DMP_PB_SUCCESS, or an error code
+	 * @throws DMP_PB_MODULE_ERROR::G_MODULE_LOAD_FAILURE
 	 */
-	gint dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_location);
+	void dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_location, GError ** error);
 
 	/**
-	 * tests to see if the passed-in module type is loaded
-	 * @param to_check the module type to test
-	 * @return true if loaded, false if not loaded or inconsistent
-	 */
-	gboolean dmp_pb_is_loaded(dmp_pb_module_type to_check);
-
-	/**
-	 * tests to see if the passed-in module type is consistent
+	 * state checking helper function. checks is_loaded and is_consistent
 	 * @param to_check the module type to check
-	 * @return the value of the module's consistency flag
-	 */
-	gboolean dmp_pb_is_consistent(dmp_pb_module_type to_check);
+	 * @return DMP_PB_MODULE_READY, DMP_PB_MODULE_IN_INCONSISTENT_STATE if inconsistent,
+	 * DMP_PB_MODULE_NOT_LOADED if not loaded, or DMP_PB_MODULE_NOT_INITIALIZED if
+	 * the module is not initialized
+	*/
+	dmp_pb_module_state dmp_pb_check_module_state(dmp_pb_module_type to_check);
 
 	/* -------------------------------------------------- */
 	/* Convenience functions for module function pointers */

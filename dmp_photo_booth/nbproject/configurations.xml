@@ -31,21 +31,6 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
-      <logicalFolder name="f1"
-                     displayName="console_queue"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>console_queue_tests/console_queue_tests.c</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f2" displayName="module" projectFiles="true" kind="TEST">
-        <itemPath>module_tests/module_tests.c</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f3"
-                     displayName="module_callbacks"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>tests/module_callbacks_tests.c</itemPath>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -65,9 +50,33 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
           <commandLine>`pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0`</commandLine>
         </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth</output>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
+          </linkerLibItems>
           <commandLine>`pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0`</commandLine>
         </linkerTool>
       </compileType>
@@ -75,75 +84,10 @@
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="console_queue_tests/console_queue_tests.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="error_handling.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="error_handling.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f1">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f1</output>
-          <linkerLibItems>
-            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f2">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-          <linkerLibItems>
-            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f3">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f3</output>
-          <linkerLibItems>
-            <linkerOptionItem>`pkg-config --libs glib-2.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs gmodule-2.0`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs gtk+-3.0`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
@@ -159,10 +103,6 @@
       <item path="module_status_watchdog.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="module_status_watchdog.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="module_tests/module_tests.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="tests/module_callbacks_tests.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="user_interface.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -179,9 +119,19 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -189,65 +139,18 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
       </compileType>
       <item path="console_queue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="console_queue_tests/console_queue_tests.c"
-            ex="false"
-            tool="0"
-            flavor2="0">
-      </item>
       <item path="error_handling.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="error_handling.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f1">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f1</output>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f2">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f3">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f3</output>
-        </linkerTool>
-      </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
@@ -263,10 +166,6 @@
       <item path="module_status_watchdog.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="module_status_watchdog.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="module_tests/module_tests.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="tests/module_callbacks_tests.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="user_interface.c" ex="false" tool="0" flavor2="0">
       </item>

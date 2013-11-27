@@ -17,8 +17,6 @@ extern "C" {
 #include "global_defines.h"
 #include "console_queue.h"
 
-	// TODO: Create Unit Tests!
-
 	/**
 	 * The callback function to be called by the trigger module when
 	 * the user "presses the button"

@@ -1,128 +1,82 @@
 #include "console_queue.h"
 
-/**
- * Locks the queue mutex
- */
-#define CQ_MUTEX_LOCK (g_mutex_lock(&dmp_pb_cq_mutex))
-
-/**
- * Unlocks the queue mutex
- */
-#define CQ_MUTEX_UNLOCK (g_mutex_unlock(&dmp_pb_cq_mutex))
-
-
-
-static gboolean cq_is_initialized = FALSE;
-static GQueue * dmp_pb_cq;
 static GMutex dmp_pb_cq_mutex;
+static gboolean cq_is_initialized = FALSE;
+static GAsyncQueue * dmp_pb_cq;
 
-gint dmp_pb_console_queue_init()
+/**
+ * Thread safe setter for cq_is_initialized
+ * @param to_set the value to set
+ */
+static void dmp_pb_console_queue_set_init(gboolean to_set)
 {
-	CQ_MUTEX_LOCK;
-	dmp_pb_cq = g_queue_new();
-	cq_is_initialized = TRUE;
-	CQ_MUTEX_UNLOCK;
-
-	return DMP_PB_SUCCESS;
+	g_mutex_lock(&dmp_pb_cq_mutex);
+	cq_is_initialized = to_set;
+	g_mutex_unlock(&dmp_pb_cq_mutex);
 }
 
-gboolean dmp_pb_console_queue_is_empty()
+/**
+ * thread safe geter for cq_is_initialized
+ * @return the value of cq_is_initialized
+ */
+static gboolean dmp_pb_console_queue_get_init()
 {
-	CQ_MUTEX_LOCK;
-	gboolean return_value = g_queue_is_empty(dmp_pb_cq);
-	CQ_MUTEX_UNLOCK;
+	gboolean return_value;
+	g_mutex_lock(&dmp_pb_cq_mutex);
+	return_value = cq_is_initialized;
+	g_mutex_unlock(&dmp_pb_cq_mutex);
 	return return_value;
 }
 
-gint dmp_pb_console_queue_push(GString * message)
+/**
+ * The GDestroyNotify function for the console queue
+ * @param data
+ */
+static void dmp_pb_console_queue_destroy_notify(gpointer data)
 {
-	if (!cq_is_initialized)
-	{
-		g_string_free(message, TRUE);
-		return dmp_pb_set_error_code_return(DMP_PB_CONSOLE_QUEUE_NOT_INITIALIZED);
-	}
-	CQ_MUTEX_LOCK;
+	g_string_free((GString *) data, TRUE);
+}
 
-	g_queue_push_tail(dmp_pb_cq, message);
+void dmp_pb_console_queue_init()
+{
+	if (dmp_pb_console_queue_get_init()) return;
+	
+	dmp_pb_cq = g_async_queue_new_full(dmp_pb_console_queue_destroy_notify);
+	dmp_pb_console_queue_set_init(TRUE);
+}
 
-	CQ_MUTEX_UNLOCK;
-	return DMP_PB_SUCCESS;
+void dmp_pb_console_queue_push(GString * message)
+{
+	g_assert(dmp_pb_console_queue_get_init());
+	g_assert(message != NULL);
+
+	g_async_queue_push(dmp_pb_cq, message);
 }
 
 GString * dmp_pb_console_queue_pop()
 {
-	GString * return_value = NULL;
-	if (!cq_is_initialized)
-	{
-		dmp_pb_set_error_code(DMP_PB_CONSOLE_QUEUE_NOT_INITIALIZED);
-		return return_value;
-	}
-	if (dmp_pb_console_queue_is_empty())
-	{
-		dmp_pb_set_error_code(DMP_PB_NULL_POINTER);
-		return return_value;
-	}
-
-	CQ_MUTEX_LOCK;
-
-	return_value = g_queue_pop_head(dmp_pb_cq);
-
-	CQ_MUTEX_UNLOCK;
-	return return_value;
+	g_assert(dmp_pb_console_queue_get_init());
+	
+	return g_async_queue_try_pop(dmp_pb_cq);
 }
 
-GString * dmp_pb_console_queue_peek()
+void dmp_pb_console_queue_finalize()
 {
-	GString * return_value = NULL;
-	if (!cq_is_initialized)
-	{
-		dmp_pb_set_error_code(DMP_PB_CONSOLE_QUEUE_NOT_INITIALIZED);
-		return return_value;
-	}
-	if (dmp_pb_console_queue_is_empty())
-	{
-		dmp_pb_set_error_code(DMP_PB_NULL_POINTER);
-		return return_value;
-	}
-
-	CQ_MUTEX_LOCK;
-
-	return_value = g_queue_peek_head(dmp_pb_cq);
-
-	CQ_MUTEX_UNLOCK;
-	return return_value;
-}
-
-gint dmp_pb_console_queue_finalize()
-{
-	if (!cq_is_initialized) return dmp_pb_set_error_code_return(DMP_PB_CONSOLE_QUEUE_NOT_INITIALIZED);
-
-	GString * working;
-
-	CQ_MUTEX_LOCK;
-
-	while (!g_queue_is_empty(dmp_pb_cq))
-	{
-		working = g_queue_pop_head(dmp_pb_cq);
-		g_string_free(working, TRUE);
-	}
-
-	g_queue_free(dmp_pb_cq);
-	cq_is_initialized = FALSE;
-
-	CQ_MUTEX_UNLOCK;
-	return DMP_PB_SUCCESS;
+	if (!dmp_pb_console_queue_get_init()) return;
+	g_async_queue_unref(dmp_pb_cq);
+	dmp_pb_console_queue_set_init(FALSE);
 }
 
 gboolean dmp_pb_console_queue_flush_queue(gpointer user_data)
 {
+	g_assert(user_data != NULL);
+	
 	GtkTextBuffer * text_buffer = GTK_TEXT_BUFFER(user_data);
 	GString * working;
 	GtkTextIter iter;
 
-	while (!dmp_pb_console_queue_is_empty())
+	while (working = dmp_pb_console_queue_pop())
 	{
-		working = dmp_pb_console_queue_pop();
 		gtk_text_buffer_get_iter_at_offset(text_buffer, &iter, 0);
 		gtk_text_buffer_insert(text_buffer, &iter, working->str, working->len);
 		g_string_free(working, TRUE);

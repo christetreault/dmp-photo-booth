@@ -28,44 +28,27 @@ extern "C" {
 	 * the queue is not initialized, the passed-in GString is freed. This 
 	 * function is thread safe
 	 * @param message the message to push
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_console_queue_push(GString * message);
+	void dmp_pb_console_queue_push(GString * message);
 
 	/**
 	 * Pops a string from the queue. The caller is responsible for memory
 	 * management of the popped string. This function is thread safe.
-	 * @return the string at the front of the queue, or NULL on error.
+	 * @return the string at the front of the queue, or NULL if the queue is
+	 * empty
 	 */
 	GString * dmp_pb_console_queue_pop();
 
 	/**
-	 * Checks the value at the front of the queue, but does not pop it. Caller
-	 * should not attempt to free the returned string. This function is 
-	 * thread safe.
-	 * @return the string at the front of the queue, or NULL on error.The queue 
-	 * retains responsibility for this pointer
-	 */
-	GString * dmp_pb_console_queue_peek();
-
-	/**
-	 * Tests to see if the queue is empty
-	 * @return true if it is, false if it isn't
-	 */
-	gboolean dmp_pb_console_queue_is_empty();
-
-	/**
 	 * initializes the console queue. All queue functions will fail and return
 	 * DMP_PB_CONSOLE_QUEUE_NOT_INITIALIZED until this function has been called.
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_console_queue_init();
+	void dmp_pb_console_queue_init();
 
 	/**
 	 * Finalizes the console queue, ensuring all memory is freed.
-	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_console_queue_finalize();
+	void dmp_pb_console_queue_finalize();
 
 	/**
 	 * flushes the contents of the console queue, pushing it into the passed-in

@@ -23,6 +23,13 @@ extern "C" {
 	 */
 	typedef struct _GtkTextBuffer GtkTextBuffer;
 
+	/**
+	 * Enumeration of UI GError codes
+	 */
+	typedef enum {
+		UI_DEFINITION_CORRUPT, LIBRARY_CALL_FAILURE
+	} dmp_pb_ui_error;
+	
 	typedef struct _dmp_pb_ui_status_icons {
 		GtkImage * printer_module_staus_icon;
 		GtkImage * trigger_module_staus_icon;
@@ -38,9 +45,10 @@ extern "C" {
 	/**
 	 * Launches the UI, and calls gtk_main
 	 * @param ui_file The glade UI file to use
-	 * @return DMP_PB_SUCCESS, or an error code
+	 * @throws GTK_BUILDER_ERROR, G_MARKUP_ERROR, G_FILE_ERROR,
+	 * DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
 	 */
-	gint dmp_pb_ui_launch(gchar * ui_file);
+	void dmp_pb_ui_launch(gchar * ui_file, GError ** error);
 
 	/* --------------- */
 	/* Begin Callbacks */
@@ -96,7 +104,7 @@ extern "C" {
 	/* ------------------- */
 
 	/**
-	 * callback for edit->copy. Copies highlited portion of console to the clipboard
+	 * callback for edit->copy. Copies highlighted portion of console to the clipboard
 	 * @param menuitem
 	 * @param user_data
 	 */
