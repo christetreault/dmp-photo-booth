@@ -116,35 +116,11 @@ extern "C" {
 	 * @param user_data
 	 */
 	G_MODULE_EXPORT void dmp_pb_ui_cb_edit_submenu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data);
-
-	/* ------------------- */
-	/* Help Menu callbacks */
-	/* ------------------- */
-
-	/**
-	 * callback for help->Launch Help. Invokes the help system
-	 * @param menuitem
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_launch_help_activate(GtkMenuItem * menuitem, gpointer user_data);
-
-	/**
-	 * callback for help->about. Invokes the about dialog
-	 * @param menuitem
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_about_activate(GtkMenuItem * menuitem, gpointer user_data);
-
-	/**
-	 * callback the about dialog's close button. hides the window
-	 * @param menuitem
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_about_dialog_response(GtkDialog * about, gint response, gpointer user_data);
-
-	/**
-	 * callback for the config dialog's dismiss button. Dismisses the window
+	
+		/**
+	 * callback for the config dialog's ok and cancel buttons
 	 * @param button
+	 * @param response
 	 * @param user_data
 	 */
 	G_MODULE_EXPORT void dmp_pb_options_dialog_response(GtkDialog * about, gint response, gpointer user_data);
@@ -190,6 +166,33 @@ extern "C" {
 	 * @param user_data
 	 */
 	G_MODULE_EXPORT void dmp_pb_ui_cb_edit_printer_module_config_button_clicked(GtkButton * button, gpointer user_data);
+
+	/* ------------------- */
+	/* Help Menu callbacks */
+	/* ------------------- */
+
+	/**
+	 * callback for help->Launch Help. Invokes the help system
+	 * @param menuitem
+	 * @param user_data
+	 */
+	G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_launch_help_activate(GtkMenuItem * menuitem, gpointer user_data);
+
+	/**
+	 * callback for help->about. Invokes the about dialog
+	 * @param menuitem
+	 * @param user_data
+	 */
+	G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_about_activate(GtkMenuItem * menuitem, gpointer user_data);
+
+	/**
+	 * callback the about dialog's close button. hides the window
+	 * @param menuitem
+	 * @param user_data
+	 */
+	G_MODULE_EXPORT void dmp_pb_ui_cb_about_dialog_response(GtkDialog * about, gint response, gpointer user_data);
+
+
 
 #ifdef	__cplusplus
 }

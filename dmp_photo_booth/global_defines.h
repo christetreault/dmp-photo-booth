@@ -16,6 +16,9 @@ extern "C" {
 
 	/* All's well that ends well; a successful return */
 #define DMP_PB_SUCCESS 0
+	
+	/* It broke :( */
+#define DMP_PB_FAILURE 1
 
 #ifdef	__cplusplus
 }

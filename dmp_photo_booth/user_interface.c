@@ -30,7 +30,7 @@ static GtkTextBuffer * dmp_pb_console_buffer = NULL;
  * @param builder The builder to connect signals to
  * @throws DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
  */
-static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
+static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)	//TODO: There must be a better way. Maybe a generic install_user_data(to_load) function?
 {
 	g_assert(g_module_supported());
 	
@@ -191,6 +191,11 @@ static GtkBuilder * dmp_pb_ui_create_gtk_builder(gchar * builder_file, GError **
 	return builder;
 }
 
+static void dmp_pb_ui_initialize_options_fields()	// TODO: this
+{
+	
+}
+
 /* --------------------------- */
 /* End static helper functions */
 /* --------------------------- */
@@ -205,6 +210,8 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 		g_propagate_error(error, working_error);
 		return;
 	}
+	
+	dmp_pb_ui_initialize_options_fields();
 
 	dmp_pb_ui_register_user_data(builder, &working_error);
 	if (working_error != NULL)
@@ -304,10 +311,24 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_about_dialog_response(GtkDialog * about, gint 
 /* Config Dialog callbacks */
 /* ----------------------- */
 
+static void dmp_pb_options_dialog_cancel_button(gpointer user_data)
+{
+	//TODO: overwrite fields with data from config
+	
+	gtk_widget_hide(GTK_WIDGET(((struct dmp_pb_ui_cb_user_data *) user_data)->config_window));
+}
+
+static void dmp_pb_options_dialog_ok_button(gpointer user_data)
+{
+	//TODO: write data from all fields to the config, save config to file
+	
+	gtk_widget_hide(GTK_WIDGET(((struct dmp_pb_ui_cb_user_data *) user_data)->config_window));
+}
+
 G_MODULE_EXPORT void dmp_pb_options_dialog_response(GtkDialog * about, gint response, gpointer user_data)
 {
-	if (response == 2) gtk_widget_hide(GTK_WIDGET(((struct dmp_pb_ui_cb_user_data *) user_data)->config_window));
-	else if (response == 1) return;
+	if (response == 2) dmp_pb_options_dialog_cancel_button(user_data);
+	else if (response == 1) dmp_pb_options_dialog_ok_button(user_data);
 }
 
 /**

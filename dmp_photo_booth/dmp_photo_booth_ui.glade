@@ -66,8 +66,8 @@
             <property name="can_focus">False</property>
             <property name="layout_style">spread</property>
             <child>
-              <object class="GtkButton" id="dmp_pb_options_save_button">
-                <property name="label" translatable="yes">Save</property>
+              <object class="GtkButton" id="dmp_pb_options_ok_button">
+                <property name="label" translatable="yes">OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
@@ -79,11 +79,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="dmp_pb_options_dismiss_button">
-                <property name="label" translatable="yes">Dismiss</property>
+              <object class="GtkButton" id="dmp_pb_options_cancel_button">
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
+                <property name="yalign">0.49000000953674316</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -669,8 +670,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">dmp_pb_options_save_button</action-widget>
-      <action-widget response="2">dmp_pb_options_dismiss_button</action-widget>
+      <action-widget response="1">dmp_pb_options_ok_button</action-widget>
+      <action-widget response="2">dmp_pb_options_cancel_button</action-widget>
     </action-widgets>
   </object>
   <object class="GtkImage" id="image1">

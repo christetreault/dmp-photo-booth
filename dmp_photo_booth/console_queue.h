@@ -12,11 +12,10 @@
 extern "C" {
 #endif
 
-#include <stdlib.h>
-#include <string.h>
 #include <glib.h>
 #include "global_defines.h"
 #include <gtk/gtk.h>
+#include <glib/gprintf.h>
 
 	/**
 	 * For whatever reason, gtk.h does not typedef this
@@ -58,6 +57,12 @@ extern "C" {
 	 * has been called
 	 */
 	gboolean dmp_pb_console_queue_flush_queue(gpointer user_data);
+	
+	/**
+	 * Flushes the console queue to stdout. This should be called if the UI
+	 * fails to load and you need somewhere to output messages
+     */
+	void dmp_pb_console_queue_flush_stdout();
 
 #ifdef	__cplusplus
 }

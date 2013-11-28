@@ -84,3 +84,15 @@ gboolean dmp_pb_console_queue_flush_queue(gpointer user_data)
 
 	return G_SOURCE_CONTINUE;
 }
+
+void dmp_pb_console_queue_flush_stdout()
+{
+	GString * working;
+	GtkTextIter iter;
+	
+	while (working = dmp_pb_console_queue_pop())
+	{
+		g_printf("%s", working->str);
+		g_string_free(working, TRUE);
+	}
+}
