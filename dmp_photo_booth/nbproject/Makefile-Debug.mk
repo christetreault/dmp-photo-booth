@@ -46,7 +46,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=`pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` 
+CFLAGS=`pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` 
 
 # CC Compiler Flags
 CCFLAGS=
@@ -59,7 +59,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0` `pkg-config --libs glib-2.0` `pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0` `pkg-config --libs glib-2.0` `pkg-config --libs glib-2.0` `pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0`  
+LDLIBSOPTIONS=`pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0` `pkg-config --libs glib-2.0` `pkg-config --libs MagickWand`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -67,47 +67,47 @@ LDLIBSOPTIONS=`pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0` `pkg-
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0`
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand`
 
 ${OBJECTDIR}/configuration.o: configuration.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration.o configuration.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/configuration.o configuration.c
 
 ${OBJECTDIR}/console_queue.o: console_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/console_queue.o console_queue.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/console_queue.o console_queue.c
 
 ${OBJECTDIR}/error_handling.o: error_handling.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/error_handling.o error_handling.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/error_handling.o error_handling.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/module.o: module.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module.o module.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module.o module.c
 
 ${OBJECTDIR}/module_callbacks.o: module_callbacks.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module_callbacks.o module_callbacks.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module_callbacks.o module_callbacks.c
 
 ${OBJECTDIR}/module_status_watchdog.o: module_status_watchdog.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module_status_watchdog.o module_status_watchdog.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/module_status_watchdog.o module_status_watchdog.c
 
 ${OBJECTDIR}/user_interface.o: user_interface.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0` -MMD -MP -MF $@.d -o ${OBJECTDIR}/user_interface.o user_interface.c
+	$(COMPILE.c) -g -I. -I. -I. -I. `pkg-config --cflags gmodule-2.0` `pkg-config --cflags gtk+-3.0` `pkg-config --cflags glib-2.0` `pkg-config --cflags MagickWand`  `pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` -MMD -MP -MF $@.d -o ${OBJECTDIR}/user_interface.o user_interface.c
 
 # Subprojects
 .build-subprojects:
