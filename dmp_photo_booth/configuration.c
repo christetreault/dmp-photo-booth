@@ -3,7 +3,7 @@
 static GKeyFile * dmp_pb_config = NULL;
 G_LOCK_DEFINE(dmp_pb_config);
 
-void dmp_pb_config_initialize(GString * path, GError ** error)
+void dmp_pb_config_initialize(GError ** error)
 {
 	GError * working = NULL;
 	
@@ -12,7 +12,7 @@ void dmp_pb_config_initialize(GString * path, GError ** error)
 	G_LOCK(dmp_pb_config);
 	dmp_pb_config = g_key_file_new();
 	g_key_file_load_from_file(dmp_pb_config, 
-			path->str, 
+			DMP_PB_DEFAULT_CONFIGURATION, 
 			G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
 			&working);
 	if (working != NULL)
@@ -33,7 +33,7 @@ void dmp_pb_config_finalize()
 	G_UNLOCK(dmp_pb_config);
 }
 
-void dmp_pb_config_write(GString * path, GError ** error)
+void dmp_pb_config_write(GError ** error)
 {
 	g_assert(dmp_pb_config != NULL);
 	
@@ -41,7 +41,19 @@ void dmp_pb_config_write(GString * path, GError ** error)
 	
 	G_LOCK(dmp_pb_config);
 	
+	g_file_set_contents
+			(
+				DMP_PB_DEFAULT_CONFIGURATION, 
+				g_key_file_to_data(dmp_pb_config, NULL, NULL),
+				-1,
+				&working
+			); //TODO: Am I evil? "...on Windows there is a race condition..."
+	
 	G_UNLOCK(dmp_pb_config);
+	
+	if (working != NULL) g_propagate_error(error, working);
+	
+	return;
 }
 
 GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
@@ -52,4 +64,14 @@ GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
 void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value)
 {
 	g_key_file_set_string(dmp_pb_config, group, key, value->str);
+}
+
+gint dmp_pb_config_read_int(const gchar * group, const gchar * key)
+{
+	return g_key_file_get_integer(dmp_pb_config, group, key, NULL);
+}
+
+void dmp_pb_config_write_int(const gchar * group, const gchar * key, gint value)
+{
+	g_key_file_set_integer(dmp_pb_config, group, key, value);
 }

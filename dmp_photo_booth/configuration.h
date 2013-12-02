@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#define DMP_PB_DEFAULT_CONFIGURATION "dmp_photo_booth.rc"
+	
 #define DMP_PB_CONFIG_MODULE_GROUP "module"
 #define DMP_PB_CONFIG_CAMERA_MODULE_PATH "camera_module_path"
 #define DMP_PB_CONFIG_TRIGGER_MODULE_PATH "trigger_module_path"
@@ -20,28 +22,28 @@ extern "C" {
 #define DMP_PB_CONFIG_CORE_GROUP "core"
 #define DMP_PB_CONFIG_BACKGROUND_PATH "background_path"
 #define DMP_PB_CONFIG_POSITION_TOGGLE "positon_toggle"
+#define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_PATH "individual_image_path"
+#define DMP_PB_CONFIG_COMPLETED_STRIP_PATH "completed_strip_path"
 	
 #include <glib.h>
 	
 	/**
 	 * Initializes the config
-     * @param path the path to read from. Caller remains responsible for this
-	 * pointer
      * @throws GFileError, GKeyFileError
      */
-	void dmp_pb_config_initialize(GString * path, GError ** error);
+	void dmp_pb_config_initialize(GError ** error);
 	
 	/**
-	 * Finalizes the config, freeing resources
+	 * Finalizes the config, freeing resources.
+	 * @NOTE: This function <b>DOES NOT</b> attempt to save the config to file!
      */
 	void dmp_pb_config_finalize();
 	
 	/**
-	 * Writes the config back to the specified path
-     * @param path the path to save to
-     * @throws
+	 * Writes the config back to file
+     * @throws G_FILE_ERROR
      */
-	void dmp_pb_config_write(GString * path, GError ** error);
+	void dmp_pb_config_write(GError ** error);
 	
 	/**
 	 * reads a string from the config. 
@@ -58,11 +60,31 @@ extern "C" {
 	 * writes a string to the config
 	 * @NOTE Use a constant defined in this header to ensure you are
 	 * reading a valid key or group!
-     * @param group
-     * @param key
-     * @param value
+     * @param group the group to write to
+     * @param key the key to write
+     * @param value the value to set
      */
 	void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value);
+	
+	/**
+	 * reads an integer from the config
+	 * @NOTE Use a constant defined in this header to ensure you are
+	 * reading a valid key or group!
+     * @param group the group to read from
+     * @param key the key to read
+     * @return the read value
+     */
+	gint dmp_pb_config_read_int(const gchar * group, const gchar * key);
+	
+	/**
+	 * writes an integer to the config
+	 * @NOTE Use a constant defined in this header to ensure you are
+	 * reading a valid key or group!
+     * @param group the group to write to
+     * @param key the key to write to
+     * @param value the value to write
+     */
+	void dmp_pb_config_write_int(const gchar * group, const gchar * key, gint value);
 
 
 #ifdef	__cplusplus

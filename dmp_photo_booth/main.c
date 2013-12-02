@@ -14,8 +14,6 @@
 #include "console_queue.h"
 #include "configuration.h"
 
-#define DMP_PB_DEFAULT_CONFIGURATION "dmp_photo_booth.rc"
-
 /**
  * Called upon a failure in main. Cleans up resources and returns FAILURE
  * @param error the error that was thrown
@@ -36,12 +34,10 @@ static gint dmp_pb_failure(GError * error)
 int main(int argc, char** argv)
 {
 	GError * error = NULL;
-	GString * config_path = g_string_new(DMP_PB_DEFAULT_CONFIGURATION);
 	
 	gtk_init(&argc, &argv);
 	dmp_pb_console_queue_init();
-	dmp_pb_config_initialize(config_path, &error);
-	g_string_free(config_path, TRUE);
+	dmp_pb_config_initialize(&error);
 	
 	if (error != NULL) return dmp_pb_failure(error);
 	

@@ -1,13 +1,34 @@
 #include "user_interface.h"
+#include "configuration.h"
 
 G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
+
+/* User data widgets */
 
 #define DMP_PB_MAIN_WINDOW "dmp_pb_main_window"
 #define DMP_PB_ABOUT_DIALOG "dmp_pb_about_dialog"
 #define DMP_PB_OPTIONS_DIALOG "dmp_pb_options_dialog"
+
 #define DMP_PB_CAMERA_MODULE_PATH_TEXT_BOX "dmp_pb_camera_module_path_text_box"
 #define DMP_PB_TRIGGER_MODULE_PATH_TEXT_BOX "dmp_pb_trigger_module_path_text_box"
 #define DMP_PB_PRINTER_MODULE_PATH_TEXT_BOX "dmp_pb_printer_module_path_text_box"
+
+#define DMP_PB_BACKGROUND_PATH_TEXT_BOX "dmp_pb_background_path_text_box"
+#define DMP_PB_INDIVIDUAL_IMAGE_PATH_TEXT_BOX "dmp_pb_individual_image_path_text_box"
+#define DMP_PB_COMPLETE_STRIP_PATH_TEXT_BOX "dmp_pb_complete_strip_path_text_box"
+
+#define DMP_PB_PHOTO_STRIP_POSITION_1 "dmp_pb_photo_strip_position_1"
+#define DMP_PB_PHOTO_STRIP_POSITION_1_FLAG 1 << 0
+#define DMP_PB_PHOTO_STRIP_POSITION_2 "dmp_pb_photo_strip_position_2"
+#define DMP_PB_PHOTO_STRIP_POSITION_2_FLAG 1 << 1
+#define DMP_PB_PHOTO_STRIP_POSITION_3 "dmp_pb_photo_strip_position_3"
+#define DMP_PB_PHOTO_STRIP_POSITION_3_FLAG 1 << 2
+#define DMP_PB_PHOTO_STRIP_POSITION_4 "dmp_pb_photo_strip_position_4"
+#define DMP_PB_PHOTO_STRIP_POSITION_4_FLAG 1 << 3
+#define DMP_PB_PHOTO_STRIP_POSITION_5 "dmp_pb_photo_strip_position_5"
+#define DMP_PB_PHOTO_STRIP_POSITION_5_FLAG 1 << 4
+
+/* Status Icons */
 
 #define DMP_PB_PRINTER_MODULE_STATUS_ICON "dmp_pb_printer_module_status_icon"
 #define DMP_PB_TRIGGER_MODULE_STATUS_ICON "dmp_pb_trigger_module_status_icon"
@@ -25,7 +46,7 @@ static GtkTextBuffer * dmp_pb_console_buffer = NULL;
  * installs an individual key into the user data hash
  * @param builder the builder to extract from
  * @param widget_name the key to extract and insert
- * @throws UI_DEFINITION_CORRUPT
+ * @throws DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
  */
 static void dmp_pb_ui_register_user_data_key(GtkBuilder * builder, gchar * widget_name, GError ** error)
 {
@@ -48,7 +69,7 @@ static void dmp_pb_ui_register_user_data_key(GtkBuilder * builder, gchar * widge
  * @param builder The builder to connect signals to
  * @throws DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
  */
-static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)	//TODO: There must be a better way. Maybe a generic install_user_data(to_load) function?
+static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 {
 	g_assert(g_module_supported());
 	
@@ -91,6 +112,62 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)	
 	}
 
 	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PRINTER_MODULE_PATH_TEXT_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_BACKGROUND_PATH_TEXT_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_IMAGE_PATH_TEXT_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_COMPLETE_STRIP_PATH_TEXT_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PHOTO_STRIP_POSITION_1, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PHOTO_STRIP_POSITION_2, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PHOTO_STRIP_POSITION_3, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PHOTO_STRIP_POSITION_4, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_PHOTO_STRIP_POSITION_5, &working_error);
 	if (working_error != NULL)
 	{
 		g_propagate_error(error, working_error);
@@ -180,9 +257,213 @@ static GtkBuilder * dmp_pb_ui_create_gtk_builder(gchar * builder_file, GError **
 	return builder;
 }
 
-static void dmp_pb_ui_initialize_options_fields()	// TODO: this
+/**
+ * parses the image positions bit field
+ * @param to_test the value to parse
+ */
+static void dmp_pb_ui_parse_image_positions(gint to_test)
 {
+	if (to_test & DMP_PB_PHOTO_STRIP_POSITION_1_FLAG)
+	{
+		gtk_toggle_button_set_active
+			(
+				GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_1)),
+				TRUE
+			);
+	}
 	
+	if (to_test & DMP_PB_PHOTO_STRIP_POSITION_2_FLAG)
+	{
+		gtk_toggle_button_set_active
+			(
+				GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_2)),
+				TRUE
+			);
+	}
+	
+	if (to_test & DMP_PB_PHOTO_STRIP_POSITION_3_FLAG)
+	{
+		gtk_toggle_button_set_active
+			(
+				GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_3)),
+				TRUE
+			);
+	}
+	
+	if (to_test & DMP_PB_PHOTO_STRIP_POSITION_4_FLAG)
+	{
+		gtk_toggle_button_set_active
+			(
+				GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_4)),
+				TRUE
+			);
+	}
+	
+	if (to_test & DMP_PB_PHOTO_STRIP_POSITION_5_FLAG)
+	{
+		gtk_toggle_button_set_active
+			(
+				GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_5)),
+				TRUE
+			);
+	}
+}
+
+/**
+ * Initializes the options dialog with values read from the config
+ */
+static void dmp_pb_ui_initialize_options_fields()
+{
+	GString * working = NULL;
+	dmp_pb_ui_parse_image_positions(dmp_pb_config_read_int(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_POSITION_TOGGLE));
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_CAMERA_MODULE_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_CAMERA_MODULE_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_PRINTER_MODULE_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PRINTER_MODULE_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_TRIGGER_MODULE_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TRIGGER_MODULE_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_BACKGROUND_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_BACKGROUND_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_IMAGE_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+	
+	working = dmp_pb_config_read_string(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_COMPLETED_STRIP_PATH);
+	gtk_entry_set_text
+			(
+				GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_COMPLETE_STRIP_PATH_TEXT_BOX)),
+				working->str
+			);
+	g_string_free(working, TRUE);
+}
+
+/**
+ * Reads the image positions toggles and converts the result to an integer
+ * @return said integer
+ */
+static gint dmp_pb_ui_get_image_positions()
+{
+	gint return_value = 0;
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_1))))
+	{
+		return_value = return_value | DMP_PB_PHOTO_STRIP_POSITION_1_FLAG;
+	}
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_2))))
+	{
+		return_value = return_value | DMP_PB_PHOTO_STRIP_POSITION_2_FLAG;
+	}
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_3))))
+	{
+		return_value = return_value | DMP_PB_PHOTO_STRIP_POSITION_3_FLAG;
+	}
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_4))))
+	{
+		return_value = return_value | DMP_PB_PHOTO_STRIP_POSITION_4_FLAG;
+	}
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PHOTO_STRIP_POSITION_5))))
+	{
+		return_value = return_value | DMP_PB_PHOTO_STRIP_POSITION_5_FLAG;
+	}
+	
+	return return_value;
+}
+
+/**
+ * Commits the options fields to the config
+ */
+static void dmp_pb_ui_commit_options_fields()
+{
+	GString * working;
+	dmp_pb_config_write_int
+			(
+				DMP_PB_CONFIG_CORE_GROUP, 
+				DMP_PB_CONFIG_POSITION_TOGGLE, 
+				dmp_pb_ui_get_image_positions()
+			);
+	
+	working = g_string_new(gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_BACKGROUND_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_CORE_GROUP,
+				DMP_PB_CONFIG_BACKGROUND_PATH,
+				working
+			);
+	
+	g_string_assign(working, gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_IMAGE_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_CORE_GROUP,
+				DMP_PB_CONFIG_INDIVIDUAL_IMAGE_PATH,
+				working
+			);
+	
+	g_string_assign(working, gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_COMPLETE_STRIP_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_CORE_GROUP,
+				DMP_PB_CONFIG_COMPLETED_STRIP_PATH,
+				working
+			);
+	
+	g_string_assign(working, gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_CAMERA_MODULE_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_MODULE_GROUP,
+				DMP_PB_CONFIG_CAMERA_MODULE_PATH,
+				working
+			);
+	
+	g_string_assign(working, gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TRIGGER_MODULE_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_MODULE_GROUP,
+				DMP_PB_CONFIG_TRIGGER_MODULE_PATH,
+				working
+			);
+	
+	g_string_assign(working, gtk_entry_get_text(GTK_ENTRY(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_PRINTER_MODULE_PATH_TEXT_BOX))));
+	dmp_pb_config_write_string
+			(
+				DMP_PB_CONFIG_MODULE_GROUP,
+				DMP_PB_CONFIG_PRINTER_MODULE_PATH,
+				working
+			);
+	
+	g_string_free(working, TRUE);
 }
 
 /* --------------------------- */
@@ -200,14 +481,27 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 		return;
 	}
 	
-	dmp_pb_ui_initialize_options_fields();
-
 	dmp_pb_ui_register_user_data(builder, &working_error);
 	if (working_error != NULL)
 	{
 		g_propagate_error(error, working_error);
 		return;
 	}
+	
+	dmp_pb_ui_initialize_options_fields();
+	
+	/* 
+	 * While this probably violates some best practice, I'm going to do it 
+	 * anyways because I cannot be bothered to re-implement these functions and 
+	 * they work 
+	 */
+	dmp_pb_ui_cb_load_camera_module_button_clicked(NULL, dmp_pb_user_data);
+	dmp_pb_ui_cb_load_printer_module_button_clicked(NULL, dmp_pb_user_data);
+	dmp_pb_ui_cb_load_trigger_module_button_clicked(NULL, dmp_pb_user_data);
+	
+	/*
+	 * End of best practices violations
+	 */
 	
 	g_object_unref(G_OBJECT(builder));
 
@@ -303,14 +597,36 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_about_dialog_response(GtkDialog * about, gint 
 
 static void dmp_pb_options_dialog_cancel_button(gpointer user_data)
 {
-	//TODO: overwrite fields with data from config
+	dmp_pb_ui_initialize_options_fields();
 	
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
 }
 
 static void dmp_pb_options_dialog_ok_button(gpointer user_data)
 {
-	//TODO: write data from all fields to the config, save config to file
+	GError * error = NULL;
+	dmp_pb_ui_commit_options_fields();
+	dmp_pb_config_write(&error);
+	
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+	}
+	
+	/* 
+	 * While this probably violates some best practice, I'm going to do it 
+	 * anyways because I cannot be bothered to re-implement these functions and 
+	 * they work 
+	 */
+	dmp_pb_ui_cb_load_camera_module_button_clicked(NULL, dmp_pb_user_data);
+	dmp_pb_ui_cb_load_printer_module_button_clicked(NULL, dmp_pb_user_data);
+	dmp_pb_ui_cb_load_trigger_module_button_clicked(NULL, dmp_pb_user_data);
+	
+	/*
+	 * End of best practices violations
+	 */
+	
 	
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
 }
@@ -393,7 +709,7 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_load_printer_module_button_clicked(GtkButton *
 }
 
 /**
- * Calls edit module config on the passed-i type. Brings the GError
+ * Calls edit module config on the passed-in type. Brings the GError
  * @param type
  * @throws DMP_PB_UI_ERROR::LIBRARY_CALL_FAILURE
  */
