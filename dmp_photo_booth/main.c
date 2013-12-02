@@ -49,6 +49,7 @@ int main(int argc, char** argv)
 	
 	if (error != NULL) return dmp_pb_failure(error);
 	
+	dmp_pb_config_finalize();
 	dmp_pb_console_queue_finalize();
 	return DMP_PB_SUCCESS;
 }

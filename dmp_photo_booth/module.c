@@ -501,7 +501,7 @@ static void dmp_pb_unload_printer_module()
 {
 	g_assert(g_module_supported());
 	if (dmp_pm_finalize != NULL) dmp_pb_finalize(DMP_PB_PRINTER_MODULE);
-	g_module_close(dmp_pb_printer_module);
+	if (dmp_pb_printer_module != NULL) g_module_close(dmp_pb_printer_module);
 
 	dmp_pb_printer_module = NULL;
 	dmp_pm_print = NULL;
@@ -523,7 +523,7 @@ static void dmp_pb_unload_trigger_module()
 {
 	g_assert(g_module_supported());
 	if (dmp_tm_finalize != NULL) dmp_pb_finalize(DMP_PB_TRIGGER_MODULE);
-	g_module_close(dmp_pb_trigger_module);
+	if (dmp_pb_trigger_module != NULL) g_module_close(dmp_pb_trigger_module);
 
 	dmp_pb_trigger_module = NULL;
 	dmp_tm_add_trigger_handler = NULL;
@@ -546,7 +546,7 @@ static void dmp_pb_unload_camera_module()
 {
 	g_assert(g_module_supported());
 	if (dmp_cm_finalize != NULL) dmp_pb_finalize(DMP_PB_CAMERA_MODULE);
-	g_module_close(dmp_pb_camera_module);
+	if (dmp_pb_camera_module != NULL) g_module_close(dmp_pb_camera_module);
 
 	dmp_pb_camera_module = NULL;
 	dmp_cm_capture = NULL;
