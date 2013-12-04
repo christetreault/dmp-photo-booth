@@ -24,6 +24,8 @@ extern "C" {
 #define DMP_PB_CONFIG_POSITION_TOGGLE "positon_toggle"
 #define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_PATH "individual_image_path"
 #define DMP_PB_CONFIG_COMPLETED_STRIP_PATH "completed_strip_path"
+#define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH "individual_image_width"
+#define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO "individual_image_aspect_ratio"
 	
 #include <glib.h>
 	
@@ -85,6 +87,26 @@ extern "C" {
      * @param value the value to write
      */
 	void dmp_pb_config_write_int(const gchar * group, const gchar * key, gint value);
+	
+		/**
+	 * reads a double from the config
+	 * @NOTE Use a constant defined in this header to ensure you are
+	 * reading a valid key or group!
+     * @param group the group to read from
+     * @param key the key to read
+     * @return the read value
+     */
+	gdouble dmp_pb_config_read_double(const gchar * group, const gchar * key);
+	
+	/**
+	 * writes a double to the config
+	 * @NOTE Use a constant defined in this header to ensure you are
+	 * reading a valid key or group!
+     * @param group the group to write to
+     * @param key the key to write to
+     * @param value the value to write
+     */
+	void dmp_pb_config_write_double(const gchar * group, const gchar * key, gdouble value);
 
 
 #ifdef	__cplusplus

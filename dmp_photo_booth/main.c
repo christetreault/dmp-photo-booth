@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 	gtk_init(&argc, &argv);
 	dmp_pb_console_queue_init();
 	dmp_pb_config_initialize(&error);
+	dmp_pb_photo_strip_init();
 	
 	if (error != NULL) return dmp_pb_failure(error);
 	
@@ -45,6 +46,7 @@ int main(int argc, char** argv)
 	
 	if (error != NULL) return dmp_pb_failure(error);
 	
+	dmp_pb_photo_strip_finalize();
 	dmp_pb_config_finalize();
 	dmp_pb_console_queue_finalize();
 	return DMP_PB_SUCCESS;

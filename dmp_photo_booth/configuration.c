@@ -75,3 +75,13 @@ void dmp_pb_config_write_int(const gchar * group, const gchar * key, gint value)
 {
 	g_key_file_set_integer(dmp_pb_config, group, key, value);
 }
+
+gdouble dmp_pb_config_read_double(const gchar * group, const gchar * key)
+{
+	return g_key_file_get_double(dmp_pb_config, group, key, NULL);
+}
+
+void dmp_pb_config_write_double(const gchar * group, const gchar * key, gdouble value)
+{
+	g_key_file_set_double(dmp_pb_config, group, key, value);
+}

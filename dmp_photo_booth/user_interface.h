@@ -41,7 +41,6 @@ extern "C" {
 	 * attept to free this pointer
 	 */
 	dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons();
-
 	/**
 	 * Launches the UI, and calls gtk_main
 	 * @param ui_file The glade UI file to use

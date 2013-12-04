@@ -1,5 +1,6 @@
 #include "user_interface.h"
 #include "configuration.h"
+#include "photo_strip.h"
 
 G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 
@@ -27,6 +28,11 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 #define DMP_PB_PHOTO_STRIP_POSITION_4_FLAG 1 << 3
 #define DMP_PB_PHOTO_STRIP_POSITION_5 "dmp_pb_photo_strip_position_5"
 #define DMP_PB_PHOTO_STRIP_POSITION_5_FLAG 1 << 4
+
+#define DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX "dmp_pb_individual_aspect_ratio_combo_box"
+#define DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX "dmp_pb_individual_image_width_spin_box"
+
+#define DMP_PB_IMAGE_HISTORY_VIEW "dmp_pb_image_history_view"
 
 /* Status Icons */
 
@@ -173,6 +179,27 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		g_propagate_error(error, working_error);
 		return;
 	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_IMAGE_HISTORY_VIEW, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
 
 	status_icons = malloc(sizeof (dmp_pb_ui_status_icons));
 	status_icons->printer_module_staus_icon = GTK_IMAGE(gtk_builder_get_object(builder, DMP_PB_PRINTER_MODULE_STATUS_ICON));
@@ -310,11 +337,46 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
 }
 
 /**
+ * parses an aspect ratio, doing the correct configuration
+ * @param to_test the aspect ratio in question
+ */
+static void dmp_pb_ui_parse_aspect_ratio(gdouble to_test)
+{
+	if (to_test == DMP_PB_ASPECT_RATIO_4_3)
+	{
+		gtk_combo_box_set_active
+				(
+					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
+					0
+				);
+	}
+	if (to_test == DMP_PB_ASPECT_RATIO_3_2)
+	{
+		gtk_combo_box_set_active
+				(
+					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
+					1
+				);
+		return;
+	}
+	else	/* Default action */ 
+	{
+		gtk_combo_box_set_active
+				(
+					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
+					0
+				);
+		return;
+	}
+}
+
+/**
  * Initializes the options dialog with values read from the config
  */
 static void dmp_pb_ui_initialize_options_fields()
 {
 	GString * working = NULL;
+	
 	dmp_pb_ui_parse_image_positions(dmp_pb_config_read_int(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_POSITION_TOGGLE));
 	
 	working = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_CAMERA_MODULE_PATH);
@@ -364,6 +426,14 @@ static void dmp_pb_ui_initialize_options_fields()
 				working->str
 			);
 	g_string_free(working, TRUE);
+	
+	dmp_pb_ui_parse_aspect_ratio(dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO));
+	
+	gtk_spin_button_set_value
+			(
+			GTK_SPIN_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX)),
+			dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH)
+			);
 }
 
 /**
@@ -400,6 +470,25 @@ static gint dmp_pb_ui_get_image_positions()
 	}
 	
 	return return_value;
+}
+
+/**
+ * Reads the aspect ratio combo box selection id and converts it to an aspect
+ * ratio
+ * @return said aspect ratio
+ */
+static gdouble dmp_pb_ui_get_aspect_ratio()
+{
+	gint working = gtk_combo_box_get_active(GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)));
+	switch (working)
+	{
+		case 0:
+			return DMP_PB_ASPECT_RATIO_4_3;
+		case 1:
+			return DMP_PB_ASPECT_RATIO_3_2;
+		default:
+			return DMP_PB_ASPECT_RATIO_4_3;
+	}
 }
 
 /**
@@ -464,8 +553,66 @@ static void dmp_pb_ui_commit_options_fields()
 			);
 	
 	g_string_free(working, TRUE);
+	
+	dmp_pb_config_write_double
+			(
+				DMP_PB_CONFIG_CORE_GROUP,
+				DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO,
+				dmp_pb_ui_get_aspect_ratio()
+			);
+	
+	dmp_pb_config_write_double
+			(
+				DMP_PB_CONFIG_CORE_GROUP,
+				DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH,
+				gtk_spin_button_get_value(GTK_SPIN_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX)))
+			);
 }
 
+/**
+ * checks for new strips, displays them in the UI if found
+ * @param user_data
+ * @return 
+ */
+static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
+{
+	GError * error = NULL;
+	GString * working = dmp_pb_photo_strip_get_result(&error);
+	
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+	}
+	else if (working != NULL)
+	{
+		GtkTreeIter iter;
+		GtkIconView * icon_view = GTK_ICON_VIEW(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_IMAGE_HISTORY_VIEW));
+		GtkListStore * icon_view_store = GTK_LIST_STORE(gtk_icon_view_get_model(icon_view));
+		
+		gtk_list_store_append(icon_view_store, &iter);
+		GdkPixbuf * temp_pixbuf = gdk_pixbuf_new_from_file(working->str, &error);
+		gtk_list_store_set
+				(
+					icon_view_store, 
+					&iter, 
+					0, gdk_pixbuf_scale_simple
+						(
+							temp_pixbuf, 
+							(gint) gdk_pixbuf_get_width(temp_pixbuf) / 2,
+							(gint) gdk_pixbuf_get_height(temp_pixbuf) / 2,
+							GDK_INTERP_NEAREST
+						),
+					-1);
+		g_object_unref(temp_pixbuf);
+		if (error != NULL)
+		{
+			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+			g_clear_error(&error);
+		}
+	}
+	return G_SOURCE_CONTINUE;
+}
 /* --------------------------- */
 /* End static helper functions */
 /* --------------------------- */
@@ -507,6 +654,7 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 
 	dmp_pb_mwd_init(status_icons);
 	g_idle_add(dmp_pb_mwd_handle_message, NULL);
+	g_idle_add(dmp_pb_ui_check_for_strips, NULL);
 	g_timeout_add_seconds(1, dmp_pb_console_queue_flush_queue, dmp_pb_console_buffer);
 
 	gtk_widget_show(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW));
@@ -536,12 +684,23 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_quit_activate(GtkMenuItem * menui
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
+	//TODO: Something else should happen now
+	
+	//TODO: For testing
+	dmp_pb_photo_strip_request(g_string_new("/tmp/test.png"),
+			g_string_new("/tmp/1.JPG"),
+			g_string_new("/tmp/2.JPG"),
+			//g_string_new("/tmp/3.JPG"),
+			NULL,
+			g_string_new("/tmp/4.JPG"),
+			g_string_new("/tmp/5.JPG"));
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	dmp_pb_console_queue_push(g_string_new("Stopping the Photo Booth...\n"));
+	//TODO: Something else should happen now
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_pause_activate(GtkMenuItem * menuitem, gpointer user_data)

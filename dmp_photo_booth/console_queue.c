@@ -88,7 +88,6 @@ gboolean dmp_pb_console_queue_flush_queue(gpointer user_data)
 void dmp_pb_console_queue_flush_stdout()
 {
 	GString * working;
-	GtkTextIter iter;
 	
 	while (working = dmp_pb_console_queue_pop())
 	{

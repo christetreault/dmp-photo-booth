@@ -42,6 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/module.o \
 	${OBJECTDIR}/module_callbacks.o \
 	${OBJECTDIR}/module_status_watchdog.o \
+	${OBJECTDIR}/photo_strip.o \
 	${OBJECTDIR}/user_interface.o
 
 
@@ -103,6 +104,11 @@ ${OBJECTDIR}/module_status_watchdog.o: module_status_watchdog.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -I. -I. -I. -I. -MMD -MP -MF $@.d -o ${OBJECTDIR}/module_status_watchdog.o module_status_watchdog.c
+
+${OBJECTDIR}/photo_strip.o: photo_strip.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -I. -I. -I. -I. -MMD -MP -MF $@.d -o ${OBJECTDIR}/photo_strip.o photo_strip.c
 
 ${OBJECTDIR}/user_interface.o: user_interface.c 
 	${MKDIR} -p ${OBJECTDIR}
