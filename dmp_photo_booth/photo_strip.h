@@ -14,6 +14,7 @@ extern "C" {
 
 #include <wand/MagickWand.h>
 #include <glib.h>
+#include <gtk/gtk.h>
 	
 #define DMP_PB_ASPECT_RATIO_4_3 1.333333
 #define DMP_PB_ASPECT_RATIO_3_2 1.5
@@ -61,11 +62,15 @@ extern "C" {
 	 * Retrieves the next result from the queue. Either throws if assemble
 	 * encountered an error, or returns a string containing the file name of an 
 	 * assembled photo strip
+	 * @param out_path a location to return the path of the resulting strip, or 
+	 * NULL. If out_path is NULL, no value is returned. *out_path <b>MUST</b> be
+	 * null, or you will leak memory. Rest assured that if some random pointer
+	 * is going down, you're going down with it!
      * @throws DMP_PB_PHOTO_STRIP_ERROR
-     * @return the path to a photo strip, or NULL on error, or if there is no
+     * @return A GdkPixbuf of the new strip, or NULL on error, or if there is no
 	 * new results
      */
-	GString * dmp_pb_photo_strip_get_result(GError ** error);
+	GdkPixbuf * dmp_pb_photo_strip_get_result(GString ** out_path, GError ** error);
 	
 	/**
 	 * tests to see if the photo strip module is initialized

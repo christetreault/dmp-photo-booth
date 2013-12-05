@@ -577,7 +577,8 @@ static void dmp_pb_ui_commit_options_fields()
 static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
 {
 	GError * error = NULL;
-	GString * working = dmp_pb_photo_strip_get_result(&error);
+	GString * working = NULL;
+	GdkPixbuf * working_pixbuf = dmp_pb_photo_strip_get_result(&working, &error);
 	
 	if (error != NULL)
 	{
@@ -591,20 +592,13 @@ static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
 		GtkListStore * icon_view_store = GTK_LIST_STORE(gtk_icon_view_get_model(icon_view));
 		
 		gtk_list_store_append(icon_view_store, &iter);
-		GdkPixbuf * temp_pixbuf = gdk_pixbuf_new_from_file(working->str, &error);
 		gtk_list_store_set
 				(
 					icon_view_store, 
 					&iter, 
-					0, gdk_pixbuf_scale_simple
-						(
-							temp_pixbuf, 
-							(gint) gdk_pixbuf_get_width(temp_pixbuf) / 2,
-							(gint) gdk_pixbuf_get_height(temp_pixbuf) / 2,
-							GDK_INTERP_NEAREST
-						),
+					0, working_pixbuf,
+					1, g_string_free(working, FALSE),
 					-1);
-		g_object_unref(temp_pixbuf);
 		if (error != NULL)
 		{
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));

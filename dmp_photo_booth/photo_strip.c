@@ -20,6 +20,8 @@ struct photo_strip_builder
 	MagickWand * working_wand;
 	MagickWand * final_wand;
 	
+	GdkPixbuf * thumbnail;
+	
 	GString * completed_strip_file_name;
 	GString * position_1_file_name;
 	GString * position_2_file_name;
@@ -74,6 +76,7 @@ static void dmp_pb_photo_strip_smite_builder(struct photo_strip_builder * to_smi
 	if (to_smite->final_wand != NULL) DestroyMagickWand(to_smite->final_wand); // ...and there was Great Wrath!
 	
 	if (to_smite->error_message != NULL) g_string_free(to_smite->error_message, TRUE);
+	if (to_smite->thumbnail != NULL) g_object_unref(to_smite->thumbnail);
 	
 	g_free(to_smite);
 }
@@ -144,6 +147,7 @@ void dmp_pb_photo_strip_request(GString * completed_strip_name,
 	working->working_wand = NewMagickWand();
 	working->final_wand = NULL;
 	working->error_message = NULL;
+	working->thumbnail = NULL;
 	
 	g_async_queue_push(in_queue, working);
 }
@@ -166,6 +170,7 @@ void dmp_pb_photo_strip_assemble()
 	gdouble aspect_ratio = dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO);
 	gint offset_x = 15;
 	gint offset_y = 15;
+	GError * error = NULL;
 	
 	/* ---------- */
 	/* Processing */
@@ -287,6 +292,29 @@ void dmp_pb_photo_strip_assemble()
 	MagickSetLastIterator(working->background_wand);
 	MagickAddImage(working->background_wand, working->working_wand);
 	
+	/* ---------------- */
+	/* Create Thumbnail */
+	/* ---------------- */
+	
+	GdkPixbuf * full = gdk_pixbuf_new_from_file(working->completed_strip_file_name->str, &error);
+	
+	if (error != NULL)
+	{
+		working->error_message = g_string_new(error->message);
+		working->error_domain = error->domain;
+		working->error_code = error->code;
+		g_clear_error(&error);
+	}
+	working->thumbnail = gdk_pixbuf_scale_simple
+		(
+			full, 
+			(gint) (gdk_pixbuf_get_width(full) * (256.0 / gdk_pixbuf_get_height(full))),
+			256,
+			GDK_INTERP_BILINEAR
+		);
+	
+	g_object_unref(full);
+	
 	/* ----- */
 	/* Saving*/
 	/* ----- */
@@ -298,9 +326,10 @@ void dmp_pb_photo_strip_assemble()
 	g_async_queue_push(out_queue, working);
 }
 
-GString * dmp_pb_photo_strip_get_result(GError ** error)
+GdkPixbuf * dmp_pb_photo_strip_get_result(GString ** out_path, GError ** error)
 {
 	g_assert(dmp_pb_photo_strip_initialized());
+	if (out_path != NULL) g_assert(*out_path == NULL);
 	
 	struct photo_strip_builder * working = g_async_queue_try_pop(out_queue);
 	
@@ -315,11 +344,19 @@ GString * dmp_pb_photo_strip_get_result(GError ** error)
 		g_string_free(working->error_message, TRUE);
 		working->error_message = NULL;
 		dmp_pb_photo_strip_smite_builder(working);
+		out_path = NULL;
 		return NULL;
 	}
 	
-	GString * return_value = working->completed_strip_file_name;
-	working->completed_strip_file_name = NULL;
+	GdkPixbuf * return_value = working->thumbnail;
+	working->thumbnail = NULL;
+	
+	if (out_path != NULL)
+	{
+		*out_path = working->completed_strip_file_name;
+		working->completed_strip_file_name = NULL;
+	}
+	
 	dmp_pb_photo_strip_smite_builder(working);
 	return return_value;
 }
