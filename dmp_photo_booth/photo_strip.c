@@ -115,10 +115,10 @@ void dmp_pb_photo_strip_finalize()
 static gchar * dmp_pb_photo_strip_set_builder(GString * to_modify, gdouble in_width, gdouble aspect_ratio, guint offset_x, guint offset_y)
 {
 	g_assert(dmp_pb_photo_strip_initialized());
-	g_assert (to_modify != NULL);
+	g_assert(to_modify != NULL);
 	
-	gint width = (gint) width;
-	gint height = (gint) width / aspect_ratio;
+	gint width = (gint) in_width;
+	gint height = (gint) in_width / aspect_ratio;
 	
 	g_string_printf(to_modify, "%dx%d+%d+%d!", width, height, offset_x, offset_y);
 	
@@ -206,8 +206,28 @@ void dmp_pb_photo_strip_assemble()
 			return;
 		}
 		
-		MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0);
-		MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y));
+		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
+		if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
 	}
 	
 	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
@@ -225,8 +245,28 @@ void dmp_pb_photo_strip_assemble()
 			g_string_free(page_builder, TRUE);
 			return;
 		}
-		MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0);
-		MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y));
+		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
+		if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
 	}
 	
 	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
@@ -244,9 +284,28 @@ void dmp_pb_photo_strip_assemble()
 			g_string_free(page_builder, TRUE);
 			return;
 		}
-		
-		MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0);
-		MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y));
+		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
+		if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
 	}
 	
 	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
@@ -264,9 +323,28 @@ void dmp_pb_photo_strip_assemble()
 			g_string_free(page_builder, TRUE);
 			return;
 		}
-		
-		MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0);
-		MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y));
+		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
+		if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
 	}
 	
 	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
@@ -284,21 +362,71 @@ void dmp_pb_photo_strip_assemble()
 			g_string_free(page_builder, TRUE);
 			return;
 		}
-		
-		MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0);
-		MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y));
+		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
+		if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
+		{
+			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
+			working->error_message = g_string_new(magick_exception_message);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = magick_exception_severity;
+			MagickRelinquishMemory(magick_exception_message);
+			g_async_queue_push(out_queue, working);
+			g_string_free(page_builder, TRUE);
+			return;
+		}
 	}
 	
 	MagickSetLastIterator(working->background_wand);
-	MagickAddImage(working->background_wand, working->working_wand);
+	if (!MagickAddImage(working->background_wand, working->working_wand))
+	{
+		magick_exception_message = MagickGetException(working->background_wand, &magick_exception_severity);
+		working->error_message = g_string_new(magick_exception_message);
+		working->error_domain = dmp_pb_photo_strip_error_quark();
+		working->error_code = magick_exception_severity;
+		MagickRelinquishMemory(magick_exception_message);
+		g_async_queue_push(out_queue, working);
+		g_string_free(page_builder, TRUE);
+		return;
+	}
 	
 	/* ----- */
 	/* Saving*/
 	/* ----- */
 	
 	working->final_wand = MagickCoalesceImages(working->background_wand);
+	if (working->final_wand == NULL)
+	{
+		magick_exception_message = MagickGetException(working->background_wand, &magick_exception_severity);
+		working->error_message = g_string_new(magick_exception_message);
+		working->error_domain = dmp_pb_photo_strip_error_quark();
+		working->error_code = magick_exception_severity;
+		MagickRelinquishMemory(magick_exception_message);
+		g_async_queue_push(out_queue, working);
+		g_string_free(page_builder, TRUE);
+		return;
+	}
 	MagickSetLastIterator(working->final_wand);
-	MagickWriteImage(working->final_wand, working->completed_strip_file_name->str);
+	if (!MagickWriteImage(working->final_wand, working->completed_strip_file_name->str))
+	{
+		magick_exception_message = MagickGetException(working->final_wand, &magick_exception_severity);
+		working->error_message = g_string_new(magick_exception_message);
+		working->error_domain = dmp_pb_photo_strip_error_quark();
+		working->error_code = magick_exception_severity;
+		MagickRelinquishMemory(magick_exception_message);
+		g_async_queue_push(out_queue, working);
+		g_string_free(page_builder, TRUE);
+		return;
+	}
 	g_string_free(page_builder, TRUE);
 	
 	/* ---------------- */
