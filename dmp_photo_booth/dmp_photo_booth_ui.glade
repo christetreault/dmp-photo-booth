@@ -116,19 +116,19 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="dmp_pb_file_submenu_pause">
-                        <property name="label" translatable="yes">Pause</property>
+                      <object class="GtkSeparatorMenuItem" id="dmp_pb_file_submenu_sep1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="dmp_pb_file_submenu_print">
+                        <property name="label" translatable="yes">Print</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="dmp_pb_ui_cb_file_submenu_pause_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem" id="dmp_pb_file_submenu_sep1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <signal name="activate" handler="dmp_pb_ui_cb_file_submenu_print_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -281,13 +281,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="dmp_pb_toolbar_pause_button">
+              <object class="GtkSeparatorToolItem" id="dmp_pb_toolbar_sep1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Pause</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-media-pause</property>
-                <signal name="clicked" handler="dmp_pb_ui_cb_file_submenu_pause_activate" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -295,9 +291,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="dmp_pb_toolbar_sep1">
+              <object class="GtkToolButton" id="dmp_pb_toolbar_print_button">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Print</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-print</property>
+                <signal name="clicked" handler="dmp_pb_ui_cb_file_submenu_print_activate" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1351,6 +1351,6 @@
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-media-pause</property>
+    <property name="stock">gtk-print</property>
   </object>
 </interface>

@@ -85,11 +85,11 @@ extern "C" {
 	G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 	/**
-	 * callback for file->pause. Pauses the photo booth. Allows operator to resume current session
+	 * callback for file->print. Pauses the photo booth. Allows operator to resume current session
 	 * @param menuitem
 	 * @param user_data
 	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_pause_activate(GtkMenuItem * menuitem, gpointer user_data);
+	G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 	/**
 	 * callback for file->save output. Allows the operator to save the output of the console

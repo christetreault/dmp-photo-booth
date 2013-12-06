@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>configuration.h</itemPath>
       <itemPath>console_queue.h</itemPath>
+      <itemPath>coordination.h</itemPath>
       <itemPath>error_handling.h</itemPath>
       <itemPath>global_defines.h</itemPath>
       <itemPath>module.h</itemPath>
@@ -23,6 +24,7 @@
                    projectFiles="true">
       <itemPath>configuration.c</itemPath>
       <itemPath>console_queue.c</itemPath>
+      <itemPath>coordination.c</itemPath>
       <itemPath>error_handling.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>module.c</itemPath>
@@ -88,6 +90,10 @@
       <item path="console_queue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="coordination.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="coordination.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="error_handling.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -161,6 +167,10 @@
       <item path="console_queue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="console_queue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="coordination.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="coordination.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="error_handling.c" ex="false" tool="0" flavor2="0">
       </item>

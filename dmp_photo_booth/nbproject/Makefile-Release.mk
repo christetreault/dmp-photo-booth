@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/configuration.o \
 	${OBJECTDIR}/console_queue.o \
+	${OBJECTDIR}/coordination.o \
 	${OBJECTDIR}/error_handling.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/module.o \
@@ -79,6 +80,11 @@ ${OBJECTDIR}/console_queue.o: console_queue.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -I. -I. -I. -I. -MMD -MP -MF $@.d -o ${OBJECTDIR}/console_queue.o console_queue.c
+
+${OBJECTDIR}/coordination.o: coordination.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -I. -I. -I. -I. -MMD -MP -MF $@.d -o ${OBJECTDIR}/coordination.o coordination.c
 
 ${OBJECTDIR}/error_handling.o: error_handling.c 
 	${MKDIR} -p ${OBJECTDIR}

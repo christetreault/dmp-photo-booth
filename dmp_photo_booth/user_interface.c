@@ -1,6 +1,7 @@
 #include "user_interface.h"
 #include "configuration.h"
 #include "photo_strip.h"
+#include "coordination.h"
 
 G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 
@@ -682,7 +683,7 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menu
 	//TODO: Something else should happen now
 	
 	//TODO: For testing
-	dmp_pb_photo_strip_request(g_string_new("/tmp/test.png"),
+	dmp_pb_photo_strip_request(g_string_new("/tmp/test.jpg"),
 			g_string_new("/tmp/1.JPG"),
 			g_string_new("/tmp/2.JPG"),
 			//g_string_new("/tmp/3.JPG"),
@@ -697,14 +698,54 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menui
 	//TODO: Something else should happen now
 }
 
-G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_pause_activate(GtkMenuItem * menuitem, gpointer user_data)
+G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	g_assert(dmp_pb_console_buffer != NULL);
+	GError * error = NULL;
+	
+	GtkWidget * file_save = gtk_file_chooser_dialog_new("Save Console output",
+			GTK_WINDOW(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW)),
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			NULL);
+	
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(file_save), TRUE);
+	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(file_save), 
+					dmp_pb_coordination_get_epoch_filename("console_output", "txt"));
+	
+	if (gtk_dialog_run(GTK_DIALOG(file_save)) == GTK_RESPONSE_ACCEPT)
+	{
+		gchar * file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_save));
+		GtkTextIter start_iter;
+		gtk_text_buffer_get_iter_at_offset(dmp_pb_console_buffer, &start_iter, 0);
+		GtkTextIter end_iter;
+		gtk_text_buffer_get_iter_at_offset(dmp_pb_console_buffer, &end_iter, -1);
+		gchar * console_contents = gtk_text_buffer_get_text(dmp_pb_console_buffer,
+													&start_iter, &end_iter, TRUE);
+		
+		g_file_set_contents(file_name,
+				console_contents,
+				-1,
+				&error);
+		
+		if (error != NULL)
+		{
+			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+			g_clear_error(&error);
+		}
+		
+		g_free(file_name);
+		g_free(console_contents);
+	}
+	
+	
+	gtk_widget_destroy(file_save);
 }
 
 /* ------------------- */

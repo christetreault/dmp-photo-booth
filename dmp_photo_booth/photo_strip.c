@@ -292,6 +292,15 @@ void dmp_pb_photo_strip_assemble()
 	MagickSetLastIterator(working->background_wand);
 	MagickAddImage(working->background_wand, working->working_wand);
 	
+	/* ----- */
+	/* Saving*/
+	/* ----- */
+	
+	working->final_wand = MagickCoalesceImages(working->background_wand);
+	MagickSetLastIterator(working->final_wand);
+	MagickWriteImage(working->final_wand, working->completed_strip_file_name->str);
+	g_string_free(page_builder, TRUE);
+	
 	/* ---------------- */
 	/* Create Thumbnail */
 	/* ---------------- */
@@ -305,24 +314,23 @@ void dmp_pb_photo_strip_assemble()
 		working->error_code = error->code;
 		g_clear_error(&error);
 	}
-	working->thumbnail = gdk_pixbuf_scale_simple
-		(
-			full, 
-			(gint) (gdk_pixbuf_get_width(full) * (256.0 / gdk_pixbuf_get_height(full))),
-			256,
-			GDK_INTERP_BILINEAR
-		);
+	else
+	{
+		working->thumbnail = gdk_pixbuf_scale_simple
+			(
+				full, 
+				(gint) (gdk_pixbuf_get_width(full) * (256.0 / gdk_pixbuf_get_height(full))),
+				256,
+				GDK_INTERP_BILINEAR
+			);
 	
-	g_object_unref(full);
+		g_object_unref(full);
+	}
 	
-	/* ----- */
-	/* Saving*/
-	/* ----- */
+	/* ---------------- */
+	/* One last push... */
+	/* ---------------- */
 	
-	working->final_wand = MagickCoalesceImages(working->background_wand);
-	MagickSetLastIterator(working->final_wand);
-	MagickWriteImage(working->final_wand, working->completed_strip_file_name->str);
-	g_string_free(page_builder, TRUE);
 	g_async_queue_push(out_queue, working);
 }
 
