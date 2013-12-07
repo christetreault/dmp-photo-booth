@@ -8,7 +8,7 @@
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <property name="program_name">DMP Photo Booth</property>
-    <property name="version">Pre-alpha</property>
+    <property name="version">Beta 1</property>
     <property name="copyright" translatable="yes">Copyright © 2013 Chris Tetreault </property>
     <property name="comments" translatable="yes">DMP Photo Booth is a free open source photo booth application. It is designed to be free, easy to use, and portable. To read the story of its creation, please visit my blog!</property>
     <property name="website">http://doingmyprogramming.com</property>
@@ -72,8 +72,8 @@
   <object class="GtkWindow" id="dmp_pb_main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">DMP Photo Booth</property>
-    <property name="default_width">440</property>
-    <property name="default_height">250</property>
+    <property name="default_width">800</property>
+    <property name="default_height">600</property>
     <property name="icon">DMP_PB_Icon.png</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
@@ -109,6 +109,7 @@
                       <object class="GtkImageMenuItem" id="dmp_pb_file_submenu_stop">
                         <property name="label" translatable="yes">Stop</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="image">image3</property>
                         <property name="use_stock">False</property>
@@ -171,22 +172,6 @@
                   <object class="GtkMenu" id="dmp_pb_edit_submenu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImageMenuItem" id="dmp_pb_edit_submenu_copy">
-                        <property name="label">gtk-copy</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="dmp_pb_ui_cb_edit_submenu_copy_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem" id="dmp_pb_edit_submenu_sep1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
                     <child>
                       <object class="GtkImageMenuItem" id="dmp_pb_edit_submenu_preferences">
                         <property name="label">gtk-preferences</property>
@@ -269,6 +254,7 @@
             <child>
               <object class="GtkToolButton" id="dmp_pb_toolbar_stop_button">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Stop</property>
                 <property name="use_underline">True</property>

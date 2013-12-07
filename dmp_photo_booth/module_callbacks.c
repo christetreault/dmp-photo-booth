@@ -2,7 +2,7 @@
 
 void dmp_pb_trigger_handler()
 {
-	g_printf("dmp_pb_trigger_handler() called!\n");
+	dmp_pb_handle_photo_request();
 }
 
 int dmp_pb_console_write_callback(char * message)

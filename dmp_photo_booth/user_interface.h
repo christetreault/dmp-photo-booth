@@ -17,6 +17,7 @@ extern "C" {
 #include "global_defines.h"
 #include "error_handling.h"
 #include "module_status_watchdog.h"
+#include "configuration.h"
 
 	/**
 	 * For whatever reason, gtk.h does not typedef this
@@ -41,6 +42,7 @@ extern "C" {
 	 * attept to free this pointer
 	 */
 	dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons();
+	
 	/**
 	 * Launches the UI, and calls gtk_main
 	 * @param ui_file The glade UI file to use
@@ -48,6 +50,12 @@ extern "C" {
 	 * DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
 	 */
 	void dmp_pb_ui_launch(gchar * ui_file, GError ** error);
+	
+	/**
+	 * Tests to see if the Photo Booth is started
+     * @return TRUE if started, FALSE if not
+     */
+	gboolean dmp_pb_ui_is_started();
 
 	/* --------------- */
 	/* Begin Callbacks */
@@ -101,13 +109,6 @@ extern "C" {
 	/* ------------------- */
 	/* Edit Menu callbacks */
 	/* ------------------- */
-
-	/**
-	 * callback for edit->copy. Copies highlighted portion of console to the clipboard
-	 * @param menuitem
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_edit_submenu_copy_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 	/**
 	 * callback for edit->preferences. Invokes the preferences dialog

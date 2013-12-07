@@ -125,7 +125,13 @@ extern "C" {
 	 * @param current the current time, in seconds
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_tm_set_countdown(int current);
+	gint dmp_pb_tm_set_countdown(gint current);
+	/**
+	 * Shows an error code to the user to indicate failure
+     * @param value an error code value
+     * @return DMP_PB_SUCCESS, or an error code
+     */
+	gint dmp_pb_tm_show_error(gint value);
 
 #ifdef	__cplusplus
 }

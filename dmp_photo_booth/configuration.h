@@ -27,6 +27,12 @@ extern "C" {
 #define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH "individual_image_width"
 #define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO "individual_image_aspect_ratio"
 	
+#define DMP_PB_PHOTO_STRIP_POSITION_1_FLAG 1 << 0
+#define DMP_PB_PHOTO_STRIP_POSITION_2_FLAG 1 << 1
+#define DMP_PB_PHOTO_STRIP_POSITION_3_FLAG 1 << 2
+#define DMP_PB_PHOTO_STRIP_POSITION_4_FLAG 1 << 3
+#define DMP_PB_PHOTO_STRIP_POSITION_5_FLAG 1 << 4
+	
 #include <glib.h>
 	
 	/**

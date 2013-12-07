@@ -26,6 +26,7 @@ static int (*dmp_tm_load_config)() = NULL;
 static int (*dmp_tm_initialize)() = NULL;
 static int (*dmp_tm_is_initialized)() = NULL;
 static int (*dmp_tm_finalize)() = NULL;
+static int (*dmp_tm_show_error)(int value) = NULL;
 static char * (*dmp_tm_get_config_location)(char * to_fill, size_t size) = NULL;
 static gboolean dmp_pb_trigger_module_consistent = TRUE;
 
@@ -141,11 +142,11 @@ static gint dmp_pb_finalize(dmp_pb_module_type type)
 	switch (type)
 	{
 		case DMP_PB_PRINTER_MODULE:
-			return (*dmp_pm_initialize)();
+			return (*dmp_pm_finalize)();
 		case DMP_PB_TRIGGER_MODULE:
-			return (*dmp_tm_initialize)();
+			return (*dmp_tm_finalize)();
 		case DMP_PB_CAMERA_MODULE:
-			return (*dmp_cm_initialize)();
+			return (*dmp_cm_finalize)();
 		default:
 			g_assert_not_reached();
 	}
@@ -347,6 +348,16 @@ static void dmp_pb_load_trigger_module(GString * module_location, GError ** erro
 				"Failed to load module at: %s", module_location->str);
 		return;
 	}
+	
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_show_error", (gpointer *) & dmp_tm_show_error))
+	{
+		dmp_pb_trigger_module_consistent = FALSE;
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				G_MODULE_LOAD_FAILURE,
+				"Failed to load module at: %s", module_location->str);
+		return;
+	}
 
 	dmp_pb_trigger_module_consistent = TRUE;
 	
@@ -532,6 +543,7 @@ static void dmp_pb_unload_trigger_module()
 	dmp_tm_get_config_location = NULL;
 	dmp_tm_load_config = NULL;
 	dmp_tm_finalize = NULL;
+	dmp_tm_show_error = NULL;
 	dmp_tm_initialize = NULL;
 	dmp_tm_is_initialized = NULL;
 
@@ -675,3 +687,8 @@ gint dmp_pb_tm_set_countdown(int current)
 	return (*dmp_tm_set_countdown)(current);
 }
 
+gint dmp_pb_tm_show_error(gint value)
+{
+	g_assert(dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE) == DMP_PB_MODULE_READY);
+	return (*dmp_tm_show_error)(value);
+}

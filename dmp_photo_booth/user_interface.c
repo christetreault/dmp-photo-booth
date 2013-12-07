@@ -5,6 +5,8 @@
 
 G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 
+#define DMP_PB_DOCUMENTATION_URL "http://doingmyprogramming.com/category/projects/dmp-photo-booth/"
+
 /* User data widgets */
 
 #define DMP_PB_MAIN_WINDOW "dmp_pb_main_window"
@@ -20,20 +22,21 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 #define DMP_PB_COMPLETE_STRIP_PATH_TEXT_BOX "dmp_pb_complete_strip_path_text_box"
 
 #define DMP_PB_PHOTO_STRIP_POSITION_1 "dmp_pb_photo_strip_position_1"
-#define DMP_PB_PHOTO_STRIP_POSITION_1_FLAG 1 << 0
 #define DMP_PB_PHOTO_STRIP_POSITION_2 "dmp_pb_photo_strip_position_2"
-#define DMP_PB_PHOTO_STRIP_POSITION_2_FLAG 1 << 1
 #define DMP_PB_PHOTO_STRIP_POSITION_3 "dmp_pb_photo_strip_position_3"
-#define DMP_PB_PHOTO_STRIP_POSITION_3_FLAG 1 << 2
 #define DMP_PB_PHOTO_STRIP_POSITION_4 "dmp_pb_photo_strip_position_4"
-#define DMP_PB_PHOTO_STRIP_POSITION_4_FLAG 1 << 3
 #define DMP_PB_PHOTO_STRIP_POSITION_5 "dmp_pb_photo_strip_position_5"
-#define DMP_PB_PHOTO_STRIP_POSITION_5_FLAG 1 << 4
 
 #define DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX "dmp_pb_individual_aspect_ratio_combo_box"
 #define DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX "dmp_pb_individual_image_width_spin_box"
 
 #define DMP_PB_IMAGE_HISTORY_VIEW "dmp_pb_image_history_view"
+
+#define DMP_PB_FILE_SUBMENU_STOP "dmp_pb_file_submenu_stop"
+#define DMP_PB_FILE_SUBMENU_START "dmp_pb_file_submenu_start"
+
+#define DMP_PB_TOOLBAR_START_BUTTON "dmp_pb_toolbar_start_button"
+#define DMP_PB_TOOLBAR_STOP_BUTTON "dmp_pb_toolbar_stop_button"
 
 /* Status Icons */
 
@@ -44,7 +47,13 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 static GHashTable * dmp_pb_user_data;
 static dmp_pb_ui_status_icons * status_icons = NULL;
 static GtkTextBuffer * dmp_pb_console_buffer = NULL;
+static gboolean dmp_pb_started = FALSE;
 
+
+gboolean dmp_pb_ui_is_started()
+{
+	return dmp_pb_started;
+}
 /* ----------------------------- */
 /* Begin static helper functions */
 /* ----------------------------- */
@@ -196,6 +205,34 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 	}
 	
 	dmp_pb_ui_register_user_data_key(builder, DMP_PB_IMAGE_HISTORY_VIEW, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_FILE_SUBMENU_START, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_FILE_SUBMENU_STOP, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_TOOLBAR_START_BUTTON, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_TOOLBAR_STOP_BUTTON, &working_error);
 	if (working_error != NULL)
 	{
 		g_propagate_error(error, working_error);
@@ -663,6 +700,27 @@ dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons()
 	return status_icons;
 }
 
+static void dmp_pb_start_photo_booth()
+{
+	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), TRUE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_START), FALSE);
+	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_START_BUTTON), FALSE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_STOP_BUTTON), TRUE);
+	dmp_pb_started = TRUE;
+}
+
+static void dmp_pb_stop_photo_booth()
+{	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), FALSE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_START), TRUE);
+	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_START_BUTTON), TRUE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_STOP_BUTTON), FALSE);
+	dmp_pb_started = FALSE;
+}
+
 /* --------------- */
 /* Begin Callbacks */
 /* --------------- */
@@ -673,34 +731,50 @@ dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons()
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_quit_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	
 	gtk_widget_destroy(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_MAIN_WINDOW));
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
-	//TODO: Something else should happen now
+	g_assert(dmp_pb_ui_is_started() == FALSE);
 	
-	//TODO: For testing
-	dmp_pb_photo_strip_request(g_string_new("/tmp/test.jpg"),
-			g_string_new("/tmp/1.JPG"),
-			g_string_new("/tmp/2.JPG"),
-			//g_string_new("/tmp/3.JPG"),
-			NULL,
-			g_string_new("/tmp/4.JPG"),
-			g_string_new("/tmp/5.JPG"));
+	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
+	
+	dmp_pb_start_photo_booth();
+	
+	dmp_pb_handle_photo_request();	//TODO: for testing
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
+	g_assert(dmp_pb_ui_is_started());
 	dmp_pb_console_queue_push(g_string_new("Stopping the Photo Booth...\n"));
-	//TODO: Something else should happen now
+	
+	dmp_pb_stop_photo_booth();
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	GtkIconView * working_view = g_hash_table_lookup(dmp_pb_user_data, DMP_PB_IMAGE_HISTORY_VIEW);
+	GList * working = gtk_icon_view_get_selected_items(working_view);
+	if (working == NULL) return;	// Nothing selected
+	GtkTreeModel * working_tree_model = gtk_icon_view_get_model(working_view);
+	
+	
+	GtkTreeIter  iter;
+	
+	gtk_tree_model_get_iter(working_tree_model,	&iter, working->data);
+	
+	gchar * path;
+	
+	gtk_tree_model_get(	working_tree_model,	&iter, 1, &path, -1);
+	
+	dmp_pb_pm_print(path);
+	g_list_foreach(working, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free(working);
+	
+	g_free(path);
+	
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -752,11 +826,6 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem 
 /* Edit Menu callbacks */
 /* ------------------- */
 
-G_MODULE_EXPORT void dmp_pb_ui_cb_edit_submenu_copy_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-
-}
-
 G_MODULE_EXPORT void dmp_pb_ui_cb_edit_submenu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	gtk_widget_show(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
@@ -768,7 +837,20 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_edit_submenu_preferences_activate(GtkMenuItem 
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_launch_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-
+	GError * error = NULL;
+	//TODO: At some point, this will launch actual documentation. Probably
+	//		still a webpage somewhere though...
+	
+	gtk_show_uri(NULL, 
+				DMP_PB_DOCUMENTATION_URL,
+				GDK_CURRENT_TIME,
+				&error);
+	
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+	}
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_help_submenu_about_activate(GtkMenuItem * menuitem, gpointer user_data)

@@ -1,6 +1,7 @@
 #include "photo_strip.h"
 #include "configuration.h"
 #include "console_queue.h"
+#include "module.h"
 
 G_DEFINE_QUARK(DMP_PB_PHOTO_STRIP_ERROR, dmp_pb_photo_strip_error)
 
@@ -428,6 +429,21 @@ void dmp_pb_photo_strip_assemble()
 		return;
 	}
 	g_string_free(page_builder, TRUE);
+	
+	/* -------- */
+	/* Printing */
+	/* -------- */
+	
+	if (dmp_pb_pm_print(working->completed_strip_file_name->str) != DMP_PB_SUCCESS)
+	{
+		working->error_message = g_string_new(NULL);
+		g_string_printf(working->error_message, "Failed to print photo strip: %s",
+						working->completed_strip_file_name->str);
+		working->error_domain = dmp_pb_photo_strip_error_quark();
+		working->error_code = DMP_PB_FAILURE;
+		g_async_queue_push(out_queue, working);
+		return;
+	}
 	
 	/* ---------------- */
 	/* Create Thumbnail */

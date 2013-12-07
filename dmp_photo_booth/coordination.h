@@ -13,7 +13,13 @@ extern "C" {
 #endif
 
 #include <glib.h>
+#include "configuration.h"
 
+	typedef enum
+	{
+		TRIGGER_MODULE_ERROR, CAMERA_MODULE_ERROR, PRINTER_MODULE_ERROR
+	}dmp_pb_coordination_error;
+	
 	/**
 	 * Assuming you call this function at most 1 time per microsecond per prefix
 	 * /extension pair, it will return a unique file name in the form of:
@@ -32,6 +38,14 @@ extern "C" {
 	 * g_free()
      */
 	gchar * dmp_pb_coordination_get_epoch_filename(const gchar * prefix, const gchar * extension);
+	
+	/**
+	 * This function handles all the processing needed to create a photo strip.
+	 * It will coordinate calls between the trigger, camera, and printer modules.
+	 * @return Returns FALSE if a photo request is already in progress, otherwise
+	 * returns true
+     */
+	gboolean dmp_pb_handle_photo_request();
 	
 #ifdef	__cplusplus
 }
