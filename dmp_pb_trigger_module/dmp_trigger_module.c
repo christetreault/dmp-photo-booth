@@ -3,9 +3,15 @@
 void (*trigger_handler)();
 int (*console_write)(char * message);
 
+int dmp_tm_show_error(int value)
+{
+	printf("Called: dmp_cm_edit_config(%d)\n", value);
+	return DMP_PB_SUCCESS;
+}
+
 int dmp_tm_install_console(int (*c_cb)(char * message))
 {
-	if (c_cb == NULL) return DMP_PB_NULL_POINTER;
+	if (c_cb == NULL) return DMP_PB_FAILURE;
 	
 	console_write = c_cb;
 	
@@ -14,7 +20,7 @@ int dmp_tm_install_console(int (*c_cb)(char * message))
 
 int dmp_tm_add_trigger_handler(void (*th)())
 {
-	if (th == NULL) return DMP_PB_NULL_POINTER;
+	if (th == NULL) return DMP_PB_FAILURE;
 	
 	trigger_handler = th;
 	
@@ -23,7 +29,7 @@ int dmp_tm_add_trigger_handler(void (*th)())
 
 int dmp_tm_set_countdown(int current)
 {
-	if (trigger_handler == NULL) return DMP_PB_NULL_POINTER;
+	if (trigger_handler == NULL) return DMP_PB_FAILURE;
 	
 	printf("Called: dmp_tm_set_countdown(%d)\n", current);
 	printf("Calling the trigger handler:\n");

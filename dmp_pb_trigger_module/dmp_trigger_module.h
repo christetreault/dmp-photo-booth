@@ -13,8 +13,14 @@ extern "C" {
 #endif
 #include <stdio.h>
 #include <string.h>
-#include "../dmp_photo_booth/global_defines.h"
+#include "../dmp_photo_booth/global_defines.h"	// TODO: show error function
 
+	/**
+	 * indicate to the user that something went wrong
+     * @param value an error code
+     * @return DMP_PB_SUCCESS, or an error code
+     */
+	int dmp_tm_show_error(int value);
 	
 	/**
 	 * adds the trigger callback function. When the user pushes "the button",
