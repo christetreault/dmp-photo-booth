@@ -17,6 +17,7 @@ extern "C" {
 #include <stdlib.h>
 #include <gmodule.h>
 #include "error_handling.h"
+#include "module_callbacks.h"
 
 	/**
 	 * Enumeration of DMP Photo Booth modules
@@ -113,13 +114,6 @@ extern "C" {
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
 	gint dmp_pb_pm_print(gchar * to_print);
-	/**
-	 * adds the trigger callback function. When the user pushes "the button",
-	 * this function should be called
-	 * @param th the callback function
-	 * @return DMP_PB_SUCCESS, or an error code
-	 */
-	gint dmp_pb_tm_add_trigger_handler(void (*th)());
 	/**
 	 * Sets the value to be displayed by the countdown
 	 * @param current the current time, in seconds

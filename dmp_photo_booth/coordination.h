@@ -17,7 +17,9 @@ extern "C" {
 
 	typedef enum
 	{
-		TRIGGER_MODULE_ERROR, CAMERA_MODULE_ERROR, PRINTER_MODULE_ERROR
+		TRIGGER_MODULE_ERROR = 1 << 0, 
+		CAMERA_MODULE_ERROR = 1 << 1, 
+		PRINTER_MODULE_ERROR = 1 << 2
 	}dmp_pb_coordination_error;
 	
 	/**
