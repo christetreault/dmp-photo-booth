@@ -11,15 +11,18 @@ void dmp_pb_config_initialize(GError ** error)
 	
 	G_LOCK(dmp_pb_config);
 	dmp_pb_config = g_key_file_new();
-	g_key_file_load_from_file(dmp_pb_config, 
-			DMP_PB_DEFAULT_CONFIGURATION, 
-			G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
-			&working);
-	if (working != NULL)
+	if (g_file_test(DMP_PB_DEFAULT_CONFIGURATION, G_FILE_TEST_EXISTS))
 	{
-		g_propagate_error(error, working);
-		G_UNLOCK(dmp_pb_config);
-		return;
+		g_key_file_load_from_file(dmp_pb_config, 
+				DMP_PB_DEFAULT_CONFIGURATION, 
+				G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS,
+				&working);
+		if (working != NULL)
+		{
+			g_propagate_error(error, working);
+			G_UNLOCK(dmp_pb_config);
+			return;
+		}
 	}
 	G_UNLOCK(dmp_pb_config);
 }
