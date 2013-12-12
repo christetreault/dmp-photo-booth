@@ -13,7 +13,9 @@ extern "C" {
 #endif
 #include <stdio.h>
 #include <string.h>
-#include "../dmp_photo_booth/global_defines.h"	// TODO: show error function
+#include "global_defines.h"
+#include <glib.h>
+#include "serial_io.h"
 
 	/**
 	 * indicate to the user that something went wrong
@@ -82,6 +84,18 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_tm_finalize();
+	
+	/**
+	 * wrapper around the console write callback
+     * @param to_write the string to write
+     * @return success, or failure
+     */
+	int dmp_tm_console_write(gchar * to_write);
+	
+	/**
+	 * wrapper around the trigger handler function
+     */
+	void dmp_tm_call_trigger_handler();
 
 #ifdef	__cplusplus
 }

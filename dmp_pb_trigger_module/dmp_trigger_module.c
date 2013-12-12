@@ -1,6 +1,7 @@
 #include "dmp_trigger_module.h"
+#include "lifecycle.h"
 
-void (*trigger_handler)();
+void (*trigger_handler)() = NULL;
 int (*console_write)(char * message);
 
 int dmp_tm_show_error(int value)
@@ -31,9 +32,27 @@ int dmp_tm_set_countdown(int current)
 {
 	if (trigger_handler == NULL) return DMP_PB_FAILURE;
 	
-	printf("Called: dmp_tm_set_countdown(%d)\n", current);
-	printf("Calling the trigger handler:\n");
-	(*trigger_handler)();
+	switch (current)
+	{
+		case 4:
+			dmp_tm_io_write_byte(INPUT_COUNT_4);
+			break;
+		case 3:
+			dmp_tm_io_write_byte(INPUT_COUNT_3);
+			break;
+		case 2:
+			dmp_tm_io_write_byte(INPUT_COUNT_2);
+			break;
+		case 1:
+			dmp_tm_io_write_byte(INPUT_COUNT_1);
+			break;
+		case 0:
+			dmp_tm_io_write_byte(INPUT_COUNT_0);
+			break;
+		default:
+			dmp_tm_io_write_byte(INPUT_COUNT_4);
+			break;
+	}
 	
 	return DMP_PB_SUCCESS;
 }
@@ -64,15 +83,27 @@ int dmp_tm_load_config()
 
 int dmp_tm_initialize()
 {
-	return DMP_PB_SUCCESS;
+	return dmp_tm_lifecycle_initialize();
 }
 
 int dmp_tm_is_initialized()
 {
-	return !0;
+	return dmp_tm_lifecycle_is_initialized();
 }
 
 int dmp_tm_finalize()
 {
-	return DMP_PB_SUCCESS;
+	return dmp_tm_lifecycle_finalize();
+}
+
+int dmp_tm_console_write(gchar * to_write)
+{
+	g_assert(console_write != NULL);
+	return (*console_write)(to_write);
+}
+
+void dmp_tm_call_trigger_handler()
+{
+	g_assert(trigger_handler != NULL);
+	(*trigger_handler)();
 }

@@ -5,6 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>dmp_trigger_module.h</itemPath>
+      <itemPath>global_defines.h</itemPath>
+      <itemPath>lifecycle.h</itemPath>
+      <itemPath>serial_io.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -14,6 +17,8 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>dmp_trigger_module.c</itemPath>
+      <itemPath>lifecycle.c</itemPath>
+      <itemPath>serial_io.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -43,6 +48,15 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>`pkg-config --cflags gthread-2.0`</commandLine>
+        </cTool>
+        <ccTool>
+          <standard>8</standard>
+        </ccTool>
+        <linkerTool>
+          <commandLine>`pkg-config --libs gthread-2.0`</commandLine>
+        </linkerTool>
       </compileType>
       <item path="dmp_trigger_module.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -65,6 +79,16 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="global_defines.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lifecycle.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="lifecycle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="serial_io.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="serial_io.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/trigger_module_tests.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
@@ -110,6 +134,16 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <item path="global_defines.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lifecycle.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="lifecycle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="serial_io.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="serial_io.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/trigger_module_tests.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
