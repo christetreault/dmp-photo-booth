@@ -118,8 +118,9 @@ dmp_pb_module_state dmp_pb_check_module_state(dmp_pb_module_type to_check)
  */
 static gint dmp_pb_initialize(dmp_pb_module_type type)
 {
-	gint result;
-	if (result = dmp_pb_check_module_state(type) != DMP_PB_MODULE_READY) return result;
+	gint result = dmp_pb_check_module_state(type);
+	if (result == DMP_PB_MODULE_IN_INCONSISTENT_STATE) return result;
+	if (result == DMP_PB_MODULE_NOT_LOADED) return result;
 	
 	switch (type)
 	{
