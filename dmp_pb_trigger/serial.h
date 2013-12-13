@@ -38,7 +38,8 @@
 				NULL_ERROR = 0,
 				TRIGGER_MODULE_ERROR = 1 << 0, 
 				CAMERA_MODULE_ERROR = 1 << 1, 
-				PRINTER_MODULE_ERROR = 1 << 2
+				PRINTER_MODULE_ERROR = 1 << 2,
+				PHOTO_BOOTH_CORE_ERROR = 1 << 3
 			}error_code;
 
 			/**

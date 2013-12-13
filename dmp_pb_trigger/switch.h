@@ -16,7 +16,7 @@ namespace dmp
 	{
 		typedef enum
 		{
-			TRIGGER_BUTTON = 8
+			TRIGGER_BUTTON = 13
 		}switch_pin;
 		
 		/**

@@ -1,9 +1,13 @@
 #include "switch.h"
 
+static int last_state = LOW;
+
 void dmp::trigger::handle_trigger_button()
 {
-	if (digitalRead(TRIGGER_BUTTON) == HIGH)
+	int current;
+	if ((current = digitalRead(TRIGGER_BUTTON)) == LOW)
 	{
-		write(OUTPUT_BUTTON_PRESS);
+		if (last_state == HIGH) write(OUTPUT_BUTTON_PRESS);
 	}
+	last_state = current;
 }

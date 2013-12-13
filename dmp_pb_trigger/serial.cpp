@@ -27,6 +27,5 @@ dmp::trigger::led_pin dmp::trigger::resolve_pin(int byte)
 
 bool dmp::trigger::is_error(int byte)
 {
-	Serial.print(byte & IS_ERROR);
 	return byte & IS_ERROR;
 }
