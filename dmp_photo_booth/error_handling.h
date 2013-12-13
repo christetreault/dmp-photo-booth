@@ -15,6 +15,16 @@ extern "C" {
 #include "global_defines.h"
 #include <glib.h>
 
+	typedef enum
+	{
+		IS_ERROR = 1 << 7,
+		NULL_ERROR = 0,
+		TRIGGER_MODULE_ERROR = 1 << 0, 
+		CAMERA_MODULE_ERROR = 1 << 1, 
+		PRINTER_MODULE_ERROR = 1 << 2,
+		PHOTO_BOOTH_CORE_ERROR = 1 << 3
+	}dmp_pb_tm_error_code;
+	
 	/**
 	 * Converts a GError to a string
      * @param error the error to convert

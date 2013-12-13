@@ -16,6 +16,7 @@ extern "C" {
 #include <glib/gprintf.h>
 #include "global_defines.h"
 #include "console_queue.h"
+#include "user_interface.h"
 
 	/**
 	 * The callback function to be called by the trigger module when

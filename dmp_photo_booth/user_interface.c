@@ -741,8 +741,6 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menu
 	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
 	
 	dmp_pb_start_photo_booth();
-	
-	dmp_pb_handle_photo_request();	//TODO: for testing
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menuitem, gpointer user_data)

@@ -14,13 +14,6 @@ extern "C" {
 
 #include <glib.h>
 #include "configuration.h"
-
-	typedef enum
-	{
-		TRIGGER_MODULE_ERROR = 1 << 0, 
-		CAMERA_MODULE_ERROR = 1 << 1, 
-		PRINTER_MODULE_ERROR = 1 << 2
-	}dmp_pb_coordination_error;
 	
 	/**
 	 * Assuming you call this function at most 1 time per microsecond per prefix
