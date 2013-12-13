@@ -6,7 +6,7 @@ int (*console_write)(char * message);
 
 int dmp_tm_show_error(int value)
 {
-	printf("Called: dmp_cm_edit_config(%d)\n", value);
+	dmp_tm_io_write_byte(value | IS_ERROR);
 	return DMP_PB_SUCCESS;
 }
 
@@ -61,7 +61,7 @@ char * dmp_tm_get_config_location(char * to_fill, size_t size)
 {
 	if (to_fill == NULL) return NULL;
 	
-	strncpy(to_fill, "./tm.lua", size);
+	strncpy(to_fill, "N/A", size);
 	if (size > 0) to_fill[size - 1] = '\0';
 	
 	return to_fill;
@@ -69,15 +69,11 @@ char * dmp_tm_get_config_location(char * to_fill, size_t size)
 
 int dmp_tm_edit_config()
 {
-	printf("Called: dmp_cm_edit_config()\n");
-	
 	return DMP_PB_SUCCESS;
 }
 
 int dmp_tm_load_config()
 {
-	printf("Called: dmp_cm_load_config()\n");
-	
 	return DMP_PB_SUCCESS;
 }
 
