@@ -21,11 +21,6 @@ extern "C" {
 	
 	typedef enum
 	{
-		I_DUNNO_IT_WAS_LIKE_THAT
-	}dmp_tm_serial_io_error;
-	
-	typedef enum
-	{
 		OUTPUT_NONE = 0,
 		OUTPUT_BUTTON_PRESS = 1 << 0
 	}dmp_tm_output_flag;
@@ -46,7 +41,8 @@ extern "C" {
 		NULL_ERROR = 0,
 		TRIGGER_MODULE_ERROR = 1 << 0, 
 		CAMERA_MODULE_ERROR = 1 << 1, 
-		PRINTER_MODULE_ERROR = 1 << 2
+		PRINTER_MODULE_ERROR = 1 << 2,
+		PHOTO_BOOTH_CORE_ERROR = 1 << 3
 	}dmp_tm_error_code;
 	
 	/**
@@ -64,6 +60,11 @@ extern "C" {
      * @param the byte to queue
      */
 	void dmp_tm_io_write_byte(gint8 to_write);
+	
+	/**
+     * @return TRUE if the serial thread is running, false if not
+     */
+	gboolean dmp_tm_io_thread_running();
 	
 	
 

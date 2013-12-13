@@ -5,7 +5,7 @@ G_DEFINE_QUARK(DMP_TM_SERIAL_IO_ERROR, dmp_tm_serial_io_error)
 
 G_LOCK_DEFINE(serial_io);
 static GThread * dmp_tm_serial_io_thread = NULL;
-static gboolean dmp_tm_serial_io_thread_should_die = FALSE;
+static gboolean dmp_tm_serial_io_thread_should_die = TRUE;
 gint serial_descriptor;
 
 /**
@@ -99,6 +99,7 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	
 	g_usleep(G_USEC_PER_SEC * 3);
 	tcflush(serial_descriptor, TCIOFLUSH);
+	dmp_tm_serial_io_thread_should_die = FALSE;
 	
 	while (!dmp_tm_serial_io_thread_should_die)
 	{
@@ -121,11 +122,15 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 
 void dmp_tm_io_start_serial()
 {
-	dmp_tm_serial_io_thread_should_die = FALSE;
 	dmp_tm_serial_io_thread = g_thread_new("serial thread", dmp_tm_serial_io_thread_function, NULL);
 }
 
 void dmp_tm_io_stop_serial()
 {
 	dmp_tm_serial_io_thread_should_die = TRUE;
+}
+
+gboolean dmp_tm_io_thread_running()
+{
+	return !dmp_tm_serial_io_thread_should_die;
 }

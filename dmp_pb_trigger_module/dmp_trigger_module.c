@@ -84,7 +84,7 @@ int dmp_tm_initialize()
 
 int dmp_tm_is_initialized()
 {
-	return dmp_tm_lifecycle_is_initialized();
+	return dmp_tm_lifecycle_is_initialized() && dmp_tm_io_thread_running();
 }
 
 int dmp_tm_finalize()
