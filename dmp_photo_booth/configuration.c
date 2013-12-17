@@ -61,7 +61,10 @@ void dmp_pb_config_write(GError ** error)
 
 GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
 {
-	return g_string_new(g_key_file_get_string(dmp_pb_config, group, key, NULL));
+	gchar * working = g_key_file_get_string(dmp_pb_config, group, key, NULL);
+	GString * return_value = g_string_new(working);
+	g_free(working);
+	return return_value;
 }
 
 void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value)

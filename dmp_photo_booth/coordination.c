@@ -193,7 +193,7 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 	
 	GString * completed_path = dmp_pb_config_read_string(DMP_PB_CONFIG_CORE_GROUP, 
 												DMP_PB_CONFIG_COMPLETED_STRIP_PATH);
-	gchar * completed_path_filename = dmp_pb_coordination_get_epoch_filename("photo_strip", "jpg");
+	gchar * completed_path_filename = dmp_pb_coordination_get_epoch_filename("photo_strip", "png");
 	
 	gchar * completed_path_working = g_build_filename
 			(
