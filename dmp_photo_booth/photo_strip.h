@@ -15,6 +15,10 @@ extern "C" {
 #include <wand/MagickWand.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include "configuration.h"
+#include "console_queue.h"
+#include "module.h"
+#include "coordination.h"
 	
 #define DMP_PB_ASPECT_RATIO_4_3 1.333333
 #define DMP_PB_ASPECT_RATIO_3_2 1.5

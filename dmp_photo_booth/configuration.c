@@ -61,7 +61,9 @@ void dmp_pb_config_write(GError ** error)
 
 GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
 {
+	G_LOCK(dmp_pb_config);
 	gchar * working = g_key_file_get_string(dmp_pb_config, group, key, NULL);
+	G_UNLOCK(dmp_pb_config);
 	GString * return_value = g_string_new(working);
 	g_free(working);
 	return return_value;
@@ -69,25 +71,37 @@ GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
 
 void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value)
 {
+	G_LOCK(dmp_pb_config);
 	g_key_file_set_string(dmp_pb_config, group, key, value->str);
+	G_UNLOCK(dmp_pb_config);
 }
 
 gint dmp_pb_config_read_int(const gchar * group, const gchar * key)
 {
-	return g_key_file_get_integer(dmp_pb_config, group, key, NULL);
+	G_LOCK(dmp_pb_config);
+	gint return_value = g_key_file_get_integer(dmp_pb_config, group, key, NULL);
+	G_UNLOCK(dmp_pb_config);
+	return return_value;
 }
 
 void dmp_pb_config_write_int(const gchar * group, const gchar * key, gint value)
 {
+	G_LOCK(dmp_pb_config);
 	g_key_file_set_integer(dmp_pb_config, group, key, value);
+	G_UNLOCK(dmp_pb_config);
 }
 
 gdouble dmp_pb_config_read_double(const gchar * group, const gchar * key)
 {
-	return g_key_file_get_double(dmp_pb_config, group, key, NULL);
+	G_LOCK(dmp_pb_config);
+	gdouble return_value = g_key_file_get_double(dmp_pb_config, group, key, NULL);
+	G_UNLOCK(dmp_pb_config);
+	return return_value;
 }
 
 void dmp_pb_config_write_double(const gchar * group, const gchar * key, gdouble value)
 {
+	G_LOCK(dmp_pb_config);
 	g_key_file_set_double(dmp_pb_config, group, key, value);
+	G_UNLOCK(dmp_pb_config);
 }

@@ -65,7 +65,7 @@
   </object>
   <object class="GtkAdjustment" id="dmp_pb_individual_image_width_spin_box_adjustment">
     <property name="lower">64</property>
-    <property name="upper">1024</property>
+    <property name="upper">32768</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>

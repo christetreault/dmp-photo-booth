@@ -623,6 +623,7 @@ static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
 		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 		g_clear_error(&error);
 	}
+	else if (working_pixbuf == NULL) return G_SOURCE_CONTINUE;
 	else if (working != NULL)
 	{
 		GtkTreeIter iter;
@@ -635,13 +636,10 @@ static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
 					icon_view_store, 
 					&iter, 
 					0, working_pixbuf,
-					1, g_string_free(working, FALSE),
+					1, working->str,
 					-1);
-		if (error != NULL)
-		{
-			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
-			g_clear_error(&error);
-		}
+		g_string_free(working, TRUE);
+		g_object_unref(working_pixbuf);
 	}
 	return G_SOURCE_CONTINUE;
 }
@@ -685,8 +683,10 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 	g_object_unref(G_OBJECT(builder));
 
 	dmp_pb_mwd_init(status_icons);
-	g_idle_add(dmp_pb_mwd_handle_message, NULL);
-	g_idle_add(dmp_pb_ui_check_for_strips, NULL);
+	//g_idle_add(dmp_pb_mwd_handle_message, NULL); //TODO: review
+	//g_idle_add(dmp_pb_ui_check_for_strips, NULL); //TODO: review
+	g_timeout_add_seconds(1, dmp_pb_mwd_handle_message, NULL); 
+	g_timeout_add_seconds(1, dmp_pb_ui_check_for_strips, NULL);
 	g_timeout_add_seconds(1, dmp_pb_console_queue_flush_queue, dmp_pb_console_buffer);
 
 	gtk_widget_show(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW));

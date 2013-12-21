@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include "module.h"
+#include "console_queue.h"
 #include <glib.h>
 #include "configuration.h"
 	
@@ -41,6 +43,16 @@ extern "C" {
 	 * returns true
      */
 	gboolean dmp_pb_handle_photo_request();
+	
+	/**
+	 * initializes the coordination thread pool
+     */
+	void dmp_pb_coordination_init();
+	
+	/**
+	 * finalizes the coordination thread pool
+     */
+	void dmp_pb_coordination_finalize();
 	
 #ifdef	__cplusplus
 }

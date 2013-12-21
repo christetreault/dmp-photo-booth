@@ -13,6 +13,7 @@
 #include "user_interface.h"
 #include "console_queue.h"
 #include "configuration.h"
+#include "coordination.h"
 
 /**
  * Called upon a failure in main. Cleans up resources and returns FAILURE
@@ -26,6 +27,7 @@ static gint dmp_pb_failure(GError * error)
 		
 	dmp_pb_console_queue_flush_stdout();
 		
+	dmp_pb_coordination_finalize();
 	dmp_pb_config_finalize();
 	dmp_pb_console_queue_finalize();
 	return DMP_PB_FAILURE;
@@ -38,14 +40,15 @@ int main(int argc, char** argv)
 	gtk_init(&argc, &argv);
 	dmp_pb_console_queue_init();
 	dmp_pb_config_initialize(&error);
-	dmp_pb_photo_strip_init();
-	
 	if (error != NULL) return dmp_pb_failure(error);
+	dmp_pb_photo_strip_init();
+	dmp_pb_coordination_init();
 	
 	dmp_pb_ui_launch("dmp_photo_booth_ui.glade", &error);
 	
 	if (error != NULL) return dmp_pb_failure(error);
 	
+	dmp_pb_coordination_finalize();
 	dmp_pb_photo_strip_finalize();
 	dmp_pb_config_finalize();
 	dmp_pb_console_queue_finalize();

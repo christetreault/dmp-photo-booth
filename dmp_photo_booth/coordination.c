@@ -1,7 +1,6 @@
+
 #include "coordination.h"
-#include "configuration.h"
-#include "module.h"
-#include "console_queue.h"
+
 
 G_DEFINE_QUARK(DMP_PB_COORDINATION_ERROR, dmp_pb_coordination_error)
 
@@ -21,7 +20,7 @@ gchar * dmp_pb_coordination_get_epoch_filename(const gchar * prefix, const gchar
 }
 
 G_LOCK_DEFINE(photo_request);
-static GThread * photo_request_thread = NULL;
+static GThreadPool * photo_request_thread_pool = NULL;
 
 #define DMP_PB_COUNTDOWN_TIME 4
 #define DMP_PB_POS5_FILE_NAME "5.jpg"
@@ -88,7 +87,7 @@ static void dmp_pb_photo_request_cleanup_file_names(gchar * file1, gchar * file2
 }
 
 /**
- * Similar to g_string_new, but passing in NULL causes NULL to be retruned
+ * Similar to g_string_new, but passing in NULL causes NULL to be retuned
  * @param working
  * @return 
  */
@@ -101,10 +100,10 @@ static GString * dmp_pb_photo_request_new_or_null(gchar * working)
 /**
  * This thread does the actual photo request processing so that
  * dmp_pb_handle_photo_request can return immediatly and not hang the UI
+ * @param data NULL, not used
  * @param user_data NULL, not used
- * @return NULL, not used
  */
-static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
+static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_data)
 {
 	gint image_position_toggle = dmp_pb_config_read_int(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_POSITION_TOGGLE);
 	GError * error = NULL;
@@ -127,7 +126,8 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			return NULL;
+			G_UNLOCK(photo_request);
+			return;
 		}
 	}
 	
@@ -142,7 +142,8 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			return NULL;
+			G_UNLOCK(photo_request);
+			return;
 		}
 	}
 	
@@ -157,7 +158,8 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			return NULL;
+			G_UNLOCK(photo_request);
+			return;
 		}
 	}
 	
@@ -172,7 +174,8 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			return NULL;
+			G_UNLOCK(photo_request);
+			return;
 		}
 	}
 	
@@ -187,7 +190,8 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			return NULL;
+			G_UNLOCK(photo_request);
+			return;
 		}
 	}
 	
@@ -219,8 +223,23 @@ static gpointer dmp_pb_photo_request_thread_function(gpointer user_data)
 
 gboolean dmp_pb_handle_photo_request()
 {
+	g_assert(photo_request_thread_pool != NULL);
 	if (!G_TRYLOCK(photo_request)) return FALSE;
-	if (photo_request_thread != NULL) g_thread_unref(photo_request_thread);
-	photo_request_thread = g_thread_new("Photo Request", dmp_pb_photo_request_thread_function, NULL);
+	g_thread_pool_push(photo_request_thread_pool, "Photo Request", NULL);
 	return TRUE;
+}
+
+void dmp_pb_coordination_init()
+{
+	photo_request_thread_pool = g_thread_pool_new(dmp_pb_photo_request_thread_function,
+													NULL,
+													1,
+													TRUE,
+													NULL);
+}
+
+void dmp_pb_coordination_finalize()
+{
+	g_thread_pool_free(photo_request_thread_pool, TRUE, FALSE);
+	photo_request_thread_pool = NULL;
 }

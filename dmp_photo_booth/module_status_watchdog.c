@@ -62,7 +62,10 @@ void dmp_pb_mwd_init(dmp_pb_ui_status_icons * in_status_icons)
 
 gboolean dmp_pb_mwd_handle_message(gpointer user_data)
 {
-	gint message = GPOINTER_TO_INT(g_async_queue_try_pop(dmp_pb_mwd_status_queue));
+	GAsyncQueue * local_status_queue = g_async_queue_ref(dmp_pb_mwd_status_queue);
+	gint message = GPOINTER_TO_INT(g_async_queue_try_pop(local_status_queue));
+	g_async_queue_unref(local_status_queue);
+	
 
 	switch (message)
 	{
