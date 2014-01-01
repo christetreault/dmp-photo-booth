@@ -19,7 +19,6 @@ struct photo_strip_builder
 {
 	MagickWand * background_wand;
 	MagickWand * working_wand;
-	MagickWand * final_wand;
 	
 	GdkPixbuf * thumbnail;
 	
@@ -74,7 +73,6 @@ static void dmp_pb_photo_strip_smite_builder(struct photo_strip_builder * to_smi
 	
 	if (to_smite->working_wand != NULL) DestroyMagickWand(to_smite->working_wand);
 	if (to_smite->background_wand != NULL)DestroyMagickWand(to_smite->background_wand);
-	if (to_smite->final_wand != NULL) DestroyMagickWand(to_smite->final_wand); // ...and there was Great Wrath!
 	
 	if (to_smite->error_message != NULL) g_string_free(to_smite->error_message, TRUE);
 	if (to_smite->thumbnail != NULL) g_object_unref(to_smite->thumbnail);
@@ -105,25 +103,25 @@ void dmp_pb_photo_strip_finalize()
 }
 
 /**
- * Sets the format string for call to MagickResetImagePage
- * @param to_modify the string to modify
- * @param in_width the image width
- * @param aspect_ratio the image aspect ratio
- * @param offset_x offset from x
- * @param offset_y offset from y
- * @return to_modify->str. <b>DO NOT ATTEMPT TO FREE THIS POINTER!</b> 
+ * given a MagickWand and a width, returns the scaled height of the current image
  */
-static gchar * dmp_pb_photo_strip_set_builder(GString * to_modify, gdouble in_width, gdouble aspect_ratio, guint offset_x, guint offset_y)
+static gint dmp_pb_photo_strip_scale_height_magickally(MagickWand * wand, gint width)
 {
-	g_assert(dmp_pb_photo_strip_initialized());
-	g_assert(to_modify != NULL);
-	
-	gint width = (gint) in_width;
-	gint height = (gint) in_width / aspect_ratio;
-	
-	g_string_printf(to_modify, "%dx%d+%d+%d!", width, height, offset_x, offset_y);
-	
-	return to_modify->str;
+	return dmp_pb_photo_strip_calculate_new_height(
+			(gdouble) MagickGetImageHeight(wand),
+			(gdouble) MagickGetImageWidth(wand), 
+			width);
+}
+
+/**
+ * given a MagickWand and a height, returns the scaled width of the current image
+ */
+static gint dmp_pb_photo_strip_scale_width_magickally(MagickWand * wand, gint height)
+{
+	return dmp_pb_photo_strip_calculate_new_width(
+			(gdouble) MagickGetImageWidth(wand),
+			(gdouble) MagickGetImageHeight(wand),
+			height);
 }
 
 void dmp_pb_photo_strip_request(GString * completed_strip_name,
@@ -146,7 +144,6 @@ void dmp_pb_photo_strip_request(GString * completed_strip_name,
 	working->position_5_file_name = pos_5_name;
 	working->background_wand = NewMagickWand();
 	working->working_wand = NewMagickWand();
-	working->final_wand = NULL;
 	working->error_message = NULL;
 	working->thumbnail = NULL;
 	
@@ -169,7 +166,7 @@ void dmp_pb_photo_strip_assemble()
 	gchar * magick_exception_message = NULL;
 	dmp_pb_photo_strip_error magick_exception_severity;
 	gdouble width = dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH);
-	gdouble aspect_ratio = dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO);
+	gint last_height = 0;
 	gint offset_x = 15;
 	gint offset_y = 15;
 	GError * error = NULL;
@@ -195,8 +192,6 @@ void dmp_pb_photo_strip_assemble()
 	}
 	g_string_free(background, TRUE);
 	
-	//GString * page_builder = g_string_new(NULL);
-	
 	if (working->position_1_file_name != NULL)
 	{
 		if (!MagickReadImage(working->working_wand, working->position_1_file_name->str))
@@ -208,11 +203,14 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 		
-		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		if (!MagickResizeImage(working->working_wand, 
+				(gint) width, 
+				last_height = dmp_pb_photo_strip_scale_height_magickally(working->working_wand, width),
+				LanczosFilter, 
+				1.0))
 		{
 			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
 			working->error_message = g_string_new(magick_exception_message);
@@ -221,10 +219,8 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		//if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
 		if (!MagickCompositeImage(working->background_wand, working->working_wand,
 									OverCompositeOp, offset_x, offset_y))
 		{
@@ -235,12 +231,11 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 	}
 	
-	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
 	
 	if (working->position_2_file_name != NULL)
 	{
@@ -253,10 +248,13 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		if (!MagickResizeImage(working->working_wand, 
+				(gint) width, 
+				last_height = dmp_pb_photo_strip_scale_height_magickally(working->working_wand, width),
+				LanczosFilter, 
+				1.0))
 		{
 			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
 			working->error_message = g_string_new(magick_exception_message);
@@ -265,10 +263,8 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		//if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
 		if (!MagickCompositeImage(working->background_wand, working->working_wand,
 									OverCompositeOp, offset_x, offset_y))
 		{
@@ -279,12 +275,11 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 	}
 	
-	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
 	
 	if (working->position_3_file_name != NULL)
 	{
@@ -297,10 +292,13 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		if (!MagickResizeImage(working->working_wand, 
+				(gint) width, 
+				last_height = dmp_pb_photo_strip_scale_height_magickally(working->working_wand, width),
+				LanczosFilter, 
+				1.0))
 		{
 			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
 			working->error_message = g_string_new(magick_exception_message);
@@ -309,10 +307,8 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		//if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
 		if (!MagickCompositeImage(working->background_wand, working->working_wand,
 									OverCompositeOp, offset_x, offset_y))
 		{
@@ -323,12 +319,11 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 	}
 	
-	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
 	
 	if (working->position_4_file_name != NULL)
 	{
@@ -341,10 +336,13 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		if (!MagickResizeImage(working->working_wand, 
+				(gint) width, 
+				last_height = dmp_pb_photo_strip_scale_height_magickally(working->working_wand, width),
+				LanczosFilter, 
+				1.0))
 		{
 			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
 			working->error_message = g_string_new(magick_exception_message);
@@ -353,10 +351,8 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		//if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
 		if (!MagickCompositeImage(working->background_wand, working->working_wand,
 									OverCompositeOp, offset_x, offset_y))
 		{
@@ -367,12 +363,11 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 	}
 	
-	offset_y = offset_y + ((gint) width / aspect_ratio) + 15;
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
 	
 	if (working->position_5_file_name != NULL)
 	{
@@ -385,10 +380,13 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		if (!MagickResizeImage(working->working_wand, (gint) width, ((gint) width / aspect_ratio), LanczosFilter, 1.0))
+		if (!MagickResizeImage(working->working_wand, 
+				(gint) width, 
+				last_height = dmp_pb_photo_strip_scale_height_magickally(working->working_wand, width),
+				LanczosFilter, 
+				1.0))
 		{
 			magick_exception_message = MagickGetException(working->working_wand, &magick_exception_severity);
 			working->error_message = g_string_new(magick_exception_message);
@@ -397,10 +395,8 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
-		//if (!MagickResetImagePage(working->working_wand, dmp_pb_photo_strip_set_builder(page_builder, width, aspect_ratio, offset_x, offset_y)))
 		if (!MagickCompositeImage(working->background_wand, working->working_wand,
 									OverCompositeOp, offset_x, offset_y))
 		{
@@ -411,7 +407,6 @@ void dmp_pb_photo_strip_assemble()
 			MagickRelinquishMemory(magick_exception_message);
 			g_async_queue_push(local_out_queue, working);
 			g_async_queue_unref(local_out_queue);
-			//g_string_free(page_builder, TRUE);
 			return;
 		}
 	}
@@ -426,28 +421,13 @@ void dmp_pb_photo_strip_assemble()
 		MagickRelinquishMemory(magick_exception_message);
 		g_async_queue_push(local_out_queue, working);
 		g_async_queue_unref(local_out_queue);
-		//g_string_free(page_builder, TRUE);
 		return;
 	}
-	//g_string_free(page_builder, TRUE);
 	
 	/* ----- */
 	/* Saving*/
 	/* ----- */
-	
-/*
-	working->final_wand = MagickCoalesceImages(working->background_wand);
-	if (working->final_wand == NULL)
-	{
-		magick_exception_message = MagickGetException(working->background_wand, &magick_exception_severity);
-		working->error_message = g_string_new(magick_exception_message);
-		working->error_domain = dmp_pb_photo_strip_error_quark();
-		working->error_code = magick_exception_severity;
-		MagickRelinquishMemory(magick_exception_message);
-		g_async_queue_push(out_queue, working);
-		return;
-	}
-*/
+
 	MagickSetFirstIterator(working->background_wand);
 	if (!MagickWriteImage(working->background_wand, working->completed_strip_file_name->str))
 	{
@@ -496,7 +476,9 @@ void dmp_pb_photo_strip_assemble()
 		working->thumbnail = gdk_pixbuf_scale_simple
 			(
 				full, 
-				(gint) (gdk_pixbuf_get_width(full) * (256.0 / gdk_pixbuf_get_height(full))),
+				dmp_pb_photo_strip_calculate_new_width(gdk_pixbuf_get_width(full),
+					gdk_pixbuf_get_height(full),
+					256.0),
 				256,
 				GDK_INTERP_NEAREST
 			);
@@ -544,4 +526,26 @@ GdkPixbuf * dmp_pb_photo_strip_get_result(GString ** out_path, GError ** error)
 	
 	dmp_pb_photo_strip_smite_builder(working);
 	return return_value;
+}
+
+gint dmp_pb_photo_strip_calculate_new_width(gdouble width, 
+											gdouble old_height,
+											gdouble new_height)
+{
+	return (gint) (width * (new_height / old_height));
+}
+
+gint dmp_pb_photo_strip_calculate_new_height(gdouble height,
+											 gdouble old_width,
+											 gdouble new_width)
+{
+	return (gint) (height * (new_width / old_width));
+}
+
+gint dmp_pb_photo_strip_calculate_whitespace(gdouble width, gdouble percentage)
+{
+	g_assert(percentage >= 0);
+	//if (percentage == 0) return 0;
+	//return (gint) (width * (percentage / 100));
+	return 15; // TODO: open this can of worms some other day
 }

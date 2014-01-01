@@ -25,7 +25,7 @@ extern "C" {
 #define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_PATH "individual_image_path"
 #define DMP_PB_CONFIG_COMPLETED_STRIP_PATH "completed_strip_path"
 #define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH "individual_image_width"
-#define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO "individual_image_aspect_ratio"
+//#define DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO "individual_image_aspect_ratio"
 	
 #define DMP_PB_PHOTO_STRIP_POSITION_1_FLAG 1 << 0
 #define DMP_PB_PHOTO_STRIP_POSITION_2_FLAG 1 << 1

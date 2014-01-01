@@ -27,7 +27,7 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 #define DMP_PB_PHOTO_STRIP_POSITION_4 "dmp_pb_photo_strip_position_4"
 #define DMP_PB_PHOTO_STRIP_POSITION_5 "dmp_pb_photo_strip_position_5"
 
-#define DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX "dmp_pb_individual_aspect_ratio_combo_box"
+//#define DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX "dmp_pb_individual_aspect_ratio_combo_box"
 #define DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX "dmp_pb_individual_image_width_spin_box"
 
 #define DMP_PB_IMAGE_HISTORY_VIEW "dmp_pb_image_history_view"
@@ -190,12 +190,14 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		return;
 	}
 	
+/*
 	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX, &working_error);
 	if (working_error != NULL)
 	{
 		g_propagate_error(error, working_error);
 		return;
 	}
+*/
 	
 	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX, &working_error);
 	if (working_error != NULL)
@@ -378,6 +380,7 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
  * parses an aspect ratio, doing the correct configuration
  * @param to_test the aspect ratio in question
  */
+/*
 static void dmp_pb_ui_parse_aspect_ratio(gdouble to_test)
 {
 	if (to_test == DMP_PB_ASPECT_RATIO_4_3)
@@ -397,7 +400,7 @@ static void dmp_pb_ui_parse_aspect_ratio(gdouble to_test)
 				);
 		return;
 	}
-	else	/* Default action */ 
+	else	
 	{
 		gtk_combo_box_set_active
 				(
@@ -407,6 +410,7 @@ static void dmp_pb_ui_parse_aspect_ratio(gdouble to_test)
 		return;
 	}
 }
+*/
 
 /**
  * Initializes the options dialog with values read from the config
@@ -465,7 +469,7 @@ static void dmp_pb_ui_initialize_options_fields()
 			);
 	g_string_free(working, TRUE);
 	
-	dmp_pb_ui_parse_aspect_ratio(dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO));
+	//dmp_pb_ui_parse_aspect_ratio(dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO));
 	
 	gtk_spin_button_set_value
 			(
@@ -515,6 +519,7 @@ static gint dmp_pb_ui_get_image_positions()
  * ratio
  * @return said aspect ratio
  */
+/*
 static gdouble dmp_pb_ui_get_aspect_ratio()
 {
 	gint working = gtk_combo_box_get_active(GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)));
@@ -528,6 +533,7 @@ static gdouble dmp_pb_ui_get_aspect_ratio()
 			return DMP_PB_ASPECT_RATIO_4_3;
 	}
 }
+*/
 
 /**
  * Commits the options fields to the config
@@ -592,12 +598,14 @@ static void dmp_pb_ui_commit_options_fields()
 	
 	g_string_free(working, TRUE);
 	
+/*
 	dmp_pb_config_write_double
 			(
 				DMP_PB_CONFIG_CORE_GROUP,
 				DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO,
 				dmp_pb_ui_get_aspect_ratio()
 			);
+*/
 	
 	dmp_pb_config_write_double
 			(

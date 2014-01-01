@@ -20,13 +20,46 @@ extern "C" {
 #include "module.h"
 #include "coordination.h"
 	
-#define DMP_PB_ASPECT_RATIO_4_3 1.333333
-#define DMP_PB_ASPECT_RATIO_3_2 1.5
+//#define DMP_PB_ASPECT_RATIO_4_3 1.333333
+//#define DMP_PB_ASPECT_RATIO_3_2 1.5
+	
+#define DMP_PB_WHITE_SPACE_PERCENTAGE 5.0 //TODO: configuration item
 
 	/**
 	 * Enumeration of Photo Strip GError codes
 	 */
 	typedef ExceptionType dmp_pb_photo_strip_error;
+	
+	/**
+	 * calculates a new scaled width
+     * @param width the current width
+     * @param old_height the current height
+     * @param new_height the desired height
+     * @return the scaled width
+     */
+	gint dmp_pb_photo_strip_calculate_new_width(gdouble width, 
+												gdouble old_height,
+												gdouble new_height);
+	
+	/**
+	 * calculates a new scaled height
+     * @param height the current height
+     * @param old_width the current width
+     * @param new_height the desired width
+     * @return the scaled height
+     */
+	gint dmp_pb_photo_strip_calculate_new_height(gdouble height,
+												 gdouble old_width,
+												 gdouble new_width);
+	
+	/**
+	 * calculates the size of the border around the photo strip images
+     * @param width the width of a photo strip image
+	 * @param percentage the percent of the width that should be the size of the
+	 * border
+     * @return the border size
+     */
+	gint dmp_pb_photo_strip_calculate_whitespace(gdouble width, gdouble percentage);
 	
 	/**
 	 * initializes the photo strip module
@@ -68,7 +101,7 @@ extern "C" {
 	 * assembled photo strip
 	 * @param out_path a location to return the path of the resulting strip, or 
 	 * NULL. If out_path is NULL, no value is returned. *out_path <b>MUST</b> be
-	 * null, or you will leak memory. Rest assured that if some random pointer
+	 * NULL, or you will leak memory. Rest assured that if some random pointer
 	 * is going down, you're going down with it!
      * @throws DMP_PB_PHOTO_STRIP_ERROR
      * @return A GdkPixbuf of the new strip, or NULL on error, or if there is no

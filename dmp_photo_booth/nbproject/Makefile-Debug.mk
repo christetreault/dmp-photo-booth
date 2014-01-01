@@ -48,7 +48,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=`pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand`  
+CFLAGS=`pkg-config --cflags gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` 
 
 # CC Compiler Flags
 CCFLAGS=
@@ -69,7 +69,7 @@ LDLIBSOPTIONS=`pkg-config --libs gmodule-2.0` `pkg-config --libs gtk+-3.0` `pkg-
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand` 
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dmp_photo_booth ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs gmodule-2.0 gthread-2.0 gtk+-3.0 MagickWand`
 
 ${OBJECTDIR}/configuration.o: configuration.c 
 	${MKDIR} -p ${OBJECTDIR}
