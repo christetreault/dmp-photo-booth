@@ -111,7 +111,7 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	
 	if (tcsetattr(serial_descriptor, TCSANOW, &saved_options) < 0)
 	{
-		dmp_tm_console_write("Failed to set serial attributes\n");
+		dmp_tm_console_write("Failed to restore saved serial attributes\n");
 		close(serial_descriptor);
 		return NULL;
 	}
@@ -128,6 +128,7 @@ void dmp_tm_io_start_serial()
 void dmp_tm_io_stop_serial()
 {
 	dmp_tm_serial_io_thread_should_die = TRUE;
+	g_thread_join(dmp_tm_serial_io_thread);
 }
 
 gboolean dmp_tm_io_thread_running()
