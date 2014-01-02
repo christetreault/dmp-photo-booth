@@ -9,12 +9,6 @@ static GAsyncQueue * in_queue = NULL;
 static GAsyncQueue * out_queue = NULL;
 static GThread * dmp_pb_photo_strip_thread;
 
-/**
- * in keeping with the spirit of MagickWand. TRUE if MagickWandGenesis() has been
- * called, FALSE if not, or after a call to MagickWandTerminus()
- */
-static gboolean there_was_light = FALSE;
-
 struct photo_strip_builder
 {
 	MagickWand * background_wand;
@@ -52,7 +46,7 @@ static gpointer dmp_pb_photo_strip_thread_function(gpointer user_data)
 
 gboolean dmp_pb_photo_strip_initialized()
 {
-	return (there_was_light && in_queue != NULL && out_queue != NULL);
+	return (IsMagickInstantiated() && in_queue != NULL && out_queue != NULL);
 }
 
 /**
@@ -86,8 +80,7 @@ void dmp_pb_photo_strip_init()
 	
 	if (in_queue == NULL) in_queue = g_async_queue_new_full((GDestroyNotify) dmp_pb_photo_strip_smite_builder);
 	if (out_queue == NULL) out_queue = g_async_queue_new_full((GDestroyNotify) dmp_pb_photo_strip_smite_builder);
-	if (!there_was_light) MagickWandGenesis();
-	there_was_light = TRUE;
+	if (!IsMagickInstantiated()) MagickWandGenesis();
 	dmp_pb_photo_strip_thread = g_thread_new("Photo Strip Thread", dmp_pb_photo_strip_thread_function, NULL);
 	
 }
@@ -99,7 +92,6 @@ void dmp_pb_photo_strip_finalize()
 	if (out_queue != NULL) g_async_queue_unref(out_queue);
 	out_queue = NULL;
 	MagickWandTerminus();
-	there_was_light = FALSE;
 }
 
 /**
