@@ -40,7 +40,7 @@ static gint dmp_pm_resolve_dests_index(cups_dest_t * to_resolve,
  * Executes a print job
  * @param to_print the file to print
  */
-static void dmp_pm_execute_print(GString * to_print)
+static gint dmp_pm_execute_print(GString * to_print)
 {
 	cups_dest_t * dests;
 	gint num_dests = cupsGetDests(&dests);
@@ -48,7 +48,7 @@ static void dmp_pm_execute_print(GString * to_print)
 	gint dest_index = dmp_pm_resolve_dests_index(dests, num_dests, printer_name);
 	g_free(printer_name);
 	
-	if (dest_index == -1) return;
+	if (dest_index == -1) return DMP_PB_FAILURE;
 	
 	int job_id = cupsPrintFile(dests[dest_index].name, 
 								to_print->str,
@@ -57,6 +57,7 @@ static void dmp_pm_execute_print(GString * to_print)
 								dests[dest_index].options);
 	
 	cupsFreeDests(num_dests, dests);
+	return DMP_PB_SUCCESS;
 }
 
 /**
@@ -105,7 +106,7 @@ PixelWand * dmp_pm_create_bg_color()
 	return return_value;
 }
 
-void dmp_pm_process_print(gchar * to_print)
+gint dmp_pm_process_print(gchar * to_print)
 {
 	g_assert(to_print != NULL);
 	
@@ -123,10 +124,10 @@ void dmp_pm_process_print(gchar * to_print)
 		dmp_pm_handle_exception(working);
 		DestroyMagickWand(working);
 		DestroyMagickWand(background);
-		return;
+		return DMP_PB_FAILURE;
 	}
 	
-	if ((bg_color = dmp_pm_create_bg_color()) == NULL) return;
+	if ((bg_color = dmp_pm_create_bg_color()) == NULL) return DMP_PB_FAILURE;
 	
 	if (!MagickNewImage(background, width, height, bg_color))
 	{
@@ -134,7 +135,7 @@ void dmp_pm_process_print(gchar * to_print)
 		DestroyPixelWand(bg_color);
 		DestroyMagickWand(working);
 		DestroyMagickWand(background);
-		return;
+		return DMP_PB_FAILURE;
 	}
 	
 	DestroyPixelWand(bg_color);
@@ -152,7 +153,7 @@ void dmp_pm_process_print(gchar * to_print)
 		dmp_pm_handle_exception(background);
 		DestroyMagickWand(working);
 		DestroyMagickWand(background);
-		return;
+		return DMP_PB_FAILURE;
 	}
 	
 	if (!MagickCompositeImage(background, 
@@ -166,7 +167,7 @@ void dmp_pm_process_print(gchar * to_print)
 		dmp_pm_handle_exception(background);
 		DestroyMagickWand(working);
 		DestroyMagickWand(background);
-		return;
+		return DMP_PB_FAILURE;
 	}
 	
 	temp_file = g_string_new(to_print);
@@ -179,7 +180,7 @@ void dmp_pm_process_print(gchar * to_print)
 		DestroyMagickWand(working);
 		DestroyMagickWand(background);
 		g_string_free(temp_file, TRUE);
-		return;
+		return DMP_PB_FAILURE;
 	}
 	
 	DestroyMagickWand(working);
@@ -198,5 +199,6 @@ void dmp_pm_process_print(gchar * to_print)
 	}
 
 	g_string_free(temp_file, TRUE);
+	return DMP_PB_SUCCESS;
 }
 

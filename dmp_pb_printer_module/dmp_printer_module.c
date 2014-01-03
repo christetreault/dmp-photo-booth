@@ -15,9 +15,7 @@ int dmp_pm_print(char * to_print)
 {
 	g_assert(to_print != NULL);
 	
-	dmp_pm_process_print(to_print);
-	
-	return DMP_PB_SUCCESS;
+	return dmp_pm_process_print(to_print);
 }
 
 char * dmp_pm_get_config_location(char * to_fill, size_t size)

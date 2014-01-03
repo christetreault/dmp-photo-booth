@@ -21,9 +21,9 @@ extern "C" {
 	/**
 	 * Prepares a strip for printing
      * @param to_print the strip to print
-     * @return a GString containing a path to the <b>new</b> image to print
+     * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	void dmp_pm_process_print(gchar * to_print);
+	gint dmp_pm_process_print(gchar * to_print);
 
 
 #ifdef	__cplusplus
