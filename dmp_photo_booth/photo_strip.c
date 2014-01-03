@@ -9,6 +9,8 @@ static GAsyncQueue * in_queue = NULL;
 static GAsyncQueue * out_queue = NULL;
 static GThread * dmp_pb_photo_strip_thread;
 
+static gboolean is_initialized = FALSE;
+
 struct photo_strip_builder
 {
 	MagickWand * background_wand;
@@ -46,7 +48,7 @@ static gpointer dmp_pb_photo_strip_thread_function(gpointer user_data)
 
 gboolean dmp_pb_photo_strip_initialized()
 {
-	return (IsMagickInstantiated() && in_queue != NULL && out_queue != NULL);
+	return (is_initialized && in_queue != NULL && out_queue != NULL);
 }
 
 /**
@@ -80,7 +82,9 @@ void dmp_pb_photo_strip_init()
 	
 	if (in_queue == NULL) in_queue = g_async_queue_new_full((GDestroyNotify) dmp_pb_photo_strip_smite_builder);
 	if (out_queue == NULL) out_queue = g_async_queue_new_full((GDestroyNotify) dmp_pb_photo_strip_smite_builder);
-	if (!IsMagickInstantiated()) MagickWandGenesis();
+	if (!is_initialized) MagickWandGenesis();
+	is_initialized = TRUE;
+	
 	dmp_pb_photo_strip_thread = g_thread_new("Photo Strip Thread", dmp_pb_photo_strip_thread_function, NULL);
 	
 }
@@ -91,7 +95,8 @@ void dmp_pb_photo_strip_finalize()
 	in_queue = NULL;
 	if (out_queue != NULL) g_async_queue_unref(out_queue);
 	out_queue = NULL;
-	MagickWandTerminus();
+	if (is_initialized) MagickWandTerminus();
+	is_initialized = FALSE;
 }
 
 /**

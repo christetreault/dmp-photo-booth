@@ -884,7 +884,7 @@ static void dmp_pb_options_dialog_cancel_button(gpointer user_data)
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
 }
 
-static void dmp_pb_options_dialog_ok_button(gpointer user_data)
+static void dmp_pb_options_dialog_ok_button(gpointer user_data)	//TODO: This blocks the UI
 {
 	GError * error = NULL;
 	dmp_pb_ui_commit_options_fields();
@@ -1032,7 +1032,7 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_edit_trigger_module_config_button_clicked(GtkB
 G_MODULE_EXPORT void dmp_pb_ui_cb_edit_printer_module_config_button_clicked(GtkButton * button, gpointer user_data)
 {
 	GError * error = NULL;
-	dmp_pb_edit_module_config_button_helper(DMP_PB_TRIGGER_MODULE, &error);
+	dmp_pb_edit_module_config_button_helper(DMP_PB_PRINTER_MODULE, &error);
 	if (error != NULL)
 	{
 		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
