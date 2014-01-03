@@ -1,5 +1,5 @@
 #include "serial_io.h"
-#include "dmp_trigger_module.h"
+
 
 G_DEFINE_QUARK(DMP_TM_SERIAL_IO_ERROR, dmp_tm_serial_io_error)
 
@@ -53,14 +53,17 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 {
 	guint8 read_value = 0;
 	
+	gchar * serial_port = dmp_tm_config_get_device_name();
 	
 	static struct termios saved_options;
 	static struct termios trigger_options;
-	if ((serial_descriptor = open(DMP_TM_DEFAULT_SERIAL_PORT, O_RDWR | O_NOCTTY/* | O_NDELAY*/)) < 0)
+	if ((serial_descriptor = open(serial_port, O_RDWR | O_NOCTTY)) < 0)
 	{
-		dmp_tm_console_write("Failed to open serial connection with " DMP_TM_DEFAULT_SERIAL_PORT "\n");
+		dmp_tm_console_write("Failed to open serial connection!\n");
 		return NULL;
 	}
+	
+	g_free(serial_port);
 	
 	if (tcgetattr(serial_descriptor, &saved_options) < 0)
 	{

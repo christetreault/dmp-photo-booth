@@ -1,5 +1,5 @@
 #include "dmp_trigger_module.h"
-#include "lifecycle.h"
+
 
 void (*trigger_handler)() = NULL;
 int (*console_write)(char * message);
@@ -69,26 +69,35 @@ char * dmp_tm_get_config_location(char * to_fill, size_t size)
 
 int dmp_tm_edit_config()
 {
+	dmp_tm_console_write("\n\n---------------------------------------------------------------");
+	dmp_tm_console_write("\n\nTo edit the configuration, edit the file \""
+							DMP_TM_CONFIG_FILE
+							"\" with your favorite text editor.");
+	dmp_tm_console_write("\n\n---------------------------------------------------------------");
+	dmp_tm_console_write("\n\n");
 	return DMP_PB_SUCCESS;
 }
 
 int dmp_tm_load_config()
 {
+	dmp_tm_load_config();
 	return DMP_PB_SUCCESS;
 }
 
 int dmp_tm_initialize()
 {
+	dmp_tm_config_init();
 	return dmp_tm_lifecycle_initialize();
 }
 
 int dmp_tm_is_initialized()
 {
-	return dmp_tm_lifecycle_is_initialized() && dmp_tm_io_thread_running();
+	return dmp_tm_lifecycle_is_initialized() && dmp_tm_io_thread_running() && dmp_tm_config_is_initialized();
 }
 
 int dmp_tm_finalize()
 {
+	dmp_tm_config_finalize();
 	return dmp_tm_lifecycle_finalize();
 }
 

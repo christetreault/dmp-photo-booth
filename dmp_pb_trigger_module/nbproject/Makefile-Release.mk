@@ -37,7 +37,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/dmp_trigger_module.o \
 	${OBJECTDIR}/lifecycle.o \
-	${OBJECTDIR}/serial_io.o
+	${OBJECTDIR}/serial_io.o \
+	${OBJECTDIR}/trigger_config.o
 
 # Test Directory
 TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
@@ -84,6 +85,11 @@ ${OBJECTDIR}/serial_io.o: serial_io.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/serial_io.o serial_io.c
+
+${OBJECTDIR}/trigger_config.o: trigger_config.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/trigger_config.o trigger_config.c
 
 # Subprojects
 .build-subprojects:
@@ -138,6 +144,19 @@ ${OBJECTDIR}/serial_io_nomain.o: ${OBJECTDIR}/serial_io.o serial_io.c
 	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/serial_io_nomain.o serial_io.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/serial_io.o ${OBJECTDIR}/serial_io_nomain.o;\
+	fi
+
+${OBJECTDIR}/trigger_config_nomain.o: ${OBJECTDIR}/trigger_config.o trigger_config.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/trigger_config.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/trigger_config_nomain.o trigger_config.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/trigger_config.o ${OBJECTDIR}/trigger_config_nomain.o;\
 	fi
 
 # Run Test Targets

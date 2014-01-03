@@ -8,6 +8,8 @@
 #ifndef DMP_TRIGGER_MODULE_H
 #define	DMP_TRIGGER_MODULE_H
 
+#define DMP_TM_CONFIG_FILE "dmp_trigger_module.rc"
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -16,6 +18,8 @@ extern "C" {
 #include "global_defines.h"
 #include <glib.h>
 #include "serial_io.h"
+#include "lifecycle.h"
+#include "trigger_config.h"
 
 	/**
 	 * indicate to the user that something went wrong

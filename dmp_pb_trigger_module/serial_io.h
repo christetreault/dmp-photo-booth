@@ -11,13 +11,13 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-	
-#define DMP_TM_DEFAULT_SERIAL_PORT "/dev/ttyACM0"
 
 #include <glib.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <errno.h>
+#include "dmp_trigger_module.h"
+#include "trigger_config.h"
 	
 	typedef enum
 	{
