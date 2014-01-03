@@ -452,6 +452,7 @@ void dmp_pb_photo_strip_assemble()
 		working->error_code = DMP_PB_FAILURE;
 		g_async_queue_push(local_out_queue, working);
 		g_async_queue_unref(local_out_queue);
+		dmp_pb_tm_show_error(PRINTER_MODULE_ERROR);
 		return;
 	}
 	
