@@ -35,7 +35,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/dmp_printer_module.o
+	${OBJECTDIR}/dmp_printer_module.o \
+	${OBJECTDIR}/printer_config.o \
+	${OBJECTDIR}/strip_processing.o
 
 # Test Directory
 TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
@@ -73,6 +75,16 @@ ${OBJECTDIR}/dmp_printer_module.o: dmp_printer_module.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module.o dmp_printer_module.c
 
+${OBJECTDIR}/printer_config.o: printer_config.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config.o printer_config.c
+
+${OBJECTDIR}/strip_processing.o: strip_processing.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing.o strip_processing.c
+
 # Subprojects
 .build-subprojects:
 
@@ -100,6 +112,32 @@ ${OBJECTDIR}/dmp_printer_module_nomain.o: ${OBJECTDIR}/dmp_printer_module.o dmp_
 	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module_nomain.o dmp_printer_module.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/dmp_printer_module.o ${OBJECTDIR}/dmp_printer_module_nomain.o;\
+	fi
+
+${OBJECTDIR}/printer_config_nomain.o: ${OBJECTDIR}/printer_config.o printer_config.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/printer_config.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config_nomain.o printer_config.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/printer_config.o ${OBJECTDIR}/printer_config_nomain.o;\
+	fi
+
+${OBJECTDIR}/strip_processing_nomain.o: ${OBJECTDIR}/strip_processing.o strip_processing.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/strip_processing.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing_nomain.o strip_processing.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/strip_processing.o ${OBJECTDIR}/strip_processing_nomain.o;\
 	fi
 
 # Run Test Targets

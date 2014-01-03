@@ -12,10 +12,16 @@
 extern "C" {
 #endif
 	
-#include "../dmp_photo_booth/global_defines.h"
+#define DMP_PM_CONFIG_FILE "dmp_printer_module.rc"
 	
+#include "global_defines.h"
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
+#include <cups/cups.h>
+#include <wand/MagickWand.h>
+#include "strip_processing.h"
+#include "printer_config.h"
 
 	/**
 	 * prints the file at the passed in location
@@ -69,6 +75,13 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_pm_finalize();
+	
+	/**
+	 * wrapper around console write function pointer
+     * @param to_write the string to write
+     * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
+     */
+	int dmp_pm_console_write(gchar * to_write);
 
 #ifdef	__cplusplus
 }
