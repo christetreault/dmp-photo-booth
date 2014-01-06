@@ -11,22 +11,18 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#include "../dmp_photo_booth/global_defines.h"
 	
+#include "global_defines.h"
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 	/**
-	 * signals the camera to capture a picture
+	 * signals the camera to capture a picture. Downloads the taken picture to
+	 * the passed-in location
+	 * @param location the location to download to
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_capture();
-	
-	/**
-	 * Downloads the latest taken picture to the passed in location
-     * @param location the location to download to
-     * @return DMP_PB_SUCCESS, or an error code
-     */
-	int dmp_cm_download(char * location);
+	int dmp_cm_capture(char * location);
 	
 	/**
 	 * Returns the location of the camera module configuration file
@@ -73,6 +69,13 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_cm_finalize();
+	
+	/**
+	 * wrapper around console write function pointer
+     * @param to_write the string to write
+     * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
+     */
+	int dmp_cm_console_write(gchar * to_write);
 
 
 #ifdef	__cplusplus

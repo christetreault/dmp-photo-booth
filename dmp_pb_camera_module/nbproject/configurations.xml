@@ -4,7 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>camera_logic.h</itemPath>
       <itemPath>dmp_camera_module.h</itemPath>
+      <itemPath>global_defines.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -13,6 +15,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>camera_logic.c</itemPath>
       <itemPath>camera_module.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -47,13 +50,21 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>`pkg-config --cflags glib-2.0 libgphoto2`</commandLine>
         </cTool>
         <ccTool>
           <incDir>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
+        <linkerTool>
+          <commandLine>`pkg-config --libs glib-2.0 libgphoto2`</commandLine>
+        </linkerTool>
       </compileType>
+      <item path="camera_logic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="camera_logic.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="camera_module.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
@@ -73,6 +84,8 @@
           <output>${TESTDIR}/TestFiles/f2</output>
         </linkerTool>
       </folder>
+      <item path="global_defines.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/camera_module_tests.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
@@ -106,6 +119,10 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </compileType>
+      <item path="camera_logic.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="camera_logic.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="camera_module.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
@@ -125,6 +142,8 @@
           <output>${TESTDIR}/TestFiles/f2</output>
         </linkerTool>
       </folder>
+      <item path="global_defines.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/camera_module_tests.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
