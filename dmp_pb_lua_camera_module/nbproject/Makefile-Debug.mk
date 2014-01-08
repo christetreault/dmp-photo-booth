@@ -35,11 +35,13 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/camera_module.o
+	${OBJECTDIR}/camera_module.o \
+	${OBJECTDIR}/error_handling.o \
+	${OBJECTDIR}/lua_interface.o
 
 
 # C Compiler Flags
-CFLAGS=`pkg-config --cflags glib-2.0` 
+CFLAGS=`pkg-config --cflags glib-2.0 lua5.2` 
 
 # CC Compiler Flags
 CCFLAGS=
@@ -60,12 +62,22 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_lua_camera_module.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_lua_camera_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0` -shared -fPIC
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_lua_camera_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 lua5.2` -shared -fPIC
 
 ${OBJECTDIR}/camera_module.o: camera_module.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -I. `pkg-config --cflags glib-2.0` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
+	$(COMPILE.c) -g -I. -I. `pkg-config --cflags glib-2.0 lua5.2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
+
+${OBJECTDIR}/error_handling.o: error_handling.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -I. `pkg-config --cflags glib-2.0 lua5.2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/error_handling.o error_handling.c
+
+${OBJECTDIR}/lua_interface.o: lua_interface.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -I. `pkg-config --cflags glib-2.0 lua5.2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/lua_interface.o lua_interface.c
 
 # Subprojects
 .build-subprojects:

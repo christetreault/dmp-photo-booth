@@ -13,9 +13,7 @@ int dmp_cm_install_console(int (*c_cb)(char * message))
 
 int dmp_cm_capture(char * location)
 {
-	
-	
-	return DMP_PB_SUCCESS;
+	return dmp_cm_lua_capture(location);
 }
 
 char * dmp_cm_get_config_location(char * to_fill, size_t size)
@@ -44,17 +42,17 @@ int dmp_cm_load_config()
 
 int dmp_cm_initialize()
 {
-	return DMP_PB_SUCCESS;
+	return dmp_cm_lua_initialize();
 }
 
 int dmp_cm_is_initialized()
 {
-	return !0;
+	return dmp_cm_lua_is_initialized();
 }
 
 int dmp_cm_finalize()
 {
-	return DMP_PB_SUCCESS;
+	return dmp_cm_lua_finalize();
 }
 
 int dmp_cm_console_write(gchar * to_write)

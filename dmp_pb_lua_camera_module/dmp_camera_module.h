@@ -16,6 +16,7 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
+#include "lua_interface.h"
 	/**
 	 * signals the camera to capture a picture. Downloads the taken picture to
 	 * the passed-in location
