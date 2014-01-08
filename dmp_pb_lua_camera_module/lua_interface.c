@@ -53,7 +53,7 @@ static void dmp_cm_lua_register_console(lua_State * L, GError ** error)
 	lua_setfield(L, -2, "console_write");
 }
 
-gint dmp_cm_lua_initialize()	//TODO: Lua init and finalize methods
+gint dmp_cm_lua_initialize()
 {
 	g_assert(!dmp_cm_lua_is_initialized());
 	
