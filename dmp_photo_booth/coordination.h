@@ -54,6 +54,12 @@ extern "C" {
      */
 	void dmp_pb_coordination_finalize();
 	
+	/**
+	 * Tests to see if a photo booth session is in progress
+     * @return TRUE if so, FALSE if not
+     */
+	gboolean dmp_pb_coordination_is_processing();
+	
 #ifdef	__cplusplus
 }
 #endif

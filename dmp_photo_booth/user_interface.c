@@ -617,6 +617,12 @@ dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons()
 
 static void dmp_pb_stop_photo_booth()
 {	
+	if (dmp_pb_coordination_is_processing())
+	{
+		dmp_pb_console_queue_push(g_string_new("Cannot stop the Photo Booth while a session is in progress!\n"));
+		return;
+	}
+	
 	dmp_pb_unload_module(DMP_PB_TRIGGER_MODULE);
 	dmp_pb_unload_module(DMP_PB_PRINTER_MODULE);
 	dmp_pb_unload_module(DMP_PB_CAMERA_MODULE);

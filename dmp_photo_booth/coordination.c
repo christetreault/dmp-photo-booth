@@ -4,6 +4,8 @@
 
 G_DEFINE_QUARK(DMP_PB_COORDINATION_ERROR, dmp_pb_coordination_error)
 
+static gboolean in_progress = FALSE;
+
 gchar * dmp_pb_coordination_get_epoch_filename(const gchar * prefix, const gchar * extension)
 {
 	GString * working = g_string_new(NULL);
@@ -97,6 +99,7 @@ static GString * dmp_pb_photo_request_new_or_null(gchar * working)
  */
 static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_data)
 {
+	in_progress = TRUE;
 	gint image_position_toggle = dmp_pb_config_read_int(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_POSITION_TOGGLE);
 	GError * error = NULL;
 	
@@ -118,6 +121,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
+			in_progress = FALSE;
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -134,6 +138,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
+			in_progress = FALSE;
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -150,6 +155,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
+			in_progress = FALSE;
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -166,6 +172,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
+			in_progress = FALSE;
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -182,6 +189,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
+			in_progress = FALSE;
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -210,6 +218,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 	g_string_free(working, TRUE);
+	in_progress = FALSE;
 	G_UNLOCK(photo_request);
 }
 
@@ -234,4 +243,9 @@ void dmp_pb_coordination_finalize()
 {
 	g_thread_pool_free(photo_request_thread_pool, TRUE, FALSE);
 	photo_request_thread_pool = NULL;
+}
+
+gboolean dmp_pb_coordination_is_processing()
+{
+	return in_progress;
 }
