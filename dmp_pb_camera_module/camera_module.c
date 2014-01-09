@@ -21,16 +21,6 @@ int dmp_cm_capture(char * location)
 	return DMP_PB_SUCCESS;
 }
 
-char * dmp_cm_get_config_location(char * to_fill, size_t size)
-{
-	if (to_fill == NULL) return NULL;
-	
-	strncpy(to_fill, "./cm.lua", size);
-	if (size > 0) to_fill[size - 1] = '\0';
-	
-	return to_fill;
-}
-
 int dmp_cm_edit_config()
 {
 	printf("Called: dmp_cm_edit_config()\n");
