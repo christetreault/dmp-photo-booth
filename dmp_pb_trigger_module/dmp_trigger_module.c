@@ -57,16 +57,6 @@ int dmp_tm_set_countdown(int current)
 	return DMP_PB_SUCCESS;
 }
 
-char * dmp_tm_get_config_location(char * to_fill, size_t size)
-{
-	if (to_fill == NULL) return NULL;
-	
-	strncpy(to_fill, "N/A", size);
-	if (size > 0) to_fill[size - 1] = '\0';
-	
-	return to_fill;
-}
-
 int dmp_tm_edit_config()
 {
 	dmp_tm_console_write("\n\n---------------------------------------------------------------");
