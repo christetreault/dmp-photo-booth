@@ -98,16 +98,11 @@ extern "C" {
 	gint dmp_pb_load_module_config(dmp_pb_module_type type);
 
 	/**
-	 * signals the camera to capture a picture
-	 * @return DMP_PB_SUCCESS, or an error code
-	 */
-	gint dmp_pb_cm_capture();
-	/**
-	 * Downloads the latest taken picture to the passed in location
+	 * signals the camera to capture a picture, and downloads it to location
 	 * @param location the location to download to
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_cm_download(gchar * location);
+	gint dmp_pb_cm_capture(gchar * location);
 	/**
 	 * prints the file at the passed in location
 	 * @param to_print the file to print

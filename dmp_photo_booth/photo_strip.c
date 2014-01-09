@@ -166,6 +166,7 @@ void dmp_pb_photo_strip_assemble()
 	gint last_height = 0;
 	gint offset_x = 15;
 	gint offset_y = 15;
+	gint total_height = 0;
 	GError * error = NULL;
 	
 	/* ---------- */
@@ -188,6 +189,7 @@ void dmp_pb_photo_strip_assemble()
 		return;
 	}
 	g_string_free(background, TRUE);
+	total_height = MagickGetImageHeight(working->background_wand) - 30;
 	
 	if (working->position_1_file_name != NULL)
 	{
@@ -232,7 +234,7 @@ void dmp_pb_photo_strip_assemble()
 		}
 	}
 	
-	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(total_height, last_height);
 	
 	if (working->position_2_file_name != NULL)
 	{
@@ -276,7 +278,7 @@ void dmp_pb_photo_strip_assemble()
 		}
 	}
 	
-	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(total_height, last_height);
 	
 	if (working->position_3_file_name != NULL)
 	{
@@ -320,7 +322,7 @@ void dmp_pb_photo_strip_assemble()
 		}
 	}
 	
-	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(total_height, last_height);
 	
 	if (working->position_4_file_name != NULL)
 	{
@@ -364,7 +366,7 @@ void dmp_pb_photo_strip_assemble()
 		}
 	}
 	
-	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(width, DMP_PB_WHITE_SPACE_PERCENTAGE);
+	offset_y = offset_y + last_height + dmp_pb_photo_strip_calculate_whitespace(total_height, last_height);
 	
 	if (working->position_5_file_name != NULL)
 	{
@@ -437,7 +439,15 @@ void dmp_pb_photo_strip_assemble()
 		g_async_queue_unref(local_out_queue);
 		return;
 	}
+	/*-------------*/
+	/* Cleaning up */
+	/*-------------*/
 	
+	if (working->position_1_file_name != NULL) g_unlink(working->position_1_file_name);
+	if (working->position_2_file_name != NULL) g_unlink(working->position_2_file_name);
+	if (working->position_3_file_name != NULL) g_unlink(working->position_3_file_name);
+	if (working->position_4_file_name != NULL) g_unlink(working->position_4_file_name);
+	if (working->position_5_file_name != NULL) g_unlink(working->position_5_file_name);
 	
 	/* -------- */
 	/* Printing */
@@ -540,10 +550,10 @@ gint dmp_pb_photo_strip_calculate_new_height(gdouble height,
 	return (gint) (height * (new_width / old_width));
 }
 
-gint dmp_pb_photo_strip_calculate_whitespace(gdouble width, gdouble percentage)
+gint dmp_pb_photo_strip_calculate_whitespace(gint total_height, gint image_height)
 {
-	g_assert(percentage >= 0);
-	//if (percentage == 0) return 0;
-	//return (gint) (width * (percentage / 100));
-	return 15; // TODO: open this can of worms some other day
+	g_assert(total_height > 0 && image_height > 0);
+	g_assert(total_height >= (image_height * 5));
+	
+	return ((total_height - (image_height * 5)) / 4);
 }

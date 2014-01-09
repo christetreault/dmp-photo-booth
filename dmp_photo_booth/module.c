@@ -36,8 +36,7 @@ static gboolean dmp_pb_trigger_module_consistent = TRUE;
  * The camera module
  */
 static GModule * dmp_pb_camera_module = NULL;
-static int (*dmp_cm_capture)() = NULL;
-static int (*dmp_cm_download)(char * location) = NULL;
+static int (*dmp_cm_capture)(char * location) = NULL;
 static int (*dmp_cm_edit_config)() = NULL;
 static int (*dmp_cm_load_config)() = NULL;
 static int (*dmp_cm_initialize)() = NULL;
@@ -95,7 +94,7 @@ static gboolean dmp_pb_is_loaded(dmp_pb_module_type to_check)	//TODO: this
 	g_assert(g_module_supported());
 
 	if (to_check == DMP_PB_CAMERA_MODULE) return (dmp_pb_camera_module != NULL
-			&& dmp_cm_capture != NULL && dmp_cm_download != NULL);
+			&& dmp_cm_capture != NULL);
 	else if (to_check == DMP_PB_TRIGGER_MODULE) return (dmp_pb_trigger_module != NULL
 			&& dmp_tm_add_trigger_handler != NULL && dmp_tm_set_countdown != NULL);
 	else if (to_check == DMP_PB_PRINTER_MODULE) return (dmp_pb_printer_module != NULL
@@ -431,15 +430,6 @@ static void dmp_pb_load_camera_module(GString * module_location, GError ** error
 				"Failed to load module at: %s", module_location->str);
 		return;
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_download", (gpointer *) & dmp_cm_download))
-	{
-		dmp_pb_camera_module_consistent = FALSE;
-		g_set_error(error,
-				dmp_pb_module_error_quark(),
-				G_MODULE_LOAD_FAILURE,
-				"Failed to load module at: %s", module_location->str);
-		return;
-	}
 	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_edit_config", (gpointer *) & dmp_cm_edit_config))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
@@ -599,7 +589,6 @@ static void dmp_pb_unload_camera_module()
 
 	dmp_pb_camera_module = NULL;
 	dmp_cm_capture = NULL;
-	dmp_cm_download = NULL;
 	dmp_cm_edit_config = NULL;
 	dmp_cm_get_config_location = NULL;
 	dmp_cm_load_config = NULL;
@@ -694,16 +683,10 @@ void dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_locatio
 
 
 
-gint dmp_pb_cm_capture()
+gint dmp_pb_cm_capture(gchar * location)
 {
 	g_assert(dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE) == DMP_PB_MODULE_READY);
-	return (*dmp_cm_capture)();
-}
-
-gint dmp_pb_cm_download(gchar * location)
-{
-	g_assert(dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE) == DMP_PB_MODULE_READY);
-	return (*dmp_cm_download)(location);
+	return (*dmp_cm_capture)(location);
 }
 
 gint dmp_pb_pm_print(gchar * to_print)

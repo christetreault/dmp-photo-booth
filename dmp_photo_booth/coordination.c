@@ -23,11 +23,11 @@ G_LOCK_DEFINE(photo_request);
 static GThreadPool * photo_request_thread_pool = NULL;
 
 #define DMP_PB_COUNTDOWN_TIME 4
-#define DMP_PB_POS5_FILE_NAME "5.jpg"
-#define DMP_PB_POS4_FILE_NAME "4.jpg"
-#define DMP_PB_POS3_FILE_NAME "3.jpg"
-#define DMP_PB_POS2_FILE_NAME "2.jpg"
-#define DMP_PB_POS1_FILE_NAME "1.jpg"
+#define DMP_PB_POS5_FILE_NAME "5_"
+#define DMP_PB_POS4_FILE_NAME "4_"
+#define DMP_PB_POS3_FILE_NAME "3_"
+#define DMP_PB_POS2_FILE_NAME "2_"
+#define DMP_PB_POS1_FILE_NAME "1_"
 
 /**
  * counts down, captures, then downloads an image
@@ -40,13 +40,15 @@ static void dmp_pb_photo_request_countdown_capture(gint secs, gchar * file_name,
 	
 	int count;
 	
-	for (count = secs; count > 0; count--)
+	for (count = secs; count > 0; --count)
 	{
 		dmp_pb_tm_set_countdown(count);
 		g_usleep(G_USEC_PER_SEC * 1);
 	}
 	
-	if (dmp_pb_cm_capture() != DMP_PB_SUCCESS)
+	dmp_pb_tm_set_countdown(0);
+	
+	if (dmp_pb_cm_capture(file_name) != DMP_PB_SUCCESS)
 	{
 		g_set_error(error,
 					dmp_pb_coordination_error_quark(),
@@ -54,17 +56,7 @@ static void dmp_pb_photo_request_countdown_capture(gint secs, gchar * file_name,
 					"Failed to capture image!");
 		return;
 	}
-	dmp_pb_tm_set_countdown(0);
-	g_usleep(G_USEC_PER_SEC * 1);
 	
-	if (dmp_pb_cm_download(file_name) != DMP_PB_SUCCESS)
-	{
-		g_set_error(error,
-					dmp_pb_coordination_error_quark(),
-					CAMERA_MODULE_ERROR,
-					"Failed to download image to %s!", file_name);
-		return;
-	}
 	return;
 }
 
@@ -117,7 +109,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	if (image_position_toggle & DMP_PB_PHOTO_STRIP_POSITION_1_FLAG)
 	{
-		file1 = g_build_filename(working->str, DMP_PB_POS1_FILE_NAME, NULL);
+		file1 = g_build_filename(working->str, dmp_pb_coordination_get_epoch_filename(DMP_PB_POS1_FILE_NAME, "jpg"), NULL);
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file1, &error);
 		if (error != NULL)
 		{
@@ -133,7 +125,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	if (image_position_toggle & DMP_PB_PHOTO_STRIP_POSITION_2_FLAG)
 	{
-		file2 = g_build_filename(working->str, DMP_PB_POS2_FILE_NAME, NULL);
+		file2 = g_build_filename(working->str, dmp_pb_coordination_get_epoch_filename(DMP_PB_POS2_FILE_NAME, "jpg"), NULL);
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file2, &error);
 		if (error != NULL)
 		{
@@ -149,7 +141,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	if (image_position_toggle & DMP_PB_PHOTO_STRIP_POSITION_3_FLAG)
 	{
-		file3 = g_build_filename(working->str, DMP_PB_POS3_FILE_NAME, NULL);
+		file3 = g_build_filename(working->str, dmp_pb_coordination_get_epoch_filename(DMP_PB_POS3_FILE_NAME, "jpg"), NULL);
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file3, &error);
 		if (error != NULL)
 		{
@@ -165,7 +157,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	if (image_position_toggle & DMP_PB_PHOTO_STRIP_POSITION_4_FLAG)
 	{
-		file4 = g_build_filename(working->str, DMP_PB_POS4_FILE_NAME, NULL);
+		file4 = g_build_filename(working->str, dmp_pb_coordination_get_epoch_filename(DMP_PB_POS4_FILE_NAME, "jpg"), NULL);
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file4, &error);
 		if (error != NULL)
 		{
@@ -181,7 +173,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	if (image_position_toggle & DMP_PB_PHOTO_STRIP_POSITION_5_FLAG)
 	{
-		file5 = g_build_filename(working->str, DMP_PB_POS5_FILE_NAME, NULL);
+		file5 = g_build_filename(working->str, dmp_pb_coordination_get_epoch_filename(DMP_PB_POS5_FILE_NAME, "jpg"), NULL);
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file5, &error);
 		if (error != NULL)
 		{

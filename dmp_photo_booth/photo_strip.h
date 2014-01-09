@@ -54,12 +54,11 @@ extern "C" {
 	
 	/**
 	 * calculates the size of the border around the photo strip images
-     * @param width the width of a photo strip image
-	 * @param percentage the percent of the width that should be the size of the
-	 * border
+     * @param total_height the height of the background image
+	 * @param image_height the height of the last photo strip image
      * @return the border size
      */
-	gint dmp_pb_photo_strip_calculate_whitespace(gdouble width, gdouble percentage);
+	gint dmp_pb_photo_strip_calculate_whitespace(gint total_height, gint image_height);
 	
 	/**
 	 * initializes the photo strip module
