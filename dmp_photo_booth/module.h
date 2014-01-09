@@ -77,13 +77,6 @@ extern "C" {
 	/* -------------------------------------------------- */
 
 	/**
-	 * returns the location of the config file for the specified module
-	 * @param type the module type to query
-	 * @return a string containing the config location, or NULL on error.
-	 */
-	gchar * dmp_pb_get_module_config_location(gchar * to_fill, gsize size, dmp_pb_module_type type);
-
-	/**
 	 * signals a module to edit its config
 	 * @param type the module type to call
 	 * @return DMP_PB_SUCCESS, or an error code
