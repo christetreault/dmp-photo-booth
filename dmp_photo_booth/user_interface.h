@@ -126,27 +126,6 @@ extern "C" {
 	G_MODULE_EXPORT void dmp_pb_options_dialog_response(GtkDialog * about, gint response, gpointer user_data);
 
 	/**
-	 * callback for the load camera module button
-	 * @param button
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_load_camera_module_button_clicked(GtkButton * button, gpointer user_data);
-
-	/**
-	 * callback for the load trigger module button
-	 * @param button
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_load_trigger_module_button_clicked(GtkButton * button, gpointer user_data);
-
-	/**
-	 * callback for the load printer module button
-	 * @param button
-	 * @param user_data
-	 */
-	G_MODULE_EXPORT void dmp_pb_ui_cb_load_printer_module_button_clicked(GtkButton * button, gpointer user_data);
-
-	/**
 	 * callback for the edit camera module config button
 	 * @param button
 	 * @param user_data

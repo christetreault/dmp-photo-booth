@@ -1,5 +1,3 @@
-#include <wand/MagickWand.h>
-
 #include "photo_strip.h"
 
 
@@ -51,6 +49,18 @@ gboolean dmp_pb_photo_strip_initialized()
 	return (is_initialized && in_queue != NULL && out_queue != NULL);
 }
 
+static void dmp_pb_free_and_delete_individual_image(GString * file_name)
+{
+	if (file_name == NULL) return;
+	
+	if (g_file_test(file_name->str, G_FILE_TEST_EXISTS))
+	{
+		g_unlink(file_name->str);
+	}
+	
+	g_string_free(file_name, TRUE);
+}
+
 /**
  * cleans up the memory of a photo_strip_builder
  * @param to_smite the photo_strip_builder to reduce to a column of salt
@@ -61,11 +71,11 @@ static void dmp_pb_photo_strip_smite_builder(struct photo_strip_builder * to_smi
 	g_assert(dmp_pb_photo_strip_initialized());
 	
 	if (to_smite->completed_strip_file_name != NULL) g_string_free(to_smite->completed_strip_file_name, TRUE);
-	if (to_smite->position_1_file_name != NULL) g_string_free(to_smite->position_1_file_name, TRUE);
-	if (to_smite->position_2_file_name != NULL) g_string_free(to_smite->position_2_file_name, TRUE);
-	if (to_smite->position_3_file_name != NULL) g_string_free(to_smite->position_3_file_name, TRUE);
-	if (to_smite->position_4_file_name != NULL) g_string_free(to_smite->position_4_file_name, TRUE);
-	if (to_smite->position_5_file_name != NULL) g_string_free(to_smite->position_5_file_name, TRUE);
+	dmp_pb_free_and_delete_individual_image(to_smite->position_1_file_name);
+	dmp_pb_free_and_delete_individual_image(to_smite->position_2_file_name);
+	dmp_pb_free_and_delete_individual_image(to_smite->position_3_file_name);
+	dmp_pb_free_and_delete_individual_image(to_smite->position_4_file_name);
+	dmp_pb_free_and_delete_individual_image(to_smite->position_5_file_name);
 	
 	if (to_smite->working_wand != NULL) DestroyMagickWand(to_smite->working_wand);
 	if (to_smite->background_wand != NULL)DestroyMagickWand(to_smite->background_wand);

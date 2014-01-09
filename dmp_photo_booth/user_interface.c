@@ -27,7 +27,6 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 #define DMP_PB_PHOTO_STRIP_POSITION_4 "dmp_pb_photo_strip_position_4"
 #define DMP_PB_PHOTO_STRIP_POSITION_5 "dmp_pb_photo_strip_position_5"
 
-//#define DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX "dmp_pb_individual_aspect_ratio_combo_box"
 #define DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX "dmp_pb_individual_image_width_spin_box"
 
 #define DMP_PB_IMAGE_HISTORY_VIEW "dmp_pb_image_history_view"
@@ -190,15 +189,6 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		return;
 	}
 	
-/*
-	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX, &working_error);
-	if (working_error != NULL)
-	{
-		g_propagate_error(error, working_error);
-		return;
-	}
-*/
-	
 	dmp_pb_ui_register_user_data_key(builder, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX, &working_error);
 	if (working_error != NULL)
 	{
@@ -241,13 +231,13 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		return;
 	}
 
-	status_icons = malloc(sizeof (dmp_pb_ui_status_icons));
+	status_icons = g_malloc(sizeof (dmp_pb_ui_status_icons));
 	status_icons->printer_module_staus_icon = GTK_IMAGE(gtk_builder_get_object(builder, DMP_PB_PRINTER_MODULE_STATUS_ICON));
 	if (status_icons->printer_module_staus_icon == NULL)
 	{
 		g_hash_table_destroy(dmp_pb_user_data);
 		dmp_pb_user_data = NULL;
-		free(status_icons);
+		g_free(status_icons);
 		g_set_error(error,
 				dmp_pb_ui_error_quark(),
 				UI_DEFINITION_CORRUPT,
@@ -261,7 +251,7 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		g_hash_table_destroy(dmp_pb_user_data);
 		dmp_pb_user_data = NULL;
 		gtk_widget_destroy(GTK_WIDGET(status_icons->printer_module_staus_icon));
-		free(status_icons);
+		g_free(status_icons);
 		g_set_error(error,
 				dmp_pb_ui_error_quark(),
 				UI_DEFINITION_CORRUPT,
@@ -276,7 +266,7 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		dmp_pb_user_data = NULL;
 		gtk_widget_destroy(GTK_WIDGET(status_icons->printer_module_staus_icon));
 		gtk_widget_destroy(GTK_WIDGET(status_icons->trigger_module_staus_icon));
-		free(status_icons);
+		g_free(status_icons);
 		g_set_error(error,
 				dmp_pb_ui_error_quark(),
 				UI_DEFINITION_CORRUPT,
@@ -293,7 +283,7 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		gtk_widget_destroy(GTK_WIDGET(status_icons->printer_module_staus_icon));
 		gtk_widget_destroy(GTK_WIDGET(status_icons->trigger_module_staus_icon));
 		gtk_widget_destroy(GTK_WIDGET(status_icons->camera_module_staus_icon));
-		free(status_icons);
+		g_free(status_icons);
 		g_set_error(error,
 				dmp_pb_ui_error_quark(),
 				UI_DEFINITION_CORRUPT,
@@ -377,42 +367,6 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
 }
 
 /**
- * parses an aspect ratio, doing the correct configuration
- * @param to_test the aspect ratio in question
- */
-/*
-static void dmp_pb_ui_parse_aspect_ratio(gdouble to_test)
-{
-	if (to_test == DMP_PB_ASPECT_RATIO_4_3)
-	{
-		gtk_combo_box_set_active
-				(
-					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
-					0
-				);
-	}
-	if (to_test == DMP_PB_ASPECT_RATIO_3_2)
-	{
-		gtk_combo_box_set_active
-				(
-					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
-					1
-				);
-		return;
-	}
-	else	
-	{
-		gtk_combo_box_set_active
-				(
-					GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)),
-					0
-				);
-		return;
-	}
-}
-*/
-
-/**
  * Initializes the options dialog with values read from the config
  */
 static void dmp_pb_ui_initialize_options_fields()
@@ -469,8 +423,6 @@ static void dmp_pb_ui_initialize_options_fields()
 			);
 	g_string_free(working, TRUE);
 	
-	//dmp_pb_ui_parse_aspect_ratio(dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO));
-	
 	gtk_spin_button_set_value
 			(
 			GTK_SPIN_BUTTON(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_IMAGE_WIDTH_SPIN_BOX)),
@@ -513,27 +465,6 @@ static gint dmp_pb_ui_get_image_positions()
 	
 	return return_value;
 }
-
-/**
- * Reads the aspect ratio combo box selection id and converts it to an aspect
- * ratio
- * @return said aspect ratio
- */
-/*
-static gdouble dmp_pb_ui_get_aspect_ratio()
-{
-	gint working = gtk_combo_box_get_active(GTK_COMBO_BOX(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_INDIVIDUAL_ASPECT_RATIO_COMBO_BOX)));
-	switch (working)
-	{
-		case 0:
-			return DMP_PB_ASPECT_RATIO_4_3;
-		case 1:
-			return DMP_PB_ASPECT_RATIO_3_2;
-		default:
-			return DMP_PB_ASPECT_RATIO_4_3;
-	}
-}
-*/
 
 /**
  * Commits the options fields to the config
@@ -597,15 +528,6 @@ static void dmp_pb_ui_commit_options_fields()
 			);
 	
 	g_string_free(working, TRUE);
-	
-/*
-	dmp_pb_config_write_double
-			(
-				DMP_PB_CONFIG_CORE_GROUP,
-				DMP_PB_CONFIG_INDIVIDUAL_IMAGE_ASPECT_RATIO,
-				dmp_pb_ui_get_aspect_ratio()
-			);
-*/
 	
 	dmp_pb_config_write_double
 			(
@@ -675,24 +597,9 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 	
 	dmp_pb_ui_initialize_options_fields();
 	
-	/* 
-	 * While this probably violates some best practice, I'm going to do it 
-	 * anyways because I cannot be bothered to re-implement these functions and 
-	 * they work 
-	 */
-	dmp_pb_ui_cb_load_camera_module_button_clicked(NULL, dmp_pb_user_data);
-	dmp_pb_ui_cb_load_printer_module_button_clicked(NULL, dmp_pb_user_data);
-	dmp_pb_ui_cb_load_trigger_module_button_clicked(NULL, dmp_pb_user_data);
-	
-	/*
-	 * End of best practices violations
-	 */
-	
 	g_object_unref(G_OBJECT(builder));
 
 	dmp_pb_mwd_init(status_icons);
-	//g_idle_add(dmp_pb_mwd_handle_message, NULL); //TODO: review
-	//g_idle_add(dmp_pb_ui_check_for_strips, NULL); //TODO: review
 	g_timeout_add_seconds(1, dmp_pb_mwd_handle_message, NULL); 
 	g_timeout_add_seconds(1, dmp_pb_ui_check_for_strips, NULL);
 	g_timeout_add_seconds(1, dmp_pb_console_queue_flush_queue, dmp_pb_console_buffer);
@@ -708,8 +615,60 @@ dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons()
 	return status_icons;
 }
 
+static void dmp_pb_stop_photo_booth()
+{	
+	dmp_pb_unload_module(DMP_PB_TRIGGER_MODULE);
+	dmp_pb_unload_module(DMP_PB_PRINTER_MODULE);
+	dmp_pb_unload_module(DMP_PB_CAMERA_MODULE);
+	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), FALSE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_START), TRUE);
+	
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_START_BUTTON), TRUE);
+	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_STOP_BUTTON), FALSE);
+	dmp_pb_started = FALSE;
+}
+
 static void dmp_pb_start_photo_booth()
 {
+	GError * error = NULL;
+	GString * location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_PRINTER_MODULE_PATH);
+	
+	dmp_pb_load_module(DMP_PB_PRINTER_MODULE, location, &error);
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+		dmp_pb_stop_photo_booth();
+		g_string_free(location, TRUE);
+		return;
+	}
+	
+	g_string_free(location, TRUE);
+	location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_CAMERA_MODULE_PATH);
+	dmp_pb_load_module(DMP_PB_CAMERA_MODULE, location, &error);
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+		dmp_pb_stop_photo_booth();
+		g_string_free(location, TRUE);
+		return;
+	}
+	
+	g_string_free(location, TRUE);
+	location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_TRIGGER_MODULE_PATH);
+	dmp_pb_load_module(DMP_PB_TRIGGER_MODULE, location, &error);
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+		dmp_pb_stop_photo_booth();
+		g_string_free(location, TRUE);
+		return;
+	}
+	
+	g_string_free(location, TRUE);
 	
 	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), TRUE);
 	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_START), FALSE);
@@ -717,16 +676,6 @@ static void dmp_pb_start_photo_booth()
 	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_START_BUTTON), FALSE);
 	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_STOP_BUTTON), TRUE);
 	dmp_pb_started = TRUE;
-}
-
-static void dmp_pb_stop_photo_booth()
-{	
-	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), FALSE);
-	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_START), TRUE);
-	
-	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_START_BUTTON), TRUE);
-	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_TOOLBAR_STOP_BUTTON), FALSE);
-	dmp_pb_started = FALSE;
 }
 
 /* --------------- */
@@ -824,7 +773,6 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem 
 		g_free(console_contents);
 	}
 	
-	
 	gtk_widget_destroy(file_save);
 }
 
@@ -896,19 +844,7 @@ static void dmp_pb_options_dialog_ok_button(gpointer user_data)	//TODO: This blo
 		g_clear_error(&error);
 	}
 	
-	/* 
-	 * While this probably violates some best practice, I'm going to do it 
-	 * anyways because I cannot be bothered to re-implement these functions and 
-	 * they work 
-	 */
-	dmp_pb_ui_cb_load_camera_module_button_clicked(NULL, dmp_pb_user_data);
-	dmp_pb_ui_cb_load_printer_module_button_clicked(NULL, dmp_pb_user_data);
-	dmp_pb_ui_cb_load_trigger_module_button_clicked(NULL, dmp_pb_user_data);
-	
-	/*
-	 * End of best practices violations
-	 */
-	
+	dmp_pb_stop_photo_booth();	
 	
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
 }
@@ -917,77 +853,6 @@ G_MODULE_EXPORT void dmp_pb_options_dialog_response(GtkDialog * about, gint resp
 {
 	if (response == 2) dmp_pb_options_dialog_cancel_button(user_data);
 	else if (response == 1) dmp_pb_options_dialog_ok_button(user_data);
-}
-
-/**
- * Helper for load module callbacks. Loads the specified module type, based on 
- * the button pushed
- * @param user_data the user_data struct to use
- * @param type the module type to load
- * @throws DMP_PB_MODULE_ERROR::G_MODULE_LOAD_FAILURE
- */
-static void dmp_pb_ui_load_module_button_helper(GHashTable * user_data, dmp_pb_module_type type, GError ** error)
-{
-	GString * path;
-	GtkEntry * current;
-	GError * working_error = NULL;
-	
-	switch (type)
-	{
-		case DMP_PB_CAMERA_MODULE:
-			current = GTK_ENTRY(g_hash_table_lookup(user_data, DMP_PB_CAMERA_MODULE_PATH_TEXT_BOX));
-			break;
-		case DMP_PB_TRIGGER_MODULE:
-			current = GTK_ENTRY(g_hash_table_lookup(user_data, DMP_PB_TRIGGER_MODULE_PATH_TEXT_BOX));
-			break;
-		case DMP_PB_PRINTER_MODULE:
-			current = GTK_ENTRY(g_hash_table_lookup(user_data, DMP_PB_PRINTER_MODULE_PATH_TEXT_BOX));
-			break;
-	}
-	path = g_string_new(gtk_entry_get_text(current));
-	dmp_pb_swap_module(type, path, &working_error);
-
-	if (working_error != NULL)
-	{
-		g_string_free(path, TRUE);
-		g_propagate_error(error, working_error);
-		return;
-	}
-
-	g_string_free(path, TRUE);
-}
-
-G_MODULE_EXPORT void dmp_pb_ui_cb_load_camera_module_button_clicked(GtkButton * button, gpointer user_data)
-{
-	GError * error = NULL;
-	dmp_pb_ui_load_module_button_helper((GHashTable *) user_data, DMP_PB_CAMERA_MODULE, &error);
-	if (error != NULL)
-	{
-		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
-		g_error_free(error);
-	}
-}
-
-G_MODULE_EXPORT void dmp_pb_ui_cb_load_trigger_module_button_clicked(GtkButton * button, gpointer user_data)
-{
-	GError * error = NULL;
-	dmp_pb_ui_load_module_button_helper((GHashTable *) user_data, DMP_PB_TRIGGER_MODULE, &error);
-	if (error != NULL)
-	{
-		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
-		g_error_free(error);
-	}
-}
-
-G_MODULE_EXPORT void dmp_pb_ui_cb_load_printer_module_button_clicked(GtkButton * button, gpointer user_data)
-{
-	GError * error = NULL;
-	dmp_pb_ui_load_module_button_helper((GHashTable *) user_data, DMP_PB_PRINTER_MODULE, &error);
-	if (error != NULL)
-	{
-		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
-		g_error_free(error);
-	}
 }
 
 /**

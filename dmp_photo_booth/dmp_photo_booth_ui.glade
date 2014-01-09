@@ -967,18 +967,7 @@
                             <property name="can_focus">False</property>
                             <property name="layout_style">spread</property>
                             <child>
-                              <object class="GtkButton" id="dmp_pb_load_camera_module_button">
-                                <property name="label" translatable="yes">Load Module</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="dmp_pb_ui_cb_load_camera_module_button_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                             <child>
                               <object class="GtkButton" id="dmp_pb_edit_camera_module_config_button">
@@ -1084,18 +1073,7 @@
                             <property name="can_focus">False</property>
                             <property name="layout_style">spread</property>
                             <child>
-                              <object class="GtkButton" id="dmp_pb_load_trigger_module_button">
-                                <property name="label" translatable="yes">Load Module</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="dmp_pb_ui_cb_load_trigger_module_button_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                             <child>
                               <object class="GtkButton" id="dmp_pb_edit_trigger_module_config_button">
@@ -1202,18 +1180,7 @@
                             <property name="can_focus">False</property>
                             <property name="layout_style">spread</property>
                             <child>
-                              <object class="GtkButton" id="dmp_pb_load_printer_module_button">
-                                <property name="label" translatable="yes">Load Module</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="dmp_pb_ui_cb_load_printer_module_button_clicked" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                             <child>
                               <object class="GtkButton" id="dmp_pb_edit_printer_module_config_button">
