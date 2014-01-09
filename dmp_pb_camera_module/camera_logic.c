@@ -7,24 +7,32 @@ static GPContext * context;
 
 static gboolean is_initialized = FALSE;
 
-static void dmp_cm_message_func(GPContext *context, const gchar *format, va_list args, void *data)
+static void dmp_cm_camera_logic_log(GPLogLevel level, 
+									const char *domain, 
+									const char *format, 
+									va_list args, 
+									void *data)
 {
-	g_printf("message_func()\n");
-}
-
-static void dmp_cm_error_func(GPContext *context, const gchar *format, va_list args, void *data)
-{
-	g_printf("error_func()\n");
+	GString * va_working = g_string_new(NULL);
+	GString * working = g_string_new(NULL);
+	g_string_vprintf(va_working, format, args);
+	g_string_append(va_working, "\n");
+	g_string_printf(working, "%s %d: %s", domain, level, va_working->str);
+	dmp_cm_console_write(working->str);
+	g_string_free(va_working, TRUE);
+	g_string_free(working, TRUE);
 }
 
 gint dmp_cm_camera_init()
 {
-	if (gp_camera_new(&camera) != GP_OK) return DMP_PB_FAILURE;
 	context = gp_context_new();
+	//gp_log_add_func(GP_LOG_ERROR, (GPLogFunc) dmp_cm_camera_logic_log, NULL);
 	
-	// TODO: required?
-	gp_context_set_error_func(context, dmp_cm_error_func, NULL);
-	gp_context_set_message_func(context, dmp_cm_message_func, NULL);
+	if (gp_camera_new(&camera) != GP_OK)
+	{
+		gp_context_unref(context);
+		return DMP_PB_FAILURE;
+	}
 	
 	if (gp_camera_init(camera, context) != GP_OK)
 	{
@@ -61,6 +69,8 @@ gint dmp_cm_camera_capture(gchar * location)
 	GString * scratch_pad;
 	GError * error = NULL;
 	
+	CameraEventType event_type;
+	void * event_data;
 	
 	if (gp_camera_capture(camera, GP_CAPTURE_IMAGE, &camera_file_path, context) != GP_OK)
 	{
@@ -68,7 +78,7 @@ gint dmp_cm_camera_capture(gchar * location)
 		return DMP_PB_FAILURE;
 	}
 	
-	if (fd = g_open(location, O_CREAT | O_WRONLY, 0644) == -1)
+	if ((fd = g_open(location, O_CREAT | O_WRONLY, 0644)) == -1)
 	{
 		scratch_pad = g_string_new(NULL);
 		g_string_printf(scratch_pad, "Failed to create file: \"%s\"!\n", location);
@@ -76,6 +86,13 @@ gint dmp_cm_camera_capture(gchar * location)
 		g_string_free(scratch_pad, TRUE);
 		return DMP_PB_FAILURE;
 	}
+	
+	do
+	{
+		gp_camera_wait_for_event(camera, 1000, &event_type, &event_data, context);
+		if (event_type == GP_EVENT_CAPTURE_COMPLETE) break;
+	}
+	while(event_type != GP_EVENT_TIMEOUT);
 	
 	if (gp_file_new_from_fd(&file, fd) != GP_OK)
 	{
@@ -93,6 +110,12 @@ gint dmp_cm_camera_capture(gchar * location)
 		return DMP_PB_FAILURE;
 	}
 	
+	do
+	{
+		gp_camera_wait_for_event(camera, 1000, &event_type, &event_data, context);
+	}
+	while(event_type != GP_EVENT_TIMEOUT);
+	
 	if (gp_camera_file_get(camera, 
 							camera_file_path.folder, 
 							camera_file_path.name, 
@@ -108,5 +131,23 @@ gint dmp_cm_camera_capture(gchar * location)
 		return DMP_PB_FAILURE;
 	}
 	
-	g_assert(FALSE);
+	if (gp_camera_file_delete(camera, 
+								camera_file_path.folder, 
+								camera_file_path.name,
+								context) != GP_OK)
+	{
+		dmp_cm_console_write("Failed to delete file from camera!\n");
+		gp_file_free(file);
+		return DMP_PB_FAILURE;
+	}
+	gp_file_free(file);
+	
+	do
+	{
+		gp_camera_wait_for_event(camera, 1000, &event_type, &event_data, context);
+	}
+	while(event_type != GP_EVENT_TIMEOUT);
+	
+	return DMP_PB_SUCCESS;
 }
+
