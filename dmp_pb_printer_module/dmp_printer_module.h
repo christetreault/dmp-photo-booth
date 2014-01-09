@@ -31,15 +31,6 @@ extern "C" {
 	int dmp_pm_print(char * to_print);
 
 	/**
-	 * Returns the location of the printer module configuration file
-     * @param to_fill an allocated char array to place the returned value in
-	 * @param size the size of the char array
-     * @return The location of the config file, or NULL if on error. If size
-	 * isn't large enough to contain the path, it will be truncated
-     */
-	char * dmp_pm_get_config_location(char * to_fill, size_t size);
-	
-	/**
 	 * Edit the the module configuration
      * @return DMP_PB_SUCCESS, or an error code
      */

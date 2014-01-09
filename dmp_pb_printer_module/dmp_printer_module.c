@@ -18,16 +18,6 @@ int dmp_pm_print(char * to_print)
 	return dmp_pm_process_print(to_print);
 }
 
-char * dmp_pm_get_config_location(char * to_fill, size_t size)
-{
-	if (to_fill == NULL) return NULL;
-	
-	strncpy(to_fill, "dmp_printer_module.rc", size);
-	if (size > 0) to_fill[size - 1] = '\0';
-	
-	return to_fill;
-}
-
 int dmp_pm_edit_config()
 {
 	dmp_pm_console_write("\n\n---------------------------------------------------------------");
