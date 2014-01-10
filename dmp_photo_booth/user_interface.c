@@ -37,6 +37,8 @@ G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 #define DMP_PB_TOOLBAR_START_BUTTON "dmp_pb_toolbar_start_button"
 #define DMP_PB_TOOLBAR_STOP_BUTTON "dmp_pb_toolbar_stop_button"
 
+#define DMP_PB_WORKING_SPLASH_SCREEN "dmp_pb_working_splash_screen"
+
 /* Status Icons */
 
 #define DMP_PB_PRINTER_MODULE_STATUS_ICON "dmp_pb_printer_module_status_icon"
@@ -230,6 +232,13 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
 		g_propagate_error(error, working_error);
 		return;
 	}
+	
+	dmp_pb_ui_register_user_data_key(builder, DMP_PB_WORKING_SPLASH_SCREEN, &working_error);
+	if (working_error != NULL)
+	{
+		g_propagate_error(error, working_error);
+		return;
+	}
 
 	status_icons = g_malloc(sizeof (dmp_pb_ui_status_icons));
 	status_icons->printer_module_staus_icon = GTK_IMAGE(gtk_builder_get_object(builder, DMP_PB_PRINTER_MODULE_STATUS_ICON));
@@ -364,6 +373,17 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
 				TRUE
 			);
 	}
+}
+
+static void dmp_pb_ui_show_working_screen()
+{
+	gtk_widget_show(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_WORKING_SPLASH_SCREEN));
+	while (gtk_events_pending()) gtk_main_iteration();
+}
+
+static void dmp_pb_ui_hide_working_screen()
+{
+	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_WORKING_SPLASH_SCREEN));
 }
 
 /**
@@ -637,7 +657,7 @@ static void dmp_pb_stop_photo_booth()
 
 static void dmp_pb_start_photo_booth()
 {
-	GError * error = NULL;
+	GError * error = NULL;	
 	GString * location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_PRINTER_MODULE_PATH);
 	
 	dmp_pb_load_module(DMP_PB_PRINTER_MODULE, location, &error);
@@ -701,17 +721,27 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menu
 {
 	g_assert(dmp_pb_ui_is_started() == FALSE);
 	
+	dmp_pb_ui_show_working_screen();
+	
 	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
 	
 	dmp_pb_start_photo_booth();
+	
+	dmp_pb_ui_hide_working_screen();
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	g_assert(dmp_pb_ui_is_started());
+	
+	dmp_pb_ui_show_working_screen();
+
+	
 	dmp_pb_console_queue_push(g_string_new("Stopping the Photo Booth...\n"));
 	
 	dmp_pb_stop_photo_booth();
+	
+	dmp_pb_ui_hide_working_screen();
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -719,9 +749,10 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menu
 	GtkIconView * working_view = g_hash_table_lookup(dmp_pb_user_data, DMP_PB_IMAGE_HISTORY_VIEW);
 	GList * working = gtk_icon_view_get_selected_items(working_view);
 	if (working == NULL) return;	// Nothing selected
+	
+	dmp_pb_ui_show_working_screen();
+	
 	GtkTreeModel * working_tree_model = gtk_icon_view_get_model(working_view);
-	
-	
 	GtkTreeIter  iter;
 	
 	gtk_tree_model_get_iter(working_tree_model,	&iter, working->data);
@@ -735,7 +766,7 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menu
 	g_list_free(working);
 	
 	g_free(path);
-	
+	dmp_pb_ui_hide_working_screen();
 }
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem * menuitem, gpointer user_data)
