@@ -31,24 +31,24 @@ void dmp_pm_config_init()
 			dmp_pm_console_write(error_string->str);
 			g_string_free(error_string, TRUE);
 			g_clear_error(&working);
+			dmp_pm_set_status(FALSE);
+			return;
 		}
 	}
+	dmp_pm_set_status(TRUE);
 }
 
 void dmp_pm_config_finalize()
 {
+	dmp_pm_set_status(FALSE);
 	g_key_file_free(dmp_pm_config);
-}
-
-gboolean dmp_pm_config_is_initialized()
-{
-	return (dmp_pm_config != NULL);
+	dmp_pm_config = NULL;
 }
 
 gsize dmp_pm_config_get_dpi()
 {
 	static gboolean warned = FALSE;
-	g_assert(dmp_pm_config_is_initialized());
+	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
 	gsize return_value = g_key_file_get_integer(dmp_pm_config, DMP_PM_GROUP, DMP_PM_DPI_KEY, &error);
 	
@@ -69,7 +69,7 @@ gsize dmp_pm_config_get_dpi()
 gsize dmp_pm_config_get_canvas_height()
 {
 	static gboolean warned = FALSE;
-	g_assert(dmp_pm_config_is_initialized());
+	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
 	gsize return_value = g_key_file_get_integer(dmp_pm_config, DMP_PM_GROUP, DMP_PM_HEIGHT_KEY, &error);
 	
@@ -90,7 +90,7 @@ gsize dmp_pm_config_get_canvas_height()
 gsize dmp_pm_config_get_canvas_width()
 {
 	static gboolean warned = FALSE;
-	g_assert(dmp_pm_config_is_initialized());
+	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
 	gsize return_value = g_key_file_get_integer(dmp_pm_config, DMP_PM_GROUP, DMP_PM_WIDTH_KEY, &error);
 	
@@ -111,7 +111,7 @@ gsize dmp_pm_config_get_canvas_width()
 gchar * dmp_pm_config_get_printer_name()
 {
 	static gboolean warned = FALSE;
-	g_assert(dmp_pm_config_is_initialized());
+	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
 	GString * error_builder;
 	gchar * return_value = g_key_file_get_string(dmp_pm_config, DMP_PM_GROUP, DMP_PM_PRINTER_NAME_KEY, &error);
@@ -138,7 +138,7 @@ gchar * dmp_pm_config_get_printer_name()
 
 gboolean dmp_pm_config_print_to_file()
 {
-	g_assert(dmp_pm_config_is_initialized());
+	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
 	gboolean return_value = g_key_file_get_boolean(dmp_pm_config, DMP_PM_GROUP, DMP_PM_PRINT_TO_FILE_KEY, &error);
 	

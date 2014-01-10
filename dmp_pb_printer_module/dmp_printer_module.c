@@ -1,6 +1,16 @@
 #include "dmp_printer_module.h"
 
 int (*console_write)(char * message);
+void (*status_handler)(gint status);
+
+int dmp_pm_install_status_handler(void (*sh)(int status))
+{
+	g_assert(sh != NULL);
+	
+	status_handler = sh;
+	
+	return DMP_PB_SUCCESS;
+}
 
 int dmp_pm_install_console(int (*c_cb)(char * message))
 {
@@ -56,4 +66,10 @@ int dmp_pm_console_write(gchar * to_write)
 {
 	g_assert(console_write != NULL);
 	return (*console_write)(to_write);
+}
+
+void dmp_pm_set_status(gboolean status)
+{
+	g_assert(status_handler != NULL);
+	(*status_handler)(status);
 }

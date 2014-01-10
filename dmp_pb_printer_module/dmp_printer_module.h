@@ -73,6 +73,19 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
 	int dmp_pm_console_write(gchar * to_write);
+	
+	/**
+	 * Sets the status monitor handler callback
+     * @param sh the callback to set
+     * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
+     */
+	int dmp_pm_install_status_handler(void (*sh)(int status));
+	
+	/**
+	 * Sets the status of the module
+     * @param status Is it true that the module is good?
+     */
+	void dmp_pm_set_status(gboolean status);
 
 #ifdef	__cplusplus
 }
