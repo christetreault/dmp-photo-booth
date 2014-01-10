@@ -30,8 +30,3 @@ gint dmp_tm_lifecycle_finalize()
 	is_initialized = FALSE;
 	return DMP_PB_SUCCESS;
 }
-
-gboolean dmp_tm_lifecycle_is_initialized()
-{
-	return is_initialized;
-}

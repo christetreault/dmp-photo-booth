@@ -3,10 +3,12 @@
 
 G_DEFINE_QUARK(DMP_TM_SERIAL_IO_ERROR, dmp_tm_serial_io_error)
 
-G_LOCK_DEFINE(serial_io);
 static GThread * dmp_tm_serial_io_thread = NULL;
 static gboolean dmp_tm_serial_io_thread_should_die = TRUE;
 gint serial_descriptor;
+
+static struct termios saved_options;
+static struct termios trigger_options;
 
 /**
  * reads 1 byte from the trigger
@@ -21,6 +23,7 @@ static guint8 dmp_tm_io_read_byte()
 	{
 		dmp_tm_console_write("Failed to read data from the trigger\n");
 		dmp_tm_serial_io_thread_should_die = TRUE;
+		dmp_tm_set_status(FALSE);
 	}
 	else if (len == 0) return 0;
 	
@@ -40,6 +43,7 @@ void dmp_tm_io_write_byte(gint8 in)
 	{
 		dmp_tm_console_write("Failed to write data to the trigger\n");
 		dmp_tm_serial_io_thread_should_die = TRUE;
+		dmp_tm_set_status(FALSE);
 	}
 }
 
@@ -50,17 +54,28 @@ void dmp_tm_io_write_byte(gint8 in)
  * @return NULL
  */
 static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
-{
+{	
 	guint8 read_value = 0;
+	while (dmp_tm_io_thread_running())
+	{
+		read_value = dmp_tm_io_read_byte(serial_descriptor);
+		
+		if (read_value & OUTPUT_BUTTON_PRESS) dmp_tm_call_trigger_handler();
+		
+	}
 	
+	
+	return NULL;
+}
+
+void dmp_tm_io_start_serial()
+{
 	gchar * serial_port = dmp_tm_config_get_device_name();
-	
-	static struct termios saved_options;
-	static struct termios trigger_options;
+
 	if ((serial_descriptor = open(serial_port, O_RDWR | O_NOCTTY)) < 0)
 	{
 		dmp_tm_console_write("Failed to open serial connection!\n");
-		return NULL;
+		return;
 	}
 	
 	g_free(serial_port);
@@ -69,14 +84,14 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	{
 		dmp_tm_console_write("Failed to get serial attributes\n");
 		close(serial_descriptor);
-		return NULL;
+		return;
 	}
 	
 	if (tcgetattr(serial_descriptor, &trigger_options) < 0)
 	{
 		dmp_tm_console_write("Failed to get serial attributes\n");
 		close(serial_descriptor);
-		return NULL;
+		return;
 	}
 	
 	cfsetispeed(&trigger_options, B9600);
@@ -97,44 +112,34 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	{
 		dmp_tm_console_write("Failed to set serial attributes\n");
 		close(serial_descriptor);
-		return NULL;
+		return;
 	}
 	
 	g_usleep(G_USEC_PER_SEC * 3);
 	tcflush(serial_descriptor, TCIOFLUSH);
 	dmp_tm_serial_io_thread_should_die = FALSE;
-	
-	while (!dmp_tm_serial_io_thread_should_die)
-	{
-		read_value = dmp_tm_io_read_byte(serial_descriptor);
-		
-		if (read_value & OUTPUT_BUTTON_PRESS) dmp_tm_call_trigger_handler();
-		
-	}
-	
-	if (tcsetattr(serial_descriptor, TCSANOW, &saved_options) < 0)
-	{
-		dmp_tm_console_write("Failed to restore saved serial attributes\n");
-		close(serial_descriptor);
-		return NULL;
-	}
-	
-	close(serial_descriptor);
-	return NULL;
-}
-
-void dmp_tm_io_start_serial()
-{
+	dmp_tm_set_status(TRUE);
 	dmp_tm_serial_io_thread = g_thread_new("serial thread", dmp_tm_serial_io_thread_function, NULL);
 }
 
 void dmp_tm_io_stop_serial()
 {
 	dmp_tm_serial_io_thread_should_die = TRUE;
+	dmp_tm_set_status(FALSE);
 	g_thread_join(dmp_tm_serial_io_thread);
+	if (tcsetattr(serial_descriptor, TCSANOW, &saved_options) < 0)
+	{
+		dmp_tm_console_write("Failed to restore saved serial attributes\n");
+		close(serial_descriptor);
+		return;
+	}
+	
+	close(serial_descriptor);
 }
 
 gboolean dmp_tm_io_thread_running()
 {
-	return !dmp_tm_serial_io_thread_should_die;
+	gboolean return_value;
+	return_value = !dmp_tm_serial_io_thread_should_die;
+	return return_value;
 }

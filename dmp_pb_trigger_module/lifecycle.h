@@ -35,12 +35,6 @@ extern "C" {
      */
 	gint dmp_tm_lifecycle_finalize();
 	
-	/**
-	 * tests to see if the trigger module is initialized
-     * @return TRUE if it is, FALSE if not
-     */
-	gboolean dmp_tm_lifecycle_is_initialized();
-	
 
 
 #ifdef	__cplusplus
