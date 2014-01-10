@@ -63,11 +63,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${TESTDIR}/TestFiles/f1
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EXT}
 
-${TESTDIR}/TestFiles/f1: ${OBJECTFILES}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.c} -o ${TESTDIR}/TestFiles/f1 ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 libgphoto2` -shared -fPIC
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EXT}: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 libgphoto2` -shared -fPIC
 
 ${OBJECTDIR}/camera_logic.o: camera_logic.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -133,7 +133,7 @@ ${OBJECTDIR}/camera_module_nomain.o: ${OBJECTDIR}/camera_module.o camera_module.
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${TESTDIR}/TestFiles/f1
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EXT}
 
 # Subprojects
 .clean-subprojects:

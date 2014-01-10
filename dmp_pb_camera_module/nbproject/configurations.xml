@@ -118,7 +118,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f1</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EXT}</output>
           <commandLine>`pkg-config --libs glib-2.0 libgphoto2`</commandLine>
         </linkerTool>
       </compileType>
