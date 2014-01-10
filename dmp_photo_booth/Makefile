@@ -58,7 +58,10 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
-
+	${CP} DMP_PB_Icon.png ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/DMP_PB_Icon.png
+	${CP} dmp_logo.png ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/dmp_logo.png
+	${CP} dmp_logo_working_screen.png ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/dmp_logo_working_screen.png
+	${CP} dmp_photo_booth_ui.glade ${CND_DISTDIR}/${CONF}/${CND_PLATFORM_${CONF}}/dmp_photo_booth_ui.glade
 
 # clean
 clean: .clean-post
@@ -68,7 +71,6 @@ clean: .clean-post
 
 .clean-post: .clean-impl
 # Add your post 'clean' code here...
-
 
 # clobber
 clobber: .clobber-post

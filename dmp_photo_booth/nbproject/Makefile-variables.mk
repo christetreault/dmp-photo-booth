@@ -16,9 +16,9 @@ CND_PACKAGE_NAME_Debug=dmpphotobooth.tar
 CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/dmpphotobooth.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
-CND_ARTIFACT_DIR_Release=build/Release/GNU-Linux-x86/tests/TestFiles
-CND_ARTIFACT_NAME_Release=f1
-CND_ARTIFACT_PATH_Release=build/Release/GNU-Linux-x86/tests/TestFiles/f1
+CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
+CND_ARTIFACT_NAME_Release=dmp_photo_booth
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/dmp_photo_booth
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=dmpphotobooth.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/dmpphotobooth.tar
