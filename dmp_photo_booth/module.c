@@ -10,10 +10,12 @@ static int (*dmp_pm_print)(char * to_print) = NULL;
 static int (*dmp_pm_edit_config)() = NULL;
 static int (*dmp_pm_load_config)() = NULL;
 static int (*dmp_pm_initialize)() = NULL;
-static int (*dmp_pm_is_initialized)() = NULL;
+//static int (*dmp_pm_is_initialized)() = NULL;
 static int (*dmp_pm_finalize)() = NULL;
 static int (*dmp_pm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_pm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_printer_module_consistent = TRUE;
+static gboolean dmp_pb_printer_module_status_ok = FALSE;
 
 /**
  * The trigger module
@@ -24,11 +26,13 @@ static int (*dmp_tm_set_countdown)(int current) = NULL;
 static int (*dmp_tm_edit_config)() = NULL;
 static int (*dmp_tm_load_config)() = NULL;
 static int (*dmp_tm_initialize)() = NULL;
-static int (*dmp_tm_is_initialized)() = NULL;
+//static int (*dmp_tm_is_initialized)() = NULL;
 static int (*dmp_tm_finalize)() = NULL;
 static int (*dmp_tm_show_error)(int value) = NULL;
 static int (*dmp_tm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_tm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_trigger_module_consistent = TRUE;
+static gboolean dmp_pb_trigger_module_status_ok = FALSE;
 
 /**
  * The camera module
@@ -38,29 +42,43 @@ static int (*dmp_cm_capture)(char * location) = NULL;
 static int (*dmp_cm_edit_config)() = NULL;
 static int (*dmp_cm_load_config)() = NULL;
 static int (*dmp_cm_initialize)() = NULL;
-static int (*dmp_cm_is_initialized)() = NULL;
+//static int (*dmp_cm_is_initialized)() = NULL;
 static int (*dmp_cm_finalize)() = NULL;
 static int (*dmp_cm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_cm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_camera_module_consistent = TRUE;
+static gboolean dmp_pb_camera_module_status_ok = FALSE;
+
+static void dmp_pb_set_printer_module_status(gint state)
+{
+	dmp_pb_printer_module_status_ok = !(state == 0);
+}
+
+static void dmp_pb_set_trigger_module_status(gint state)
+{
+	dmp_pb_trigger_module_status_ok = !(state == 0);
+}
+
+static void dmp_pb_set_camera_module_status(gint state)
+{
+	dmp_pb_camera_module_status_ok = !(state == 0);
+}
 
 /**
  * checks to see if a module is initialized
  * @param type the module type
  * @return FALSE if not initialized, TRUE if initialized
  */
-static gboolean dmp_pb_is_initialized(dmp_pb_module_type to_check)
+static gboolean dmp_pb_status_is_ok(dmp_pb_module_type to_check)
 {
 	switch (to_check)
 	{
 		case DMP_PB_PRINTER_MODULE:
-			if (dmp_pm_is_initialized == NULL) return FALSE;
-			return (*dmp_pm_is_initialized)();
+			return dmp_pb_printer_module_status_ok;
 		case DMP_PB_TRIGGER_MODULE:
-			if (dmp_tm_is_initialized == NULL) return FALSE;
-			return (*dmp_tm_is_initialized)();
+			return dmp_pb_trigger_module_status_ok;
 		case DMP_PB_CAMERA_MODULE:
-			if (dmp_cm_is_initialized == NULL) return FALSE;
-			return (*dmp_cm_is_initialized)();
+			return dmp_pb_camera_module_status_ok;
 		default:
 			g_assert_not_reached();
 	}
@@ -103,7 +121,7 @@ dmp_pb_module_state dmp_pb_check_module_state(dmp_pb_module_type to_check)
 {
 	if (!dmp_pb_is_consistent(to_check)) return DMP_PB_MODULE_IN_INCONSISTENT_STATE;
 	if (!dmp_pb_is_loaded(to_check)) return DMP_PB_MODULE_NOT_LOADED;
-	if (!dmp_pb_is_initialized(to_check)) return DMP_PB_MODULE_NOT_INITIALIZED;
+	if (!dmp_pb_status_is_ok(to_check)) return DMP_PB_MODULE_BAD_STATUS;
 	return DMP_PB_MODULE_READY;
 }
 
@@ -122,13 +140,16 @@ static gint dmp_pb_initialize(dmp_pb_module_type type)
 	{
 		case DMP_PB_PRINTER_MODULE:
 			(*dmp_pm_install_console)(dmp_pb_console_write_callback);
+			(*dmp_pm_install_status_handler)(dmp_pb_set_printer_module_status);
 			return (*dmp_pm_initialize)();
 		case DMP_PB_TRIGGER_MODULE:
 			(*dmp_tm_install_console)(dmp_pb_console_write_callback);
+			(*dmp_tm_install_status_handler)(dmp_pb_set_trigger_module_status);
 			(*dmp_tm_add_trigger_handler)(dmp_pb_trigger_handler);
 			return (*dmp_tm_initialize)();
 		case DMP_PB_CAMERA_MODULE:
 			(*dmp_cm_install_console)(dmp_pb_console_write_callback);
+			(*dmp_cm_install_status_handler)(dmp_pb_set_camera_module_status);
 			return (*dmp_cm_initialize)();
 		default:
 			g_assert_not_reached();
@@ -217,7 +238,7 @@ static void dmp_pb_load_printer_module(GString * module_location, GError ** erro
 				"Failed to load module at: %s", module_location->str);
 		return;
 	}
-	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_is_initialized", (gpointer *) & dmp_pm_is_initialized))
+	if (!g_module_symbol(dmp_pb_printer_module, "dmp_pm_install_status_handler", (gpointer *) & dmp_pm_install_status_handler))
 	{
 		dmp_pb_printer_module_consistent = FALSE;
 		g_set_error(error,
@@ -325,7 +346,7 @@ static void dmp_pb_load_trigger_module(GString * module_location, GError ** erro
 				"Failed to load module at: %s", module_location->str);
 		return;
 	}
-	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_is_initialized", (gpointer *) & dmp_tm_is_initialized))
+	if (!g_module_symbol(dmp_pb_trigger_module, "dmp_tm_install_status_handler", (gpointer *) & dmp_tm_install_status_handler))
 	{
 		dmp_pb_trigger_module_consistent = FALSE;
 		g_set_error(error,
@@ -435,7 +456,7 @@ static void dmp_pb_load_camera_module(GString * module_location, GError ** error
 				"Failed to load module at: %s", module_location->str);
 		return;
 	}
-	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_is_initialized", (gpointer *) & dmp_cm_is_initialized))
+	if (!g_module_symbol(dmp_pb_camera_module, "dmp_cm_install_status_handler", (gpointer *) & dmp_cm_install_status_handler))
 	{
 		dmp_pb_camera_module_consistent = FALSE;
 		g_set_error(error,
@@ -516,7 +537,7 @@ static void dmp_pb_unload_printer_module()
 	dmp_pm_load_config = NULL;
 	dmp_pm_finalize = NULL;
 	dmp_pm_initialize = NULL;
-	dmp_pm_is_initialized = NULL;
+	dmp_pm_install_status_handler = NULL;
 
 	dmp_pb_printer_module_consistent = TRUE;
 
@@ -539,7 +560,7 @@ static void dmp_pb_unload_trigger_module()
 	dmp_tm_finalize = NULL;
 	dmp_tm_show_error = NULL;
 	dmp_tm_initialize = NULL;
-	dmp_tm_is_initialized = NULL;
+	dmp_tm_install_status_handler = NULL;
 
 	dmp_pb_trigger_module_consistent = TRUE;
 }
@@ -560,7 +581,7 @@ static void dmp_pb_unload_camera_module()
 	dmp_cm_load_config = NULL;
 	dmp_cm_finalize = NULL;
 	dmp_cm_initialize = NULL;
-	dmp_cm_is_initialized = NULL;
+	dmp_cm_install_status_handler = NULL;
 
 	dmp_pb_camera_module_consistent = TRUE;
 }

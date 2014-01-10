@@ -59,6 +59,11 @@ static void dmp_pb_photo_request_countdown_capture(gint secs, gchar * file_name,
 		return;
 	}
 	
+	g_usleep(G_USEC_PER_SEC * 1);	//	TODO: If capture returns in less than 1
+									//	second, the count will get thrown off 
+									//	unless this sleep call is here. Maybe
+									//	implement a timer for this?
+	
 	return;
 }
 
