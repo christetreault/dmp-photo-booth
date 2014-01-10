@@ -46,7 +46,7 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f2
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=`pkg-config --cflags glib-2.0 libgphoto2` 
 
 # CC Compiler Flags
 CCFLAGS=
@@ -67,17 +67,17 @@ LDLIBSOPTIONS=
 
 ${TESTDIR}/TestFiles/f1: ${OBJECTFILES}
 	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.c} -o ${TESTDIR}/TestFiles/f1 ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+	${LINK.c} -o ${TESTDIR}/TestFiles/f1 ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 libgphoto2` -shared -fPIC
 
 ${OBJECTDIR}/camera_logic.o: camera_logic.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic.o camera_logic.c
+	$(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic.o camera_logic.c
 
 ${OBJECTDIR}/camera_module.o: camera_module.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
+	$(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
 
 # Subprojects
 .build-subprojects:
@@ -92,7 +92,7 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/camera_module_tests.o ${OBJECTFILES:%.
 ${TESTDIR}/tests/camera_module_tests.o: tests/camera_module_tests.c 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/camera_module_tests.o tests/camera_module_tests.c
+	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 libgphoto2` -MMD -MP -MF $@.d -o ${TESTDIR}/tests/camera_module_tests.o tests/camera_module_tests.c
 
 
 ${OBJECTDIR}/camera_logic_nomain.o: ${OBJECTDIR}/camera_logic.o camera_logic.c 
@@ -103,7 +103,7 @@ ${OBJECTDIR}/camera_logic_nomain.o: ${OBJECTDIR}/camera_logic.o camera_logic.c
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -I. -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic_nomain.o camera_logic.c;\
+	    $(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic_nomain.o camera_logic.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/camera_logic.o ${OBJECTDIR}/camera_logic_nomain.o;\
 	fi
@@ -116,7 +116,7 @@ ${OBJECTDIR}/camera_module_nomain.o: ${OBJECTDIR}/camera_module.o camera_module.
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -I. -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module_nomain.o camera_module.c;\
+	    $(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module_nomain.o camera_module.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/camera_module.o ${OBJECTDIR}/camera_module_nomain.o;\
 	fi

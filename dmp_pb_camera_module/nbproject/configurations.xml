@@ -103,6 +103,7 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>`pkg-config --cflags glib-2.0 libgphoto2`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -118,6 +119,7 @@
         </asmTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f1</output>
+          <commandLine>`pkg-config --libs glib-2.0 libgphoto2`</commandLine>
         </linkerTool>
       </compileType>
       <item path="camera_logic.c" ex="false" tool="0" flavor2="0">
