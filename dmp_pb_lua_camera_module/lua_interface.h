@@ -36,12 +36,6 @@ extern "C" {
 	gint dmp_cm_lua_initialize();
 
 	/**
-	 * Tests to see if Lua is initialized
-     * @return TRUE if so, FALSE if not
-     */
-	gboolean dmp_cm_lua_is_initialized();
-
-	/**
 	 * Finalizes Lua
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
