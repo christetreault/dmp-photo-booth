@@ -108,6 +108,7 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <commandLine>`pkg-config --cflags gthread-2.0`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -118,6 +119,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>`pkg-config --libs gthread-2.0`</commandLine>
+        </linkerTool>
       </compileType>
       <item path="dmp_trigger_module.c" ex="false" tool="0" flavor2="0">
       </item>
