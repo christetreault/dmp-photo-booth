@@ -47,7 +47,7 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f1
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=`pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` 
 
 # CC Compiler Flags
 CCFLAGS=
@@ -68,22 +68,22 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -shared -fPIC
 
 ${OBJECTDIR}/dmp_printer_module.o: dmp_printer_module.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module.o dmp_printer_module.c
+	$(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module.o dmp_printer_module.c
 
 ${OBJECTDIR}/printer_config.o: printer_config.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config.o printer_config.c
+	$(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config.o printer_config.c
 
 ${OBJECTDIR}/strip_processing.o: strip_processing.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing.o strip_processing.c
+	$(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing.o strip_processing.c
 
 # Subprojects
 .build-subprojects:
@@ -98,7 +98,7 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/printer_module_tests.o ${OBJECTFILES:%
 ${TESTDIR}/tests/printer_module_tests.o: tests/printer_module_tests.c 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/printer_module_tests.o tests/printer_module_tests.c
+	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -MMD -MP -MF $@.d -o ${TESTDIR}/tests/printer_module_tests.o tests/printer_module_tests.c
 
 
 ${OBJECTDIR}/dmp_printer_module_nomain.o: ${OBJECTDIR}/dmp_printer_module.o dmp_printer_module.c 
@@ -109,7 +109,7 @@ ${OBJECTDIR}/dmp_printer_module_nomain.o: ${OBJECTDIR}/dmp_printer_module.o dmp_
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module_nomain.o dmp_printer_module.c;\
+	    $(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_printer_module_nomain.o dmp_printer_module.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/dmp_printer_module.o ${OBJECTDIR}/dmp_printer_module_nomain.o;\
 	fi
@@ -122,7 +122,7 @@ ${OBJECTDIR}/printer_config_nomain.o: ${OBJECTDIR}/printer_config.o printer_conf
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config_nomain.o printer_config.c;\
+	    $(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/printer_config_nomain.o printer_config.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/printer_config.o ${OBJECTDIR}/printer_config_nomain.o;\
 	fi
@@ -135,7 +135,7 @@ ${OBJECTDIR}/strip_processing_nomain.o: ${OBJECTDIR}/strip_processing.o strip_pr
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing_nomain.o strip_processing.c;\
+	    $(COMPILE.c) -O2 `pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/strip_processing_nomain.o strip_processing.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/strip_processing.o ${OBJECTDIR}/strip_processing_nomain.o;\
 	fi

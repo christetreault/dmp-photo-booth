@@ -99,6 +99,7 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <commandLine>`pkg-config --cflags glib-2.0 MagickWand gthread-2.0` `cups-config --cflags`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -109,6 +110,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>`pkg-config --libs glib-2.0 MagickWand gthread-2.0` `cups-config --cflags`</commandLine>
+        </linkerTool>
       </compileType>
       <item path="dmp_printer_module.c" ex="false" tool="0" flavor2="0">
       </item>
