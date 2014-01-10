@@ -31,22 +31,26 @@ gint dmp_cm_camera_init()
 	if (gp_camera_new(&camera) != GP_OK)
 	{
 		gp_context_unref(context);
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
 	if (gp_camera_init(camera, context) != GP_OK)
 	{
 		dmp_cm_camera_finalize();
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
 	is_initialized = TRUE;
-	
+	dmp_cm_set_status(TRUE);
 	return DMP_PB_SUCCESS;
 }
 
 gint dmp_cm_camera_finalize()
 {
+	dmp_cm_set_status(FALSE);
+	
 	gp_camera_unref(camera);
 	gp_context_unref(context);
 	
@@ -55,14 +59,9 @@ gint dmp_cm_camera_finalize()
 	return DMP_PB_SUCCESS;
 }
 
-gboolean dmp_cm_camera_is_initialized()
-{
-	return is_initialized;
-}
-
 gint dmp_cm_camera_capture(gchar * location)
 {
-	g_assert(dmp_cm_camera_is_initialized());
+	g_assert(is_initialized);
 	CameraFile * file;
 	CameraFilePath camera_file_path;
 	gint fd;

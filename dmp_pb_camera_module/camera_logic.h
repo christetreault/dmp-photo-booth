@@ -30,12 +30,6 @@ extern "C" {
 	gint dmp_cm_camera_finalize();
 	
 	/**
-	 * Tests to see if the camera has been initialized
-     * @return TRUE if init'd, FALSE if not
-     */
-	gboolean dmp_cm_camera_is_initialized();
-	
-	/**
 	 * signal the camera to capture and download to the passed-in location
      * @param location the location to download to
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE

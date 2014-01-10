@@ -50,12 +50,6 @@ extern "C" {
 	int dmp_cm_initialize();
 	
 	/**
-	 * checks to see if the module is initialized
-     * @return 0 if not initialized, !0 if initialized
-     */
-	int dmp_cm_is_initialized();
-	
-	/**
 	 * finalizes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
@@ -67,6 +61,19 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
 	int dmp_cm_console_write(gchar * to_write);
+	
+	/**
+	 * Sets the status monitor handler callback
+     * @param sh the callback to set
+     * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
+     */
+	int dmp_cm_install_status_handler(void (*sh)(int status));
+	
+	/**
+	 * Sets the status of the module
+     * @param status Is it true that the module is good?
+     */
+	void dmp_cm_set_status(gboolean status);
 
 
 #ifdef	__cplusplus
