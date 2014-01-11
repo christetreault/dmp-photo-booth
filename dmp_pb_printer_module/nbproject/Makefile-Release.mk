@@ -68,7 +68,7 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 MagickWand gthread-2.0` `cups-config --cflags` -shared -fPIC
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_printer_module.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} `pkg-config --libs glib-2.0 MagickWand gthread-2.0` `cups-config --libs` -shared -fPIC
 
 ${OBJECTDIR}/dmp_printer_module.o: dmp_printer_module.c 
 	${MKDIR} -p ${OBJECTDIR}
