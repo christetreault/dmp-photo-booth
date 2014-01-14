@@ -13,8 +13,8 @@ CND_BUILDDIR=build
 CND_DLIB_EXT=so
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=${TESTDIR}/TestFiles/f2
-OUTPUT_BASENAME=f2
+OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_lua_camera_module.${CND_DLIB_EXT}
+OUTPUT_BASENAME=libdmp_pb_lua_camera_module.${CND_DLIB_EXT}
 PACKAGE_TOP_DIR=libdmppbluacameramodule.so/
 
 # Functions

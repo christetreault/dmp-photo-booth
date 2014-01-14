@@ -89,6 +89,7 @@
             <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
+          <commandLine>`pkg-config --cflags glib-2.0 lua5.2`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -104,7 +105,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_lua_camera_module.${CND_DLIB_EXT}</output>
+          <commandLine>`pkg-config --libs glib-2.0 lua5.2`</commandLine>
         </linkerTool>
       </compileType>
       <item path="camera_module.c" ex="false" tool="0" flavor2="0">

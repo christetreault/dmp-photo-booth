@@ -13,8 +13,6 @@ extern "C" {
 #endif
 	
 #include "global_defines.h"
-#include <stdio.h>
-#include <string.h>
 #include <glib.h>
 #include "lua_interface.h"
 	/**
@@ -30,12 +28,6 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_cm_edit_config();
-
-	/**
-	 * loads or reloads the configuration for this module
-     * @return DMP_PB_SUCCESS, or an error code
-     */
-	int dmp_cm_load_config();
 	
 	/**
 	 * Installs the function used to write to the Core Application's console
