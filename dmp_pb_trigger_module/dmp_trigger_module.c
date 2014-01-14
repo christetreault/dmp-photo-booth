@@ -78,12 +78,6 @@ int dmp_tm_edit_config()
 	return DMP_PB_SUCCESS;
 }
 
-int dmp_tm_load_config()
-{
-	dmp_tm_load_config();
-	return DMP_PB_SUCCESS;
-}
-
 int dmp_tm_initialize()
 {
 	dmp_tm_config_init();
