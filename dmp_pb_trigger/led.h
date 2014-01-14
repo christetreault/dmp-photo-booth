@@ -17,11 +17,11 @@
 			typedef enum
 			{
 				COUNT_NULL_LED = 0,
-				COUNT_0_LED = 8,
-				COUNT_1_LED = 9,
-				COUNT_2_LED = 10,
-				COUNT_3_LED = 11,
-				COUNT_4_LED = 12
+				COUNT_0_LED = 2,
+				COUNT_1_LED = 3,
+				COUNT_2_LED = 4,
+				COUNT_3_LED = 5,
+				COUNT_4_LED = 6
 			}led_pin;
 			
 			/**
