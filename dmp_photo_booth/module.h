@@ -84,13 +84,6 @@ extern "C" {
 	gint dmp_pb_edit_module_config(dmp_pb_module_type type);
 
 	/**
-	 * signals a module to load or reload its config
-	 * @param type the module type to call
-	 * @return DMP_PB_SUCCESS, or an error code
-	 */
-	gint dmp_pb_load_module_config(dmp_pb_module_type type);
-
-	/**
 	 * signals the camera to capture a picture, and downloads it to location
 	 * @param location the location to download to
 	 * @return DMP_PB_SUCCESS, or an error code
