@@ -34,11 +34,6 @@ int dmp_cm_edit_config()
 	return DMP_PB_SUCCESS;
 }
 
-int dmp_cm_load_config()
-{
-	return DMP_PB_SUCCESS;
-}
-
 int dmp_cm_initialize()
 {
 	return dmp_cm_camera_init();
