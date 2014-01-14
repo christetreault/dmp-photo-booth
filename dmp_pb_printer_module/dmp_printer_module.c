@@ -39,12 +39,6 @@ int dmp_pm_edit_config()
 	return DMP_PB_SUCCESS;
 }
 
-int dmp_pm_load_config()
-{
-	return DMP_PB_SUCCESS;
-}
-
-
 int dmp_pm_initialize()
 {
 	dmp_pm_config_init();

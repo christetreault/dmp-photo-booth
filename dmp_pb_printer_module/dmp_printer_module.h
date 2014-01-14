@@ -35,12 +35,6 @@ extern "C" {
      * @return DMP_PB_SUCCESS, or an error code
      */
 	int dmp_pm_edit_config();
-
-	/**
-	 * loads or reloads the configuration for this module
-     * @return DMP_PB_SUCCESS, or an error code
-     */
-	int dmp_pm_load_config();
 	
 	/**
 	 * Installs the function used to write to the Core Application's console
