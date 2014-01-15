@@ -22,39 +22,39 @@ extern "C" {
 	 * @param location the location to download to
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_capture(char * location);
+	int dmp_cm_capture(const char * location);
 	
 	/**
 	 * Edit the the module configuration
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_edit_config();
+	int dmp_cm_edit_config(void);
 	
 	/**
 	 * Installs the function used to write to the Core Application's console
      * @param c_cb the callback function to add
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_install_console(int (*c_cb)(char * message));
+	int dmp_cm_install_console(int (*c_cb)(const char * message));
 	
 	/**
 	 * initializes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_initialize();
+	int dmp_cm_initialize(void);
 	
 	/**
 	 * finalizes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_cm_finalize();
+	int dmp_cm_finalize(void);
 	
 	/**
 	 * wrapper around console write function pointer
      * @param to_write the string to write
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
-	int dmp_cm_console_write(gchar * to_write);
+	int dmp_cm_console_write(const gchar * to_write);
 	
 	/**
 	 * Sets the status monitor handler callback

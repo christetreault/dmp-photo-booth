@@ -23,7 +23,7 @@ static void dmp_cm_camera_logic_log(GPLogLevel level,
 	g_string_free(working, TRUE);
 }
 
-gint dmp_cm_camera_init()
+gint dmp_cm_camera_init(void)
 {
 	context = gp_context_new();
 	//gp_log_add_func(GP_LOG_ERROR, (GPLogFunc) dmp_cm_camera_logic_log, NULL);
@@ -47,7 +47,7 @@ gint dmp_cm_camera_init()
 	return DMP_PB_SUCCESS;
 }
 
-gint dmp_cm_camera_finalize()
+gint dmp_cm_camera_finalize(void)
 {
 	dmp_cm_set_status(FALSE);
 	
@@ -59,7 +59,7 @@ gint dmp_cm_camera_finalize()
 	return DMP_PB_SUCCESS;
 }
 
-gint dmp_cm_camera_capture(gchar * location)
+gint dmp_cm_camera_capture(const gchar * location)
 {
 	g_assert(is_initialized);
 	CameraFile * file;

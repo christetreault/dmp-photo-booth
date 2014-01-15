@@ -21,20 +21,20 @@ extern "C" {
 	 * Initializes the camera
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_camera_init();
+	gint dmp_cm_camera_init(void);
 	
 	/**
 	 * Finalizes the camera
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_camera_finalize();
+	gint dmp_cm_camera_finalize(void);
 	
 	/**
 	 * signal the camera to capture and download to the passed-in location
      * @param location the location to download to
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_camera_capture(gchar * location);
+	gint dmp_cm_camera_capture(const gchar * location);
 
 
 #ifdef	__cplusplus

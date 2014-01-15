@@ -38,12 +38,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/camera_logic.o \
 	${OBJECTDIR}/camera_module.o
 
-# Test Directory
-TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
-
-# Test Files
-TESTFILES= \
-	${TESTDIR}/TestFiles/f2
 
 # C Compiler Flags
 CFLAGS=`pkg-config --cflags glib-2.0 libgphoto2` 
@@ -81,54 +75,6 @@ ${OBJECTDIR}/camera_module.o: camera_module.c
 
 # Subprojects
 .build-subprojects:
-
-# Build Test Targets
-.build-tests-conf: .build-conf ${TESTFILES}
-${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/camera_module_tests.o ${OBJECTFILES:%.o=%_nomain.o}
-	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.c}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
-
-
-${TESTDIR}/tests/camera_module_tests.o: tests/camera_module_tests.c 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 libgphoto2` -MMD -MP -MF $@.d -o ${TESTDIR}/tests/camera_module_tests.o tests/camera_module_tests.c
-
-
-${OBJECTDIR}/camera_logic_nomain.o: ${OBJECTDIR}/camera_logic.o camera_logic.c 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/camera_logic.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic_nomain.o camera_logic.c;\
-	else  \
-	    ${CP} ${OBJECTDIR}/camera_logic.o ${OBJECTDIR}/camera_logic_nomain.o;\
-	fi
-
-${OBJECTDIR}/camera_module_nomain.o: ${OBJECTDIR}/camera_module.o camera_module.c 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/camera_module.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module_nomain.o camera_module.c;\
-	else  \
-	    ${CP} ${OBJECTDIR}/camera_module.o ${OBJECTDIR}/camera_module_nomain.o;\
-	fi
-
-# Run Test Targets
-.test-conf:
-	@if [ "${TEST}" = "" ]; \
-	then  \
-	    ${TESTDIR}/TestFiles/f2 || true; \
-	else  \
-	    ./${TEST} || true; \
-	fi
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}

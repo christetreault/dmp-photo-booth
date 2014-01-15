@@ -22,12 +22,6 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
-      <logicalFolder name="f2"
-                     displayName="dmp_pb_camera_module_tests"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>tests/camera_module_tests.c</itemPath>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -87,8 +81,6 @@
       </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="tests/camera_module_tests.c" ex="false" tool="0" flavor2="0">
-      </item>
     </conf>
     <conf name="Release" type="2">
       <toolsSet>
@@ -146,8 +138,6 @@
         </linkerTool>
       </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tests/camera_module_tests.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>
