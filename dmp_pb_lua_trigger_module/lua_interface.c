@@ -43,22 +43,7 @@ gint dmp_tm_lua_set_countdown(gint count)
 	lua_pushnumber(dmp_tm_state, count);
 	if (lua_pcall(dmp_tm_state, 1, 0, 0) != LUA_OK)
 	{
-		const gchar * error = lua_tostring(dmp_cm_state, -1);
-		dmp_tm_console_write((gchar *) error);
-		return DMP_PB_FAILURE;
-	}
-	return DMP_PB_SUCCESS;
-}
-
-gint dmp_tm_lua_set_countdown(gint count)
-{	
-	lua_getglobal(dmp_tm_state, DMP_TM_NAMESPACE);
-	lua_getfield(dmp_tm_state, -1, DMP_TM_MODULE);
-	lua_getfield(dmp_tm_state, -1, "set_countdown");
-	lua_pushnumber(dmp_tm_state, count);
-	if (lua_pcall(dmp_tm_state, 1, 0, 0) != LUA_OK)
-	{
-		const gchar * error = lua_tostring(dmp_cm_state, -1);
+		const gchar * error = lua_tostring(dmp_tm_state, -1);
 		dmp_tm_console_write((gchar *) error);
 		return DMP_PB_FAILURE;
 	}
@@ -73,7 +58,7 @@ gint dmp_tm_lua_show_error(gint value)
 	lua_pushnumber(dmp_tm_state, value);
 	if (lua_pcall(dmp_tm_state, 1, 0, 0) != LUA_OK)
 	{
-		const gchar * error = lua_tostring(dmp_cm_state, -1);
+		const gchar * error = lua_tostring(dmp_tm_state, -1);
 		dmp_tm_console_write((gchar *) error);
 		return DMP_PB_FAILURE;
 	}
@@ -116,7 +101,7 @@ static void dmp_tm_lua_register_set_status(lua_State * L)
 	lua_setfield(L, -2, "set_status");
 }
 
-gint dmp_tm_lua_initialize()
+gint dmp_tm_lua_initialize(void)
 {
 	dmp_tm_state = luaL_newstate();
 	luaL_openlibs(dmp_tm_state);
@@ -160,7 +145,7 @@ gint dmp_tm_lua_initialize()
 	return DMP_PB_SUCCESS;
 }
 
-gint dmp_tm_lua_finalize()
+gint dmp_tm_lua_finalize(void)
 {
 	lua_getglobal(dmp_tm_state, DMP_TM_NAMESPACE);
 	lua_getfield(dmp_tm_state, -1, DMP_TM_MODULE);

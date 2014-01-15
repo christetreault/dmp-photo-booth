@@ -22,13 +22,13 @@ extern "C" {
 	 * Initializes Lua
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_tm_lua_initialize();
+	gint dmp_tm_lua_initialize(void);
 
 	/**
 	 * Finalizes Lua
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_tm_lua_finalize();
+	gint dmp_tm_lua_finalize(void);
 	
 	/**
 	 * Sets the count in the trigger

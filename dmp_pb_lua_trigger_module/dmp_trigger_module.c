@@ -2,8 +2,8 @@
 #include "lua_interface.h"
 
 
-void (*trigger_handler)() = NULL;
-int (*console_write)(char * message);
+void (*trigger_handler)(void) = NULL;
+int (*console_write)(const char * message);
 void (*status_handler)(gint status);
 
 int dmp_tm_install_status_handler(void (*sh)(int status))
@@ -20,7 +20,7 @@ int dmp_tm_show_error(int value)
 	return dmp_tm_lua_show_error(value | (1 << 7));
 }
 
-int dmp_tm_install_console(int (*c_cb)(char * message))
+int dmp_tm_install_console(int (*c_cb)(const char * message))
 {
 	if (c_cb == NULL) return DMP_PB_FAILURE;
 	
@@ -29,7 +29,7 @@ int dmp_tm_install_console(int (*c_cb)(char * message))
 	return DMP_PB_SUCCESS;
 }
 
-int dmp_tm_add_trigger_handler(void (*th)())
+int dmp_tm_add_trigger_handler(void (*th)(void))
 {
 	if (th == NULL) return DMP_PB_FAILURE;
 	
@@ -43,28 +43,28 @@ int dmp_tm_set_countdown(int current)
 	return dmp_tm_lua_set_countdown(current);
 }
 
-int dmp_tm_edit_config()
+int dmp_tm_edit_config(void)
 {
 	return DMP_PB_SUCCESS;
 }
 
-int dmp_tm_initialize()
+int dmp_tm_initialize(void)
 {
 	return dmp_tm_lua_initialize();
 }
 
-int dmp_tm_finalize()
+int dmp_tm_finalize(void)
 {
 	return dmp_tm_lua_finalize();
 }
 
-int dmp_tm_console_write(gchar * to_write)
+int dmp_tm_console_write(const gchar * to_write)
 {
 	g_assert(console_write != NULL);
 	return (*console_write)(to_write);
 }
 
-void dmp_tm_call_trigger_handler()
+void dmp_tm_call_trigger_handler(void)
 {
 	g_assert(trigger_handler != NULL);
 	(*trigger_handler)();
