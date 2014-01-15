@@ -23,7 +23,7 @@ extern "C" {
      * @param to_print the strip to print
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_pm_process_print(gchar * to_print);
+	gint dmp_pm_process_print(const gchar * to_print);
 
 
 #ifdef	__cplusplus

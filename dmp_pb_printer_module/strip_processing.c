@@ -21,9 +21,9 @@ static gsize dmp_pm_find_center_origin(gsize canvas_width, gsize image_width)
  * @param name the name to find
  * @return an index, or -1 if not found
  */
-static gint dmp_pm_resolve_dests_index(cups_dest_t * to_resolve,
+static gint dmp_pm_resolve_dests_index(const cups_dest_t * to_resolve,
 										gint num_dests,
-										gchar * name)
+										const gchar * name)
 {
 	int count;
 	for (count = 0; count < num_dests; ++count)
@@ -40,7 +40,7 @@ static gint dmp_pm_resolve_dests_index(cups_dest_t * to_resolve,
  * Executes a print job
  * @param to_print the file to print
  */
-static gint dmp_pm_execute_print(GString * to_print)
+static gint dmp_pm_execute_print(const GString * to_print)
 {
 	cups_dest_t * dests;
 	gint num_dests = cupsGetDests(&dests);
@@ -64,7 +64,7 @@ static gint dmp_pm_execute_print(GString * to_print)
  * Handles a MagickWandException
  * @param exceptional the wand that threw
  */
-static void dmp_pm_handle_exception(MagickWand * exceptional)
+static void dmp_pm_handle_exception(const MagickWand * exceptional)
 {
 	gchar * exception_message = NULL;
 	ExceptionType exception_type;
@@ -81,7 +81,7 @@ static void dmp_pm_handle_exception(MagickWand * exceptional)
 /**
  * @return a white, fully transparent PixelWand
  */
-PixelWand * dmp_pm_create_bg_color()
+PixelWand * dmp_pm_create_bg_color(void)
 {
 	PixelWand * return_value = NewPixelWand();
 	
@@ -106,7 +106,7 @@ PixelWand * dmp_pm_create_bg_color()
 	return return_value;
 }
 
-gint dmp_pm_process_print(gchar * to_print)
+gint dmp_pm_process_print(const gchar * to_print)
 {
 	g_assert(to_print != NULL);
 	

@@ -15,8 +15,6 @@ extern "C" {
 #define DMP_PM_CONFIG_FILE "dmp_printer_module.rc"
 	
 #include "global_defines.h"
-#include <stdio.h>
-#include <string.h>
 #include <glib.h>
 #include <cups/cups.h>
 #include <wand/MagickWand.h>
@@ -28,45 +26,39 @@ extern "C" {
      * @param to_print the file to print
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_pm_print(char * to_print);
+	int dmp_pm_print(const char * to_print);
 
 	/**
 	 * Edit the the module configuration
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_pm_edit_config();
+	int dmp_pm_edit_config(void);
 	
 	/**
 	 * Installs the function used to write to the Core Application's console
      * @param c_cb the callback function to add
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_pm_install_console(int (*c_cb)(char * message));
+	int dmp_pm_install_console(int (*c_cb)(const char * message));
 	
 		/**
 	 * initializes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_pm_initialize();
-	
-	/**
-	 * checks to see if the module is initialized
-     * @return 0 if not initialized, !0 if initialized
-     */
-	int dmp_pm_is_initialized();
+	int dmp_pm_initialize(void);
 	
 	/**
 	 * finalizes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_pm_finalize();
+	int dmp_pm_finalize(void);
 	
 	/**
 	 * wrapper around console write function pointer
      * @param to_write the string to write
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
-	int dmp_pm_console_write(gchar * to_write);
+	int dmp_pm_console_write(const gchar * to_write);
 	
 	/**
 	 * Sets the status monitor handler callback

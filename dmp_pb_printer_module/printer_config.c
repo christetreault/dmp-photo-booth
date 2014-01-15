@@ -9,7 +9,7 @@
 
 static GKeyFile * dmp_pm_config = NULL;
 
-void dmp_pm_config_init()
+void dmp_pm_config_init(void)
 {
 	GError * working = NULL;
 	GString * error_string;
@@ -38,14 +38,14 @@ void dmp_pm_config_init()
 	dmp_pm_set_status(TRUE);
 }
 
-void dmp_pm_config_finalize()
+void dmp_pm_config_finalize(void)
 {
 	dmp_pm_set_status(FALSE);
 	g_key_file_free(dmp_pm_config);
 	dmp_pm_config = NULL;
 }
 
-gsize dmp_pm_config_get_dpi()
+gsize dmp_pm_config_get_dpi(void)
 {
 	static gboolean warned = FALSE;
 	g_assert(dmp_pm_config != NULL);
@@ -66,7 +66,7 @@ gsize dmp_pm_config_get_dpi()
 	return return_value;
 }
 
-gsize dmp_pm_config_get_canvas_height()
+gsize dmp_pm_config_get_canvas_height(void)
 {
 	static gboolean warned = FALSE;
 	g_assert(dmp_pm_config != NULL);
@@ -87,7 +87,7 @@ gsize dmp_pm_config_get_canvas_height()
 	return return_value;
 }
 
-gsize dmp_pm_config_get_canvas_width()
+gsize dmp_pm_config_get_canvas_width(void)
 {
 	static gboolean warned = FALSE;
 	g_assert(dmp_pm_config != NULL);
@@ -108,7 +108,7 @@ gsize dmp_pm_config_get_canvas_width()
 	return return_value;
 }
 
-gchar * dmp_pm_config_get_printer_name()
+gchar * dmp_pm_config_get_printer_name(void)
 {
 	static gboolean warned = FALSE;
 	g_assert(dmp_pm_config != NULL);
@@ -136,7 +136,7 @@ gchar * dmp_pm_config_get_printer_name()
 	return return_value;
 }
 
-gboolean dmp_pm_config_print_to_file()
+gboolean dmp_pm_config_print_to_file(void)
 {
 	g_assert(dmp_pm_config != NULL);
 	GError * error = NULL;
