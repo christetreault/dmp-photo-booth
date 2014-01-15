@@ -19,11 +19,6 @@ extern "C" {
 #include "console_queue.h"
 #include "module.h"
 #include "coordination.h"
-	
-//#define DMP_PB_ASPECT_RATIO_4_3 1.333333
-//#define DMP_PB_ASPECT_RATIO_3_2 1.5
-	
-#define DMP_PB_WHITE_SPACE_PERCENTAGE 5.0 //TODO: configuration item
 
 	/**
 	 * Enumeration of Photo Strip GError codes
@@ -63,12 +58,12 @@ extern "C" {
 	/**
 	 * initializes the photo strip module
      */
-	void dmp_pb_photo_strip_init();
+	void dmp_pb_photo_strip_init(void);
 	
 	/**
 	 * finalizes the photo strip module
      */
-	void dmp_pb_photo_strip_finalize();
+	void dmp_pb_photo_strip_finalize(void);
 	
 	/**
 	 * Request that the photo strip module combine the 5 images and the 
@@ -92,7 +87,7 @@ extern "C" {
 	 * Pulls a photo strip request from the in queue, and assembles it.
 	 * Completed requests can be retrieved by calling dmp_pb_photo_strip_get_result()
      */
-	void dmp_pb_photo_strip_assemble();
+	void dmp_pb_photo_strip_assemble(void);
 
 	/**
 	 * Retrieves the next result from the queue. Either throws if assemble
@@ -112,7 +107,7 @@ extern "C" {
 	 * tests to see if the photo strip module is initialized
      * @return TRUE if it is, FALSE if not
      */
-	gboolean dmp_pb_photo_strip_initialized();
+	gboolean dmp_pb_photo_strip_initialized(void);
 
 #ifdef	__cplusplus
 }

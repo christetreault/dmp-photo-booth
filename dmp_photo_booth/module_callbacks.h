@@ -22,7 +22,7 @@ extern "C" {
 	 * The callback function to be called by the trigger module when
 	 * the user "presses the button"
 	 */
-	void dmp_pb_trigger_handler();
+	void dmp_pb_trigger_handler(void);
 
 	/**
 	 * The callback function to be called by all modules to write to
@@ -32,7 +32,7 @@ extern "C" {
 	 * responsability for the memory management of this pointer
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	int dmp_pb_console_write_callback(char * message);
+	int dmp_pb_console_write_callback(const char * message);
 
 
 

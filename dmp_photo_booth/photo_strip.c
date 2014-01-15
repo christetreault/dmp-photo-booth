@@ -44,7 +44,7 @@ static gpointer dmp_pb_photo_strip_thread_function(gpointer user_data)
 	return NULL;
 }
 
-gboolean dmp_pb_photo_strip_initialized()
+gboolean dmp_pb_photo_strip_initialized(void)
 {
 	return (is_initialized && in_queue != NULL && out_queue != NULL);
 }
@@ -86,7 +86,7 @@ static void dmp_pb_photo_strip_smite_builder(struct photo_strip_builder * to_smi
 	g_free(to_smite);
 }
 
-void dmp_pb_photo_strip_init()
+void dmp_pb_photo_strip_init(void)
 {
 	if (dmp_pb_photo_strip_initialized()) return;
 	
@@ -99,7 +99,7 @@ void dmp_pb_photo_strip_init()
 	
 }
 
-void dmp_pb_photo_strip_finalize()
+void dmp_pb_photo_strip_finalize(void)
 {
 	if (in_queue != NULL) g_async_queue_unref(in_queue);
 	in_queue = NULL;
@@ -157,7 +157,7 @@ void dmp_pb_photo_strip_request(GString * completed_strip_name,
 	g_async_queue_push(in_queue, working);
 }
 
-void dmp_pb_photo_strip_assemble()
+void dmp_pb_photo_strip_assemble(void)	//	PHOTO STRIP! ASEEEEEEEEEMBLE!!!!!!
 {
 	if (!dmp_pb_photo_strip_initialized()) return;
 	

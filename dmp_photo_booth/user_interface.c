@@ -51,7 +51,7 @@ static GtkTextBuffer * dmp_pb_console_buffer = NULL;
 static gboolean dmp_pb_started = FALSE;
 
 
-gboolean dmp_pb_ui_is_started()
+gboolean dmp_pb_ui_is_started(void)
 {
 	return dmp_pb_started;
 }
@@ -309,7 +309,7 @@ static void dmp_pb_ui_register_user_data(GtkBuilder * builder, GError ** error)
  * @throws GTK_BUILDER_ERROR, G_MARKUP_ERROR, G_FILE_ERROR
  * @return A pointer to a new GtkBuilder, or NULL
  */
-static GtkBuilder * dmp_pb_ui_create_gtk_builder(gchar * builder_file, GError ** error)
+static GtkBuilder * dmp_pb_ui_create_gtk_builder(const gchar * builder_file, GError ** error)
 {
 	GtkBuilder * builder = gtk_builder_new();
 	GError * working_error = NULL;
@@ -375,13 +375,13 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
 	}
 }
 
-static void dmp_pb_ui_show_working_screen()
+static void dmp_pb_ui_show_working_screen(void)
 {
 	gtk_widget_show(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_WORKING_SPLASH_SCREEN));
 	while (gtk_events_pending()) gtk_main_iteration();
 }
 
-static void dmp_pb_ui_hide_working_screen()
+static void dmp_pb_ui_hide_working_screen(void)
 {
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_WORKING_SPLASH_SCREEN));
 }
@@ -389,7 +389,7 @@ static void dmp_pb_ui_hide_working_screen()
 /**
  * Initializes the options dialog with values read from the config
  */
-static void dmp_pb_ui_initialize_options_fields()
+static void dmp_pb_ui_initialize_options_fields(void)
 {
 	GString * working = NULL;
 	
@@ -454,7 +454,7 @@ static void dmp_pb_ui_initialize_options_fields()
  * Reads the image positions toggles and converts the result to an integer
  * @return said integer
  */
-static gint dmp_pb_ui_get_image_positions()
+static gint dmp_pb_ui_get_image_positions(void)
 {
 	gint return_value = 0;
 	
@@ -489,7 +489,7 @@ static gint dmp_pb_ui_get_image_positions()
 /**
  * Commits the options fields to the config
  */
-static void dmp_pb_ui_commit_options_fields()
+static void dmp_pb_ui_commit_options_fields(void)
 {
 	GString * working;
 	dmp_pb_config_write_int
@@ -597,7 +597,7 @@ static gboolean dmp_pb_ui_check_for_strips(gpointer user_data)
 /* End static helper functions */
 /* --------------------------- */
 
-void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
+void dmp_pb_ui_launch(const gchar * ui_file, GError ** error)
 {
 	GError * working_error = NULL;
 	
@@ -630,12 +630,12 @@ void dmp_pb_ui_launch(gchar * ui_file, GError ** error)
 	dmp_pb_mwd_finalize();
 }
 
-dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons()
+dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons(void)
 {
 	return status_icons;
 }
 
-static void dmp_pb_stop_photo_booth()
+static void dmp_pb_stop_photo_booth(void)
 {	
 	if (dmp_pb_coordination_is_processing())
 	{
@@ -655,7 +655,7 @@ static void dmp_pb_stop_photo_booth()
 	dmp_pb_started = FALSE;
 }
 
-static void dmp_pb_start_photo_booth()
+static void dmp_pb_start_photo_booth(void)
 {
 	GError * error = NULL;	
 	GString * location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_PRINTER_MODULE_PATH);

@@ -6,11 +6,11 @@ G_DEFINE_QUARK(DMP_PB_MODULE_ERROR, dmp_pb_module_error)
  * The printer module
  */
 static GModule * dmp_pb_printer_module = NULL;
-static int (*dmp_pm_print)(char * to_print) = NULL;
-static int (*dmp_pm_edit_config)() = NULL;
-static int (*dmp_pm_initialize)() = NULL;
-static int (*dmp_pm_finalize)() = NULL;
-static int (*dmp_pm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_pm_print)(const char * to_print) = NULL;
+static int (*dmp_pm_edit_config)(void) = NULL;
+static int (*dmp_pm_initialize)(void) = NULL;
+static int (*dmp_pm_finalize)(void) = NULL;
+static int (*dmp_pm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_pm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_printer_module_consistent = TRUE;
 static gboolean dmp_pb_printer_module_status_ok = FALSE;
@@ -19,13 +19,13 @@ static gboolean dmp_pb_printer_module_status_ok = FALSE;
  * The trigger module
  */
 static GModule * dmp_pb_trigger_module = NULL;
-static int (*dmp_tm_add_trigger_handler)(void (*th)()) = NULL;
+static int (*dmp_tm_add_trigger_handler)(void (*th)(void)) = NULL;
 static int (*dmp_tm_set_countdown)(int current) = NULL;
-static int (*dmp_tm_edit_config)() = NULL;
-static int (*dmp_tm_initialize)() = NULL;
-static int (*dmp_tm_finalize)() = NULL;
+static int (*dmp_tm_edit_config)(void) = NULL;
+static int (*dmp_tm_initialize)(void) = NULL;
+static int (*dmp_tm_finalize)(void) = NULL;
 static int (*dmp_tm_show_error)(int value) = NULL;
-static int (*dmp_tm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_tm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_tm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_trigger_module_consistent = TRUE;
 static gboolean dmp_pb_trigger_module_status_ok = FALSE;
@@ -34,11 +34,11 @@ static gboolean dmp_pb_trigger_module_status_ok = FALSE;
  * The camera module
  */
 static GModule * dmp_pb_camera_module = NULL;
-static int (*dmp_cm_capture)(char * location) = NULL;
-static int (*dmp_cm_edit_config)() = NULL;
-static int (*dmp_cm_initialize)() = NULL;
-static int (*dmp_cm_finalize)() = NULL;
-static int (*dmp_cm_install_console)(int (*c_cb)(char * message)) = NULL;
+static int (*dmp_cm_capture)(const char * location) = NULL;
+static int (*dmp_cm_edit_config)(void) = NULL;
+static int (*dmp_cm_initialize)(void) = NULL;
+static int (*dmp_cm_finalize)(void) = NULL;
+static int (*dmp_cm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_cm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_camera_module_consistent = TRUE;
 static gboolean dmp_pb_camera_module_status_ok = FALSE;
@@ -179,7 +179,7 @@ static gint dmp_pb_finalize(dmp_pb_module_type type)
  * @param module_location the location of the printer module
  * @return DMP_PB_SUCCESS, or an error code
  */
-static void dmp_pb_load_printer_module(GString * module_location, GError ** error)
+static void dmp_pb_load_printer_module(const GString * module_location, GError ** error)
 {
 	g_assert(dmp_pb_printer_module_consistent);
 	g_assert(g_module_supported());
@@ -270,7 +270,7 @@ static void dmp_pb_load_printer_module(GString * module_location, GError ** erro
  * @param module_location the location of the trigger module
  * @return DMP_PB_SUCCESS, or an error code
  */
-static void dmp_pb_load_trigger_module(GString * module_location, GError ** error)
+static void dmp_pb_load_trigger_module(const GString * module_location, GError ** error)
 {
 	g_assert(dmp_pb_trigger_module_consistent);
 	g_assert(g_module_supported());
@@ -380,7 +380,7 @@ static void dmp_pb_load_trigger_module(GString * module_location, GError ** erro
  * @param module_location the location of the camera module
  * @return DMP_PB_SUCCESS, or an error code
  */
-static void dmp_pb_load_camera_module(GString * module_location, GError ** error)
+static void dmp_pb_load_camera_module(const GString * module_location, GError ** error)
 {
 	g_assert(dmp_pb_camera_module_consistent);
 	g_assert(g_module_supported());
@@ -467,7 +467,7 @@ static void dmp_pb_load_camera_module(GString * module_location, GError ** error
 
 /* end of dmp_pb_load_module helper functions */
 
-void dmp_pb_load_module(dmp_pb_module_type to_load, GString * module_location, GError ** error)
+void dmp_pb_load_module(dmp_pb_module_type to_load, const GString * module_location, GError ** error)
 {
 	GError * working_error = NULL;
 	switch (to_load)
@@ -492,7 +492,7 @@ void dmp_pb_load_module(dmp_pb_module_type to_load, GString * module_location, G
 /**
  * unloads the printer module
  */
-static void dmp_pb_unload_printer_module()
+static void dmp_pb_unload_printer_module(void)
 {
 	g_assert(g_module_supported());
 	if (dmp_pm_finalize != NULL) dmp_pb_finalize(DMP_PB_PRINTER_MODULE);
@@ -512,7 +512,7 @@ static void dmp_pb_unload_printer_module()
 /**
  * unloads the trigger module
  */
-static void dmp_pb_unload_trigger_module()
+static void dmp_pb_unload_trigger_module(void)
 {
 	g_assert(g_module_supported());
 	if (dmp_tm_finalize != NULL) dmp_pb_finalize(DMP_PB_TRIGGER_MODULE);
@@ -534,7 +534,7 @@ static void dmp_pb_unload_trigger_module()
  * unloads the camera module
  * @return DMP_PB_SUCCESS, or an error code
  */
-static void dmp_pb_unload_camera_module()
+static void dmp_pb_unload_camera_module(void)
 {
 	g_assert(g_module_supported());
 	if (dmp_cm_finalize != NULL) dmp_pb_finalize(DMP_PB_CAMERA_MODULE);
@@ -588,7 +588,7 @@ gint dmp_pb_edit_module_config(dmp_pb_module_type type)
 	}
 }
 
-void dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_location, GError ** error)
+void dmp_pb_swap_module(dmp_pb_module_type to_swap, const GString * new_module_location, GError ** error)
 {
 	GError * working_error = NULL;
 	
@@ -600,13 +600,13 @@ void dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_locatio
 
 
 
-gint dmp_pb_cm_capture(gchar * location)
+gint dmp_pb_cm_capture(const gchar * location)
 {
 	g_assert(dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE) == DMP_PB_MODULE_READY);
 	return (*dmp_cm_capture)(location);
 }
 
-gint dmp_pb_pm_print(gchar * to_print)
+gint dmp_pb_pm_print(const gchar * to_print)
 {
 	g_assert(dmp_pb_check_module_state(DMP_PB_PRINTER_MODULE) == DMP_PB_MODULE_READY);
 	return (*dmp_pm_print)(to_print);

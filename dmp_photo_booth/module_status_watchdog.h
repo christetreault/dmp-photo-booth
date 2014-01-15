@@ -35,7 +35,7 @@ extern "C" {
 	 * Finalizes the Module Status Watchdog, freeing the queue and signaling
 	 * the thread to die
 	 */
-	void dmp_pb_mwd_finalize();
+	void dmp_pb_mwd_finalize(void);
 
 	/**
 	 * Handles 1 message in the queue. 

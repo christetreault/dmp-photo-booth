@@ -30,7 +30,7 @@ extern "C" {
      * @param error the error to convert
      * @return a newly allocated GString initialized by the passed-in GError
      */
-	GString * dmp_pb_error_to_string(GError * error);
+	GString * dmp_pb_error_to_string(const GError * error);
 
 
 #ifdef	__cplusplus

@@ -19,7 +19,7 @@ static void dmp_pb_console_queue_set_init(gboolean to_set)
  * thread safe geter for cq_is_initialized
  * @return the value of cq_is_initialized
  */
-static gboolean dmp_pb_console_queue_get_init()
+static gboolean dmp_pb_console_queue_get_init(void)
 {
 	gboolean return_value;
 	g_mutex_lock(&dmp_pb_cq_mutex);
@@ -37,7 +37,7 @@ static void dmp_pb_console_queue_destroy_notify(gpointer data)
 	g_string_free((GString *) data, TRUE);
 }
 
-void dmp_pb_console_queue_init()
+void dmp_pb_console_queue_init(void)
 {
 	if (dmp_pb_console_queue_get_init()) return;
 	
@@ -53,14 +53,14 @@ void dmp_pb_console_queue_push(GString * message)
 	g_async_queue_push(dmp_pb_cq, message);
 }
 
-GString * dmp_pb_console_queue_pop()
+GString * dmp_pb_console_queue_pop(void)
 {
 	g_assert(dmp_pb_console_queue_get_init());
 	
 	return g_async_queue_try_pop(dmp_pb_cq);
 }
 
-void dmp_pb_console_queue_finalize()
+void dmp_pb_console_queue_finalize(void)
 {
 	if (!dmp_pb_console_queue_get_init()) return;
 	g_async_queue_unref(dmp_pb_cq);
@@ -85,7 +85,7 @@ gboolean dmp_pb_console_queue_flush_queue(gpointer user_data)
 	return G_SOURCE_CONTINUE;
 }
 
-void dmp_pb_console_queue_flush_stdout()
+void dmp_pb_console_queue_flush_stdout(void)
 {
 	GString * working;
 	

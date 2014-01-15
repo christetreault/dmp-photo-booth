@@ -45,7 +45,7 @@ extern "C" {
 	 * Finalizes the config, freeing resources.
 	 * @NOTE: This function <b>DOES NOT</b> attempt to save the config to file!
      */
-	void dmp_pb_config_finalize();
+	void dmp_pb_config_finalize(void);
 	
 	/**
 	 * Writes the config back to file
@@ -72,7 +72,7 @@ extern "C" {
      * @param key the key to write
      * @param value the value to set
      */
-	void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value);
+	void dmp_pb_config_write_string(const gchar * group, const gchar * key, const GString * value);
 	
 	/**
 	 * reads an integer from the config

@@ -41,7 +41,7 @@ extern "C" {
 	 * @return a pointer to the dmp_pb_ui_status_icons struct. Caller should not
 	 * attept to free this pointer
 	 */
-	dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons();
+	dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons(void);
 	
 	/**
 	 * Launches the UI, and calls gtk_main
@@ -49,13 +49,13 @@ extern "C" {
 	 * @throws GTK_BUILDER_ERROR, G_MARKUP_ERROR, G_FILE_ERROR,
 	 * DMP_PB_UI_ERROR::UI_DEFINITION_CORRUPT
 	 */
-	void dmp_pb_ui_launch(gchar * ui_file, GError ** error);
+	void dmp_pb_ui_launch(const gchar * ui_file, GError ** error);
 	
 	/**
 	 * Tests to see if the Photo Booth is started
      * @return TRUE if started, FALSE if not
      */
-	gboolean dmp_pb_ui_is_started();
+	gboolean dmp_pb_ui_is_started(void);
 
 	/* --------------- */
 	/* Begin Callbacks */

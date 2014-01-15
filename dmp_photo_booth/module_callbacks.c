@@ -1,7 +1,7 @@
 #include "module_callbacks.h"
 
 
-void dmp_pb_trigger_handler()
+void dmp_pb_trigger_handler(void)
 {
 	if (dmp_pb_ui_is_started()) dmp_pb_handle_photo_request();
 	else
@@ -10,7 +10,7 @@ void dmp_pb_trigger_handler()
 	}
 }
 
-int dmp_pb_console_write_callback(char * message)
+int dmp_pb_console_write_callback(const char * message)
 {
 	dmp_pb_console_queue_push(g_string_new(message));
 	return DMP_PB_SUCCESS;

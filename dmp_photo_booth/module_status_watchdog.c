@@ -91,7 +91,7 @@ gboolean dmp_pb_mwd_handle_message(gpointer user_data)
 	return G_SOURCE_CONTINUE;
 }
 
-void dmp_pb_mwd_finalize()
+void dmp_pb_mwd_finalize(void)
 {
 	dmp_pb_mwd_thread_should_die = TRUE;
 	g_thread_join(dmp_pb_module_watchdog_thread);

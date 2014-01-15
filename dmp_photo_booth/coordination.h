@@ -42,23 +42,23 @@ extern "C" {
 	 * @return Returns FALSE if a photo request is already in progress, otherwise
 	 * returns true
      */
-	gboolean dmp_pb_handle_photo_request();
+	gboolean dmp_pb_handle_photo_request(void);
 	
 	/**
 	 * initializes the coordination thread pool
      */
-	void dmp_pb_coordination_init();
+	void dmp_pb_coordination_init(void);
 	
 	/**
 	 * finalizes the coordination thread pool
      */
-	void dmp_pb_coordination_finalize();
+	void dmp_pb_coordination_finalize(void);
 	
 	/**
 	 * Tests to see if a photo booth session is in progress
      * @return TRUE if so, FALSE if not
      */
-	gboolean dmp_pb_coordination_is_processing();
+	gboolean dmp_pb_coordination_is_processing(void);
 	
 #ifdef	__cplusplus
 }

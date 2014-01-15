@@ -1,6 +1,6 @@
 #include "error_handling.h"
 
-GString * dmp_pb_error_to_string(GError * error)
+GString * dmp_pb_error_to_string(const GError * error)
 {
 	g_assert(error != NULL);
 	

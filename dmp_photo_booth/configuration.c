@@ -27,7 +27,7 @@ void dmp_pb_config_initialize(GError ** error)
 	G_UNLOCK(dmp_pb_config);
 }
 
-void dmp_pb_config_finalize()
+void dmp_pb_config_finalize(void)
 {
 	if (dmp_pb_config == NULL) return;
 	
@@ -69,7 +69,7 @@ GString * dmp_pb_config_read_string(const gchar * group, const gchar * key)
 	return return_value;
 }
 
-void dmp_pb_config_write_string(const gchar * group, const gchar * key, GString * value)
+void dmp_pb_config_write_string(const gchar * group, const gchar * key, const GString * value)
 {
 	G_LOCK(dmp_pb_config);
 	g_key_file_set_string(dmp_pb_config, group, key, value->str);

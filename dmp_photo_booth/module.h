@@ -14,7 +14,6 @@ extern "C" {
 #endif
 
 #include "global_defines.h"
-#include <stdlib.h>
 #include <gmodule.h>
 #include "error_handling.h"
 #include "module_callbacks.h"
@@ -49,7 +48,7 @@ extern "C" {
 	 * @param module_location the location on the filesystem of the module
 	 * @throws DMP_PB_MODULE_ERROR::G_MODULE_LOAD_FAILURE
 	 */
-	void dmp_pb_load_module(dmp_pb_module_type to_load, GString * module_location, GError ** error);
+	void dmp_pb_load_module(dmp_pb_module_type to_load, const GString * module_location, GError ** error);
 	/**
 	 * unloads a module
 	 * @param to_unload the module type to be unloaded
@@ -61,7 +60,7 @@ extern "C" {
 	 * @param new_module_location the location of the new module to load
 	 * @throws DMP_PB_MODULE_ERROR::G_MODULE_LOAD_FAILURE
 	 */
-	void dmp_pb_swap_module(dmp_pb_module_type to_swap, GString * new_module_location, GError ** error);
+	void dmp_pb_swap_module(dmp_pb_module_type to_swap, const GString * new_module_location, GError ** error);
 
 	/**
 	 * state checking helper function. checks is_loaded and is_consistent
@@ -88,13 +87,13 @@ extern "C" {
 	 * @param location the location to download to
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_cm_capture(gchar * location);
+	gint dmp_pb_cm_capture(const gchar * location);
 	/**
 	 * prints the file at the passed in location
 	 * @param to_print the file to print
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_pm_print(gchar * to_print);
+	gint dmp_pb_pm_print(const gchar * to_print);
 	/**
 	 * Sets the value to be displayed by the countdown
 	 * @param current the current time, in seconds

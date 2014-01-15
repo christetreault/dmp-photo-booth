@@ -36,7 +36,7 @@ static GThreadPool * photo_request_thread_pool = NULL;
  * @param secs the seconds to count down
  * @param file_name the file name to save to
  */
-static void dmp_pb_photo_request_countdown_capture(gint secs, gchar * file_name, GError ** error)
+static void dmp_pb_photo_request_countdown_capture(gint secs, const gchar * file_name, GError ** error)
 {
 	g_assert(file_name != NULL);
 	
@@ -90,7 +90,7 @@ static void dmp_pb_photo_request_cleanup_file_names(gchar * file1, gchar * file2
  * @param working
  * @return 
  */
-static GString * dmp_pb_photo_request_new_or_null(gchar * working)
+static GString * dmp_pb_photo_request_new_or_null(const gchar * working)
 {
 	if (working == NULL) return NULL;
 	return g_string_new(working);
@@ -227,7 +227,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	G_UNLOCK(photo_request);
 }
 
-gboolean dmp_pb_handle_photo_request()
+gboolean dmp_pb_handle_photo_request(void)
 {
 	g_assert(photo_request_thread_pool != NULL);
 	if (!G_TRYLOCK(photo_request)) return FALSE;
@@ -235,7 +235,7 @@ gboolean dmp_pb_handle_photo_request()
 	return TRUE;
 }
 
-void dmp_pb_coordination_init()
+void dmp_pb_coordination_init(void)
 {
 	photo_request_thread_pool = g_thread_pool_new(dmp_pb_photo_request_thread_function,
 													NULL,
@@ -244,13 +244,13 @@ void dmp_pb_coordination_init()
 													NULL);
 }
 
-void dmp_pb_coordination_finalize()
+void dmp_pb_coordination_finalize(void)
 {
 	g_thread_pool_free(photo_request_thread_pool, TRUE, FALSE);
 	photo_request_thread_pool = NULL;
 }
 
-gboolean dmp_pb_coordination_is_processing()
+gboolean dmp_pb_coordination_is_processing(void)
 {
 	return in_progress;
 }
