@@ -5,7 +5,7 @@
 
 static GKeyFile * dmp_tm_config = NULL;
 
-void dmp_tm_config_init()
+void dmp_tm_config_init(void)
 {
 	GError * working = NULL;
 	
@@ -26,17 +26,17 @@ void dmp_tm_config_init()
 	}
 }
 
-void dmp_tm_config_finalize()
+void dmp_tm_config_finalize(void)
 {
 	g_key_file_free(dmp_tm_config);
 }
 
-gboolean dmp_tm_config_is_initialized()
+gboolean dmp_tm_config_is_initialized(void)
 {
 	return (dmp_tm_config != NULL);
 }
 
-gchar * dmp_tm_config_get_device_name()
+gchar * dmp_tm_config_get_device_name(void)
 {
 	static gboolean warned = FALSE;
 	g_assert(dmp_tm_config_is_initialized());

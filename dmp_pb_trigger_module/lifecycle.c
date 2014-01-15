@@ -2,7 +2,7 @@
 
 static gboolean is_initialized = FALSE;
 
-void dmp_tm_lifecycle_push_error(GError * error)
+void dmp_tm_lifecycle_push_error(const GError * error)
 {
 	g_assert(error != NULL);
 	
@@ -13,7 +13,7 @@ void dmp_tm_lifecycle_push_error(GError * error)
 	g_string_free(message, TRUE);
 }
 
-gint dmp_tm_lifecycle_initialize()
+gint dmp_tm_lifecycle_initialize(void)
 {
 	if (is_initialized) return DMP_PB_SUCCESS;
 	
@@ -23,7 +23,7 @@ gint dmp_tm_lifecycle_initialize()
 	return DMP_PB_SUCCESS;
 }
 
-gint dmp_tm_lifecycle_finalize()
+gint dmp_tm_lifecycle_finalize(void)
 {
 	dmp_tm_io_stop_serial();
 	

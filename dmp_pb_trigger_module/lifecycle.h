@@ -21,19 +21,19 @@ extern "C" {
 	 * Pushes a GError into the console queue
      * @param error the error to push
      */
-	void dmp_tm_lifecycle_push_error(GError * error);
+	void dmp_tm_lifecycle_push_error(const GError * error);
 	
 	/**
 	 * initializes the trigger module
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
-	gint dmp_tm_lifecycle_initialize();
+	gint dmp_tm_lifecycle_initialize(void);
 	
 	/**
 	 * finalizes the trigger module
      * @return DMP_PB_SUCCESS, or DMP_PB_FAILURE
      */
-	gint dmp_tm_lifecycle_finalize();
+	gint dmp_tm_lifecycle_finalize(void);
 	
 
 

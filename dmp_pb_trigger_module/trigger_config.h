@@ -18,23 +18,23 @@ extern "C" {
 	/**
 	 * initializes the configuration
      */
-	void dmp_tm_config_init();
+	void dmp_tm_config_init(void);
 	
 	/**
 	 * Finalizes the configuration. Does not save changes.
      */
-	void dmp_tm_config_finalize();
+	void dmp_tm_config_finalize(void);
 	
 	/**
      * @return TRUE if the configuration is initialized, FALSE if not
      */
-	gboolean dmp_tm_config_is_initialized();
+	gboolean dmp_tm_config_is_initialized(void);
 	
 	/**
      * @return Return the device name of the trigger. Caller is responsible for the
 	 * memory management of the returned string.
      */
-	gchar * dmp_tm_config_get_device_name();
+	gchar * dmp_tm_config_get_device_name(void);
 
 
 #ifdef	__cplusplus

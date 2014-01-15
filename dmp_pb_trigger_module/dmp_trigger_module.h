@@ -32,7 +32,7 @@ extern "C" {
      * @param th the callback function
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_tm_add_trigger_handler(void (*th)());
+	int dmp_tm_add_trigger_handler(void (*th)(void));
 	
 	/**
 	 * Sets the value to be displayed by the countdown
@@ -45,44 +45,44 @@ extern "C" {
 	 * Edit the the module configuration
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_tm_edit_config();
+	int dmp_tm_edit_config(void);
 	
 	/**
 	 * Installs the function used to write to the Core Application's console
      * @param c_cb the callback function to add
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_tm_install_console(int (*c_cb)(char * message));
+	int dmp_tm_install_console(int (*c_cb)(const char * message));
 
 	/**
 	 * initializes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_tm_initialize();
+	int dmp_tm_initialize(void);
 	
 	/**
 	 * checks to see if the module is initialized
      * @return 0 if not initialized, !0 if initialized
      */
-	int dmp_tm_is_initialized();
+	int dmp_tm_is_initialized(void);
 	
 	/**
 	 * finalizes the module
      * @return DMP_PB_SUCCESS, or an error code
      */
-	int dmp_tm_finalize();
+	int dmp_tm_finalize(void);
 	
 	/**
 	 * wrapper around the console write callback
      * @param to_write the string to write
      * @return success, or failure
      */
-	int dmp_tm_console_write(gchar * to_write);
+	int dmp_tm_console_write(const gchar * to_write);
 	
 	/**
 	 * wrapper around the trigger handler function
      */
-	void dmp_tm_call_trigger_handler();
+	void dmp_tm_call_trigger_handler(void);
 	
 	/**
 	 * Sets the status monitor handler callback

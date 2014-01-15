@@ -14,7 +14,7 @@ static struct termios trigger_options;
  * reads 1 byte from the trigger
  * @return the read byte, 0 if no data to read
  */
-static guint8 dmp_tm_io_read_byte()
+static guint8 dmp_tm_io_read_byte(void)
 {
 	char working[1];
 	gint len = read(serial_descriptor, working, 1);
@@ -58,7 +58,7 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	guint8 read_value = 0;
 	while (dmp_tm_io_thread_running())
 	{
-		read_value = dmp_tm_io_read_byte(serial_descriptor);
+		read_value = dmp_tm_io_read_byte();
 		
 		if (read_value & OUTPUT_BUTTON_PRESS) dmp_tm_call_trigger_handler();
 		
@@ -68,7 +68,7 @@ static gpointer dmp_tm_serial_io_thread_function(gpointer user_data)
 	return NULL;
 }
 
-void dmp_tm_io_start_serial()
+void dmp_tm_io_start_serial(void)
 {
 	gchar * serial_port = dmp_tm_config_get_device_name();
 
@@ -122,7 +122,7 @@ void dmp_tm_io_start_serial()
 	dmp_tm_serial_io_thread = g_thread_new("serial thread", dmp_tm_serial_io_thread_function, NULL);
 }
 
-void dmp_tm_io_stop_serial()
+void dmp_tm_io_stop_serial(void)
 {
 	dmp_tm_serial_io_thread_should_die = TRUE;
 	dmp_tm_set_status(FALSE);
@@ -137,7 +137,7 @@ void dmp_tm_io_stop_serial()
 	close(serial_descriptor);
 }
 
-gboolean dmp_tm_io_thread_running()
+gboolean dmp_tm_io_thread_running(void)
 {
 	gboolean return_value;
 	return_value = !dmp_tm_serial_io_thread_should_die;

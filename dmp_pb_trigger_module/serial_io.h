@@ -48,12 +48,12 @@ extern "C" {
 	/**
 	 * Opens a serial connection to the trigger 
      */
-	void dmp_tm_io_start_serial();
+	void dmp_tm_io_start_serial(void);
 	
 	/**
 	 * closes the serial connection to the trigger
      */
-	void dmp_tm_io_stop_serial();
+	void dmp_tm_io_stop_serial(void);
 	
 	/**
 	 * writes a byte to the trigger
@@ -64,7 +64,7 @@ extern "C" {
 	/**
      * @return TRUE if the serial thread is running, false if not
      */
-	gboolean dmp_tm_io_thread_running();
+	gboolean dmp_tm_io_thread_running(void);
 	
 	
 
