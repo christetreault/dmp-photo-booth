@@ -1,6 +1,5 @@
 #include "lua_interface.h"
 #include "dmp_camera_module.h"
-#include "error_handling.h"
 
 #define DMP_CM_MODULE_SCRIPT "dmp_camera_module.lua"
 #define DMP_CM_NAMESPACE "dmp"
@@ -32,7 +31,7 @@ static gint dmp_cm_lua_set_status(lua_State * L)
 	return 0;
 }
 
-gint dmp_cm_lua_capture(gchar * location)
+gint dmp_cm_lua_capture(const gchar * location)
 {	
 	lua_getglobal(dmp_cm_state, DMP_CM_NAMESPACE);
 	lua_getfield(dmp_cm_state, -1, DMP_CM_MODULE);
@@ -41,7 +40,7 @@ gint dmp_cm_lua_capture(gchar * location)
 	if (lua_pcall(dmp_cm_state, 1, 0, 0) != LUA_OK)
 	{
 		const gchar * error = lua_tostring(dmp_cm_state, -1);
-		dmp_cm_console_write((gchar *) error);
+		dmp_cm_console_write(error);
 		return DMP_PB_FAILURE;
 	}
 	return DMP_PB_SUCCESS;
@@ -50,10 +49,8 @@ gint dmp_cm_lua_capture(gchar * location)
 /**
  * Registers the console_write callback to dmp.cm.console_write
  * @param L the state to register into
- * @throws Nothing, at the moment. Seems like the sort of function that should,
- * so this is here for potential future errors
  */
-static void dmp_cm_lua_register_console(lua_State * L, GError ** error)
+static void dmp_cm_lua_register_console(lua_State * L)
 {
 	lua_getglobal(L, DMP_CM_NAMESPACE);
 	lua_getfield(L, -1, DMP_CM_MODULE);
@@ -64,10 +61,8 @@ static void dmp_cm_lua_register_console(lua_State * L, GError ** error)
 /**
  * Registers the set_status callback to dmp.cm.set_status
  * @param L the state to register into
- * @throws Nothing, at the moment. Seems like the sort of function that should,
- * so this is here for potential future errors
  */
-static void dmp_cm_lua_register_set_status(lua_State * L, GError ** error)
+static void dmp_cm_lua_register_set_status(lua_State * L)
 {
 	lua_getglobal(L, DMP_CM_NAMESPACE);
 	lua_getfield(L, -1, DMP_CM_MODULE);
@@ -75,10 +70,8 @@ static void dmp_cm_lua_register_set_status(lua_State * L, GError ** error)
 	lua_setfield(L, -2, "set_status");
 }
 
-gint dmp_cm_lua_initialize()
+gint dmp_cm_lua_initialize(void)
 {
-	GError * error = NULL;
-	
 	dmp_cm_state = luaL_newstate();
 	luaL_openlibs(dmp_cm_state);
 	
@@ -102,29 +95,8 @@ gint dmp_cm_lua_initialize()
 	}
 	lua_setglobal(dmp_cm_state, DMP_CM_NAMESPACE);
 	
-	dmp_cm_lua_register_console(dmp_cm_state, &error);
-	
-	if (error != NULL)
-	{
-		dmp_cm_error_console_write(error);
-		g_clear_error(&error);
-		lua_close(dmp_cm_state);
-		dmp_cm_state = NULL;
-		dmp_cm_set_status(FALSE);
-		return DMP_PB_FAILURE;
-	}
-	
-	dmp_cm_lua_register_set_status(dmp_cm_state, &error);
-	
-	if (error != NULL)
-	{
-		dmp_cm_error_console_write(error);
-		g_clear_error(&error);
-		lua_close(dmp_cm_state);
-		dmp_cm_state = NULL;
-		dmp_cm_set_status(FALSE);
-		return DMP_PB_FAILURE;
-	}
+	dmp_cm_lua_register_console(dmp_cm_state);
+	dmp_cm_lua_register_set_status(dmp_cm_state);
 	
 	lua_getglobal(dmp_cm_state, DMP_CM_NAMESPACE);
 	lua_getfield(dmp_cm_state, -1, DMP_CM_MODULE);
@@ -141,7 +113,7 @@ gint dmp_cm_lua_initialize()
 	return DMP_PB_SUCCESS;
 }
 
-gint dmp_cm_lua_finalize()
+gint dmp_cm_lua_finalize(void)
 {
 	lua_getglobal(dmp_cm_state, DMP_CM_NAMESPACE);
 	lua_getfield(dmp_cm_state, -1, DMP_CM_MODULE);

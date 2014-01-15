@@ -36,7 +36,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/camera_module.o \
-	${OBJECTDIR}/error_handling.o \
 	${OBJECTDIR}/lua_interface.o
 
 
@@ -68,11 +67,6 @@ ${OBJECTDIR}/camera_module.o: camera_module.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 lua5.2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
-
-${OBJECTDIR}/error_handling.o: error_handling.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 lua5.2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/error_handling.o error_handling.c
 
 ${OBJECTDIR}/lua_interface.o: lua_interface.c 
 	${MKDIR} -p ${OBJECTDIR}

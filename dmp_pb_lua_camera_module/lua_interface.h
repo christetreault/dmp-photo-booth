@@ -27,19 +27,19 @@ extern "C" {
      * @param location the location to download to
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_lua_capture(gchar * location);
+	gint dmp_cm_lua_capture(const gchar * location);
 
 	/**
 	 * Initializes Lua
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_lua_initialize();
+	gint dmp_cm_lua_initialize(void);
 
 	/**
 	 * Finalizes Lua
      * @return DMP_PB_SUCCESS or DMP_PB_FAILURE
      */
-	gint dmp_cm_lua_finalize();
+	gint dmp_cm_lua_finalize(void);
 
 
 #ifdef	__cplusplus

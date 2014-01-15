@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>dmp_camera_module.h</itemPath>
-      <itemPath>error_handling.h</itemPath>
       <itemPath>global_defines.h</itemPath>
       <itemPath>lua_interface.h</itemPath>
     </logicalFolder>
@@ -17,7 +16,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>camera_module.c</itemPath>
-      <itemPath>error_handling.c</itemPath>
       <itemPath>lua_interface.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -64,10 +62,6 @@
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="error_handling.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="error_handling.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lua_interface.c" ex="false" tool="0" flavor2="0">
@@ -112,10 +106,6 @@
       <item path="camera_module.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="error_handling.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="error_handling.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
