@@ -43,11 +43,13 @@
         <cTool>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
           <commandLine>`pkg-config --cflags glib-2.0 libgphoto2`</commandLine>
         </cTool>
         <ccTool>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -64,21 +66,6 @@
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f2">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-        </linkerTool>
-      </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
@@ -94,12 +81,14 @@
           <developmentMode>5</developmentMode>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
           <commandLine>`pkg-config --cflags glib-2.0 libgphoto2`</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -122,21 +111,6 @@
       </item>
       <item path="dmp_camera_module.h" ex="false" tool="3" flavor2="0">
       </item>
-      <folder path="TestFiles/f2">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-        </linkerTool>
-      </folder>
       <item path="global_defines.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
