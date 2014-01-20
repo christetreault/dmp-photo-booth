@@ -869,7 +869,7 @@ static void dmp_pb_options_dialog_cancel_button(gpointer user_data)
 	gtk_widget_hide(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_OPTIONS_DIALOG));
 }
 
-static void dmp_pb_options_dialog_ok_button(gpointer user_data)	//TODO: This blocks the UI
+static void dmp_pb_options_dialog_ok_button(gpointer user_data)
 {
 	GError * error = NULL;
 	dmp_pb_ui_commit_options_fields();

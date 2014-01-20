@@ -98,16 +98,27 @@ static gboolean dmp_pb_is_consistent(dmp_pb_module_type to_check)
  * @param to_check the module type to test
  * @return true if loaded, false if not loaded or inconsistent
  */
-static gboolean dmp_pb_is_loaded(dmp_pb_module_type to_check)	//TODO: this
+static gboolean dmp_pb_is_loaded(dmp_pb_module_type to_check)
 {
 	g_assert(g_module_supported());
 
 	if (to_check == DMP_PB_CAMERA_MODULE) return (dmp_pb_camera_module != NULL
-			&& dmp_cm_capture != NULL);
+			&& dmp_cm_capture != NULL && dmp_cm_edit_config != NULL
+			&& dmp_cm_initialize != NULL && dmp_cm_finalize != NULL
+			&& dmp_cm_install_console != NULL 
+			&& dmp_cm_install_status_handler != NULL);
+	
 	else if (to_check == DMP_PB_TRIGGER_MODULE) return (dmp_pb_trigger_module != NULL
-			&& dmp_tm_add_trigger_handler != NULL && dmp_tm_set_countdown != NULL);
+			&& dmp_tm_add_trigger_handler != NULL && dmp_tm_set_countdown != NULL
+			&& dmp_tm_edit_config != NULL && dmp_tm_initialize != NULL
+			&& dmp_tm_finalize != NULL && dmp_tm_show_error != NULL
+			&& dmp_tm_install_console != NULL
+			&& dmp_tm_install_status_handler != NULL);
+	
 	else if (to_check == DMP_PB_PRINTER_MODULE) return (dmp_pb_printer_module != NULL
-			&& dmp_pm_print != NULL);
+			&& dmp_pm_print != NULL && dmp_pm_initialize != NULL
+			&& dmp_pm_finalize != NULL && dmp_pm_install_console != NULL
+			&& dmp_pm_install_status_handler != NULL);
 	else return FALSE;
 }
 
