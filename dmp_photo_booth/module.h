@@ -18,6 +18,9 @@ extern "C" {
 #include "error_handling.h"
 #include "module_callbacks.h"
 
+	//TODO: if trigger is unplugged while the trigger module is loaded, an 
+	//		assertion failure occurs
+	
 	/**
 	 * Enumeration of DMP Photo Booth modules
 	 */

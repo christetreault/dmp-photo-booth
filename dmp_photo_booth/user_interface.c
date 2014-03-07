@@ -5,6 +5,8 @@
 
 G_DEFINE_QUARK(DMP_PB_UI_ERROR, dmp_pb_ui_error)
 
+#define DMP_PB_WAIT_FOR_GTK do {gtk_main_iteration();} while (gtk_events_pending())
+
 #define DMP_PB_DOCUMENTATION_URL "http://doingmyprogramming.com/category/projects/dmp-photo-booth/"
 
 /* User data widgets */
@@ -378,7 +380,6 @@ static void dmp_pb_ui_parse_image_positions(gint to_test)
 static void dmp_pb_ui_show_working_screen(void)
 {
 	gtk_widget_show(g_hash_table_lookup((GHashTable *)dmp_pb_user_data, DMP_PB_WORKING_SPLASH_SCREEN));
-	while (gtk_events_pending()) gtk_main_iteration();
 }
 
 static void dmp_pb_ui_hide_working_screen(void)
@@ -625,6 +626,7 @@ void dmp_pb_ui_launch(const gchar * ui_file, GError ** error)
 	g_timeout_add_seconds(1, dmp_pb_console_queue_flush_queue, dmp_pb_console_buffer);
 
 	gtk_widget_show(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW));
+	
 	gtk_main();
 
 	dmp_pb_mwd_finalize();
@@ -643,8 +645,16 @@ static void dmp_pb_stop_photo_booth(void)
 		return;
 	}
 	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_unload_module(DMP_PB_TRIGGER_MODULE);
+	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_unload_module(DMP_PB_PRINTER_MODULE);
+	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_unload_module(DMP_PB_CAMERA_MODULE);
 	
 	gtk_widget_set_sensitive(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_FILE_SUBMENU_STOP), FALSE);
@@ -660,6 +670,8 @@ static void dmp_pb_start_photo_booth(void)
 	GError * error = NULL;	
 	GString * location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_PRINTER_MODULE_PATH);
 	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_load_module(DMP_PB_PRINTER_MODULE, location, &error);
 	if (error != NULL)
 	{
@@ -670,8 +682,13 @@ static void dmp_pb_start_photo_booth(void)
 		return;
 	}
 	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	g_string_free(location, TRUE);
 	location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_CAMERA_MODULE_PATH);
+	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_load_module(DMP_PB_CAMERA_MODULE, location, &error);
 	if (error != NULL)
 	{
@@ -684,6 +701,9 @@ static void dmp_pb_start_photo_booth(void)
 	
 	g_string_free(location, TRUE);
 	location = dmp_pb_config_read_string(DMP_PB_CONFIG_MODULE_GROUP, DMP_PB_CONFIG_TRIGGER_MODULE_PATH);
+	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_load_module(DMP_PB_TRIGGER_MODULE, location, &error);
 	if (error != NULL)
 	{
@@ -723,7 +743,11 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_start_activate(GtkMenuItem * menu
 	
 	dmp_pb_ui_show_working_screen();
 	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	dmp_pb_console_queue_push(g_string_new("Starting the Photo Booth...\n"));
+	
+	DMP_PB_WAIT_FOR_GTK;
 	
 	dmp_pb_start_photo_booth();
 	
@@ -736,8 +760,11 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menui
 	
 	dmp_pb_ui_show_working_screen();
 
+	DMP_PB_WAIT_FOR_GTK;
 	
 	dmp_pb_console_queue_push(g_string_new("Stopping the Photo Booth...\n"));
+	
+	DMP_PB_WAIT_FOR_GTK;
 	
 	dmp_pb_stop_photo_booth();
 	
@@ -752,6 +779,8 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menu
 	
 	dmp_pb_ui_show_working_screen();
 	
+	DMP_PB_WAIT_FOR_GTK;
+	
 	GtkTreeModel * working_tree_model = gtk_icon_view_get_model(working_view);
 	GtkTreeIter  iter;
 	
@@ -760,6 +789,8 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menu
 	gchar * path;
 	
 	gtk_tree_model_get(	working_tree_model,	&iter, 1, &path, -1);
+	
+	DMP_PB_WAIT_FOR_GTK;
 	
 	dmp_pb_pm_print(path);
 	g_list_foreach(working, (GFunc)gtk_tree_path_free, NULL);
@@ -777,8 +808,8 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_save_output_activate(GtkMenuItem 
 	GtkWidget * file_save = gtk_file_chooser_dialog_new("Save Console output",
 			GTK_WINDOW(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW)),
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			"gtk-cancel", GTK_RESPONSE_CANCEL,
+			"gtk-save", GTK_RESPONSE_ACCEPT,
 			NULL);
 	
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(file_save), TRUE);

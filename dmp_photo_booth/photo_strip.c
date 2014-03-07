@@ -157,6 +157,36 @@ void dmp_pb_photo_strip_request(GString * completed_strip_name,
 	g_async_queue_push(in_queue, working);
 }
 
+static gint dmp_pb_photo_strip_initialize_total_height(const struct photo_strip_builder * builder,
+																double width)
+{
+	g_assert(builder != NULL);
+	MagickWand * working;
+	GString * working_path;
+	gint return_value = 0;
+	
+	if (builder->position_1_file_name != NULL && builder->position_2_file_name != NULL &&
+		 builder->position_3_file_name != NULL && builder->position_4_file_name != NULL &&
+		 builder->position_5_file_name != NULL) return return_value;
+	
+	if (builder->position_1_file_name != NULL) working_path = builder->position_1_file_name;
+	else if (builder->position_2_file_name != NULL) working_path = builder->position_2_file_name;
+	else if (builder->position_3_file_name != NULL) working_path = builder->position_3_file_name;
+	else if (builder->position_4_file_name != NULL) working_path = builder->position_4_file_name;
+	else if (builder->position_5_file_name != NULL) working_path = builder->position_5_file_name;
+	else return return_value; //Redundant, but stranger things have happened
+	
+	working = NewMagickWand();
+	
+	if (MagickReadImage(working, working_path->str))
+	{
+		return_value = dmp_pb_photo_strip_scale_height_magickally(working, width);
+	}
+	
+	DestroyMagickWand(working);
+	return return_value;
+}
+
 void dmp_pb_photo_strip_assemble(void)	//	PHOTO STRIP! ASEEEEEEEEEMBLE!!!!!!
 {
 	if (!dmp_pb_photo_strip_initialized()) return;
@@ -173,7 +203,20 @@ void dmp_pb_photo_strip_assemble(void)	//	PHOTO STRIP! ASEEEEEEEEEMBLE!!!!!!
 	gchar * magick_exception_message = NULL;
 	dmp_pb_photo_strip_error magick_exception_severity;
 	gdouble width = dmp_pb_config_read_double(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_INDIVIDUAL_IMAGE_WIDTH);
-	gint last_height = 0;
+	gint last_height;
+	
+	GAsyncQueue * local_out_queue = g_async_queue_ref(out_queue);
+	
+	if (!(last_height = dmp_pb_photo_strip_initialize_total_height(working, width)))
+	{
+		working->error_message = g_string_new("Photo Request contains no images!");
+		working->error_domain = dmp_pb_photo_strip_error_quark();
+		working->error_code = FileOpenError;
+		g_async_queue_push(local_out_queue, working);
+		g_async_queue_unref(local_out_queue);
+		return;
+	}
+	
 	gint offset_x = 15;
 	gint offset_y = 15;
 	gint total_height = 0;
@@ -182,8 +225,6 @@ void dmp_pb_photo_strip_assemble(void)	//	PHOTO STRIP! ASEEEEEEEEEMBLE!!!!!!
 	/* ---------- */
 	/* Processing */
 	/* ---------- */
-	
-	GAsyncQueue * local_out_queue = g_async_queue_ref(out_queue);
 	
 	GString * background = dmp_pb_config_read_string(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_BACKGROUND_PATH);
 	if (!MagickReadImage(working->background_wand, background->str))

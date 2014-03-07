@@ -70,22 +70,22 @@ gboolean dmp_pb_mwd_handle_message(gpointer user_data)
 	switch (message)
 	{
 		case DMP_PB_MWD_CAMERA_UP:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->camera_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->camera_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
 			break;
 		case DMP_PB_MWD_CAMERA_DOWN:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->camera_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->camera_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
 			break;
 		case DMP_PB_MWD_PRINTER_UP:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->printer_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->printer_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
 			break;
 		case DMP_PB_MWD_PRINTER_DOWN:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->printer_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->printer_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
 			break;
 		case DMP_PB_MWD_TRIGGER_UP:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->trigger_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->trigger_module_staus_icon, "gtk-ok", GTK_ICON_SIZE_BUTTON);
 			break;
 		case DMP_PB_MWD_TRIGGER_DOWN:
-			gtk_image_set_from_stock(dmp_pb_mwd_status_icons->trigger_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
+			gtk_image_set_from_icon_name(dmp_pb_mwd_status_icons->trigger_module_staus_icon, "gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
 			break;
 	}
 	return G_SOURCE_CONTINUE;
