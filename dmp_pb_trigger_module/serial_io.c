@@ -22,7 +22,7 @@ static guint8 dmp_tm_io_read_byte(void)
 	if (len == -1)
 	{
 		dmp_tm_console_write("Failed to read data from the trigger\n");
-		dmp_tm_serial_io_thread_should_die = TRUE;
+		//dmp_tm_serial_io_thread_should_die = TRUE;
 		dmp_tm_set_status(FALSE);
 	}
 	else if (len == 0) return 0;
@@ -42,7 +42,7 @@ void dmp_tm_io_write_byte(gint8 in)
 	if (write(serial_descriptor, &to_write, 1) != 1)
 	{
 		dmp_tm_console_write("Failed to write data to the trigger\n");
-		dmp_tm_serial_io_thread_should_die = TRUE;
+		//dmp_tm_serial_io_thread_should_die = TRUE;
 		dmp_tm_set_status(FALSE);
 	}
 }
@@ -130,8 +130,6 @@ void dmp_tm_io_stop_serial(void)
 	if (tcsetattr(serial_descriptor, TCSANOW, &saved_options) < 0)
 	{
 		dmp_tm_console_write("Failed to restore saved serial attributes\n");
-		close(serial_descriptor);
-		return;
 	}
 	
 	close(serial_descriptor);
@@ -139,7 +137,5 @@ void dmp_tm_io_stop_serial(void)
 
 gboolean dmp_tm_io_thread_running(void)
 {
-	gboolean return_value;
-	return_value = !dmp_tm_serial_io_thread_should_die;
-	return return_value;
+	return !dmp_tm_serial_io_thread_should_die;
 }
