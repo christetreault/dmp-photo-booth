@@ -32,7 +32,10 @@ extern "C" {
 	 * Enumeration of Module GError codes
 	 */
 	typedef enum {
-		G_MODULE_LOAD_FAILURE
+		G_MODULE_LOAD_FAILURE, 
+		PRINTER_MODULE_FUNCTION_ERROR,
+		TRIGGER_MODULE_FUNCTION_ERROR,
+		CAMERA_MODULE_FUNCTION_ERROR
 	} dmp_pb_module_error;
 	
 	/**
@@ -81,34 +84,41 @@ extern "C" {
 	/**
 	 * signals a module to edit its config
 	 * @param type the module type to call
+	 * @throws DMP_PB_MODULE_ERROR::TRIGGER_MODULE_ERROR, 
+	 * DMP_PB_MODULE_ERROR::PRINTER_MODULE_ERROR,
+	 * DMP_PB_MODULE_ERROR::CAMERA_MODULE_ERROR
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_edit_module_config(dmp_pb_module_type type);
+	gint dmp_pb_edit_module_config(dmp_pb_module_type type, GError ** error);
 
 	/**
 	 * signals the camera to capture a picture, and downloads it to location
 	 * @param location the location to download to
+	 * @throws DMP_PB_MODULE_ERROR::CAMERA_MODULE_ERROR
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_cm_capture(const gchar * location);
+	gint dmp_pb_cm_capture(const gchar * location, GError ** error);
 	/**
 	 * prints the file at the passed in location
 	 * @param to_print the file to print
+	 * @throws DMP_PB_MODULE_ERROR::PRINTER_MODULE_ERROR
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_pm_print(const gchar * to_print);
+	gint dmp_pb_pm_print(const gchar * to_print, GError ** error);
 	/**
 	 * Sets the value to be displayed by the countdown
 	 * @param current the current time, in seconds
+	 * @throws DMP_PB_MODULE_ERROR::TRIGGER_MODULE_ERROR
 	 * @return DMP_PB_SUCCESS, or an error code
 	 */
-	gint dmp_pb_tm_set_countdown(gint current);
+	gint dmp_pb_tm_set_countdown(gint current, GError ** error);
 	/**
 	 * Shows an error code to the user to indicate failure
      * @param value an error code value
+	 * @throws DMP_PB_MODULE_ERROR::TRIGGER_MODULE_ERROR
      * @return DMP_PB_SUCCESS, or an error code
      */
-	gint dmp_pb_tm_show_error(gint value);
+	gint dmp_pb_tm_show_error(gint value, GError ** error);
 
 #ifdef	__cplusplus
 }

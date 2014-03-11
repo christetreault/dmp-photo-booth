@@ -582,9 +582,26 @@ void dmp_pb_unload_module(dmp_pb_module_type to_unload)
 	
 }
 
-gint dmp_pb_edit_module_config(dmp_pb_module_type type)
+gint dmp_pb_edit_module_config(dmp_pb_module_type type, GError ** error)
 {
-	g_assert(dmp_pb_check_module_state(type) == DMP_PB_MODULE_READY);
+	dmp_pb_module_type module_type = type;
+	dmp_pb_module_state state = dmp_pb_check_module_state(module_type);
+	dmp_pb_module_error error_type;
+	
+	if (state != DMP_PB_MODULE_READY)
+	{
+		if (module_type == DMP_PB_CAMERA_MODULE) error_type = CAMERA_MODULE_FUNCTION_ERROR;
+		else if (module_type == DMP_PB_TRIGGER_MODULE) error_type = TRIGGER_MODULE_FUNCTION_ERROR;
+		else if (module_type == DMP_PB_PRINTER_MODULE) error_type = PRINTER_MODULE_FUNCTION_ERROR;
+		else g_assert_not_reached();
+		
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				error_type,
+				"Module State is: %d, where it should be %d", state, 
+				DMP_PB_MODULE_READY);
+		return DMP_PB_FAILURE;
+	}
 	
 	switch (type)
 	{
@@ -611,26 +628,62 @@ void dmp_pb_swap_module(dmp_pb_module_type to_swap, const GString * new_module_l
 
 
 
-gint dmp_pb_cm_capture(const gchar * location)
+gint dmp_pb_cm_capture(const gchar * location, GError ** error)
 {
-	g_assert(dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE) == DMP_PB_MODULE_READY);
+	dmp_pb_module_state state = dmp_pb_check_module_state(DMP_PB_CAMERA_MODULE);
+	if (state != DMP_PB_MODULE_READY)
+	{
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				CAMERA_MODULE_FUNCTION_ERROR,
+				"Module State is: %d, where it should be %d", state, 
+				DMP_PB_MODULE_READY);
+		return DMP_PB_FAILURE;
+	}
 	return (*dmp_cm_capture)(location);
 }
 
-gint dmp_pb_pm_print(const gchar * to_print)
+gint dmp_pb_pm_print(const gchar * to_print, GError ** error)
 {
-	g_assert(dmp_pb_check_module_state(DMP_PB_PRINTER_MODULE) == DMP_PB_MODULE_READY);
+	dmp_pb_module_state state = dmp_pb_check_module_state(DMP_PB_PRINTER_MODULE);
+	if (state != DMP_PB_MODULE_READY)
+	{
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				PRINTER_MODULE_FUNCTION_ERROR,
+				"Module State is: %d, where it should be %d", state, 
+				DMP_PB_MODULE_READY);
+		return DMP_PB_FAILURE;
+	}
 	return (*dmp_pm_print)(to_print);
 }
 
-gint dmp_pb_tm_set_countdown(int current)
+gint dmp_pb_tm_set_countdown(int current, GError ** error)
 {
-	g_assert(dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE) == DMP_PB_MODULE_READY);
+	dmp_pb_module_state state = dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE);
+	if (state != DMP_PB_MODULE_READY)
+	{
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				TRIGGER_MODULE_FUNCTION_ERROR,
+				"Module State is: %d, where it should be %d", state, 
+				DMP_PB_MODULE_READY);
+		return DMP_PB_FAILURE;
+	}
 	return (*dmp_tm_set_countdown)(current);
 }
 
-gint dmp_pb_tm_show_error(gint value)
+gint dmp_pb_tm_show_error(gint value, GError ** error)
 {
-	g_assert(dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE) == DMP_PB_MODULE_READY);
+	dmp_pb_module_state state = dmp_pb_check_module_state(DMP_PB_TRIGGER_MODULE);
+	if (state != DMP_PB_MODULE_READY)
+	{
+		g_set_error(error,
+				dmp_pb_module_error_quark(),
+				TRIGGER_MODULE_FUNCTION_ERROR,
+				"Module State is: %d, where it should be %d", state, 
+				DMP_PB_MODULE_READY);
+		return DMP_PB_FAILURE;
+	}
 	return (*dmp_tm_show_error)(value);
 }

@@ -773,6 +773,7 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_stop_activate(GtkMenuItem * menui
 
 G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
+	GError * error = NULL;
 	GtkIconView * working_view = g_hash_table_lookup(dmp_pb_user_data, DMP_PB_IMAGE_HISTORY_VIEW);
 	GList * working = gtk_icon_view_get_selected_items(working_view);
 	if (working == NULL) return;	// Nothing selected
@@ -792,7 +793,13 @@ G_MODULE_EXPORT void dmp_pb_ui_cb_file_submenu_print_activate(GtkMenuItem * menu
 	
 	DMP_PB_WAIT_FOR_GTK;
 	
-	dmp_pb_pm_print(path);
+	dmp_pb_pm_print(path, &error);
+	if (error != NULL)
+	{
+		dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
+		g_clear_error(&error);
+	}
+	
 	g_list_foreach(working, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(working);
 	
@@ -930,8 +937,14 @@ G_MODULE_EXPORT void dmp_pb_options_dialog_response(GtkDialog * about, gint resp
  */
 static void dmp_pb_edit_module_config_button_helper(dmp_pb_module_type type, GError ** error)
 {
-	if (dmp_pb_edit_module_config(type) != DMP_PB_SUCCESS)
+	GError * working_error = NULL;
+	if (dmp_pb_edit_module_config(type, &working_error) != DMP_PB_SUCCESS)
 	{
+		if (working_error != NULL)
+		{
+			g_propagate_error(error, working_error);
+			return;
+		}
 		g_set_error(error,
 				dmp_pb_ui_error_quark(),
 				LIBRARY_CALL_FAILURE,

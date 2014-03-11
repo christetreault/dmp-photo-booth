@@ -504,16 +504,26 @@ void dmp_pb_photo_strip_assemble(void)	//	PHOTO STRIP! ASEEEEEEEEEMBLE!!!!!!
 	/* Printing */
 	/* -------- */
 	
-	if (dmp_pb_pm_print(working->completed_strip_file_name->str) != DMP_PB_SUCCESS)
+	if (dmp_pb_pm_print(working->completed_strip_file_name->str, &error) != DMP_PB_SUCCESS)
 	{
-		working->error_message = g_string_new(NULL);
-		g_string_printf(working->error_message, "Failed to print photo strip: %s",
-						working->completed_strip_file_name->str);
-		working->error_domain = dmp_pb_photo_strip_error_quark();
-		working->error_code = DMP_PB_FAILURE;
+		if (error != NULL)
+		{
+			working->error_message = g_string_new(error->message);
+			working->error_domain = error->domain;
+			working->error_code = error->code;
+			g_clear_error(&error);
+		}
+		else
+		{
+			working->error_message = g_string_new(NULL);
+			g_string_printf(working->error_message, "Failed to print photo strip: %s",
+							working->completed_strip_file_name->str);
+			working->error_domain = dmp_pb_photo_strip_error_quark();
+			working->error_code = DMP_PB_FAILURE;
+		}
 		g_async_queue_push(local_out_queue, working);
 		g_async_queue_unref(local_out_queue);
-		dmp_pb_tm_show_error(PRINTER_MODULE_ERROR);
+		dmp_pb_tm_show_error(PRINTER_MODULE_ERROR, NULL);
 		return;
 	}
 	

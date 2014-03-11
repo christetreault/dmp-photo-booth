@@ -40,18 +40,36 @@ static void dmp_pb_photo_request_countdown_capture(gint secs, const gchar * file
 {
 	g_assert(file_name != NULL);
 	
+	GError * working_error = NULL;
+	
 	int count;
 	
 	for (count = secs; count > 0; --count)
 	{
-		dmp_pb_tm_set_countdown(count);
+		dmp_pb_tm_set_countdown(count, &working_error);
+		if (working_error != NULL)
+		{
+			g_propagate_error(error, working_error);
+			return;
+		}
 		g_usleep(G_USEC_PER_SEC * 1);
 	}
 	
-	dmp_pb_tm_set_countdown(0);
+	dmp_pb_tm_set_countdown(0, &working_error);
+	if (working_error != NULL)
+		{
+			g_propagate_error(error, working_error);
+			return;
+		}
 	
-	if (dmp_pb_cm_capture(file_name) != DMP_PB_SUCCESS)
+	if (dmp_pb_cm_capture(file_name, &working_error) != DMP_PB_SUCCESS)
 	{
+		if (working_error != NULL)
+		{
+			g_propagate_error(error, working_error);
+			return;
+		}
+		
 		g_set_error(error,
 					dmp_pb_coordination_error_quark(),
 					CAMERA_MODULE_ERROR,
@@ -121,7 +139,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file1, &error);
 		if (error != NULL)
 		{
-			dmp_pb_tm_show_error(error->code);
+			dmp_pb_tm_show_error(error->code, NULL);
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
@@ -138,7 +156,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file2, &error);
 		if (error != NULL)
 		{
-			dmp_pb_tm_show_error(error->code);
+			dmp_pb_tm_show_error(error->code, NULL);
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
@@ -155,7 +173,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file3, &error);
 		if (error != NULL)
 		{
-			dmp_pb_tm_show_error(error->code);
+			dmp_pb_tm_show_error(error->code, NULL);
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
@@ -172,7 +190,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file4, &error);
 		if (error != NULL)
 		{
-			dmp_pb_tm_show_error(error->code);
+			dmp_pb_tm_show_error(error->code, NULL);
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
@@ -189,7 +207,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 		dmp_pb_photo_request_countdown_capture(DMP_PB_COUNTDOWN_TIME, file5, &error);
 		if (error != NULL)
 		{
-			dmp_pb_tm_show_error(error->code);
+			dmp_pb_tm_show_error(error->code, NULL);
 			dmp_pb_console_queue_push(dmp_pb_error_to_string(error));
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
