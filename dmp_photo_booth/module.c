@@ -168,15 +168,18 @@ static gint dmp_pb_initialize(dmp_pb_module_type type)
  */
 static gint dmp_pb_finalize(dmp_pb_module_type type)
 {
-	gint result;
-	if (result = dmp_pb_check_module_state(type) != DMP_PB_MODULE_READY) return result;
+	gint result = dmp_pb_check_module_state(type);
+	if (result == DMP_PB_MODULE_IN_INCONSISTENT_STATE || result == DMP_PB_MODULE_NOT_LOADED) return result;
 	switch (type)
 	{
 		case DMP_PB_PRINTER_MODULE:
+			if (dmp_pm_finalize == NULL) return DMP_PB_FAILURE;
 			return (*dmp_pm_finalize)();
 		case DMP_PB_TRIGGER_MODULE:
+			if (dmp_tm_finalize == NULL) return DMP_PB_FAILURE;
 			return (*dmp_tm_finalize)();
 		case DMP_PB_CAMERA_MODULE:
+			if (dmp_cm_finalize == NULL) return DMP_PB_FAILURE;
 			return (*dmp_cm_finalize)();
 		default:
 			g_assert_not_reached();
