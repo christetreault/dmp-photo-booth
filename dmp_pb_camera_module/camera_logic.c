@@ -2,8 +2,8 @@
 #include "global_defines.h"
 #include "dmp_camera_module.h"
 
-static Camera * camera;
-static GPContext * context;
+static Camera * camera = NULL;
+static GPContext * context = NULL;
 
 static gboolean is_initialized = FALSE;
 
@@ -30,7 +30,7 @@ gint dmp_cm_camera_init(void)
 	
 	if (gp_camera_new(&camera) != GP_OK)
 	{
-		gp_context_unref(context);
+		dmp_cm_camera_finalize();
 		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
@@ -51,8 +51,11 @@ gint dmp_cm_camera_finalize(void)
 {
 	dmp_cm_set_status(FALSE);
 	
-	gp_camera_unref(camera);
-	gp_context_unref(context);
+	if (camera != NULL) gp_camera_unref(camera);
+	if (context != NULL) gp_context_unref(context);
+	
+	camera = NULL;
+	context = NULL;
 	
 	is_initialized = FALSE;
 	

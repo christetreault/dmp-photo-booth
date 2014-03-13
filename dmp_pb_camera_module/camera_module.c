@@ -1,8 +1,8 @@
 #include "dmp_camera_module.h"
 #include "camera_logic.h"
 
-int (*console_write)(const char * message);
-void (*status_handler)(gint status);
+int (*console_write)(const char * message) = NULL;
+void (*status_handler)(gint status) = NULL;
 
 int dmp_cm_install_console(int (*c_cb)(const char * message))
 {
