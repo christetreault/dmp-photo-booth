@@ -13,6 +13,7 @@ static int (*dmp_pm_finalize)(void) = NULL;
 static int (*dmp_pm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_pm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_printer_module_consistent = TRUE;
+G_LOCK_DEFINE(pm_status);
 static gboolean dmp_pb_printer_module_status_ok = FALSE;
 
 /**
@@ -28,6 +29,7 @@ static int (*dmp_tm_show_error)(int value) = NULL;
 static int (*dmp_tm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_tm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_trigger_module_consistent = TRUE;
+G_LOCK_DEFINE(tm_status);
 static gboolean dmp_pb_trigger_module_status_ok = FALSE;
 
 /**
@@ -41,21 +43,28 @@ static int (*dmp_cm_finalize)(void) = NULL;
 static int (*dmp_cm_install_console)(int (*c_cb)(const char * message)) = NULL;
 static int (*dmp_cm_install_status_handler)(void (*sh)(int status)) = NULL;
 static gboolean dmp_pb_camera_module_consistent = TRUE;
+G_LOCK_DEFINE(cm_status);
 static gboolean dmp_pb_camera_module_status_ok = FALSE;
 
 static void dmp_pb_set_printer_module_status(gint state)
 {
+	G_LOCK(pm_status);
 	dmp_pb_printer_module_status_ok = !(state == 0);
+	G_UNLOCK(pm_status);
 }
 
 static void dmp_pb_set_trigger_module_status(gint state)
 {
+	G_LOCK(tm_status);
 	dmp_pb_trigger_module_status_ok = !(state == 0);
+	G_UNLOCK(tm_status);
 }
 
 static void dmp_pb_set_camera_module_status(gint state)
 {
+	G_LOCK(cm_status);
 	dmp_pb_camera_module_status_ok = !(state == 0);
+	G_UNLOCK(cm_status);
 }
 
 /**
@@ -65,14 +74,24 @@ static void dmp_pb_set_camera_module_status(gint state)
  */
 static gboolean dmp_pb_status_is_ok(dmp_pb_module_type to_check)
 {
+	gboolean result = FALSE;
 	switch (to_check)
 	{
 		case DMP_PB_PRINTER_MODULE:
-			return dmp_pb_printer_module_status_ok;
+			G_LOCK(pm_status);
+			result = dmp_pb_printer_module_status_ok;
+			G_UNLOCK(pm_status);
+			return result;
 		case DMP_PB_TRIGGER_MODULE:
-			return dmp_pb_trigger_module_status_ok;
+			G_LOCK(tm_status);
+			result = dmp_pb_trigger_module_status_ok;
+			G_UNLOCK(tm_status);
+			return result;
 		case DMP_PB_CAMERA_MODULE:
-			return dmp_pb_camera_module_status_ok;
+			G_LOCK(cm_status);
+			result = dmp_pb_camera_module_status_ok;
+			G_UNLOCK(cm_status);
+			return result;
 		default:
 			g_assert_not_reached();
 	}
