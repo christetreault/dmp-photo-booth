@@ -44,7 +44,7 @@ static void dmp_pb_photo_request_countdown_capture(gint secs, const gchar * file
 	
 	GError * working_error = NULL;
 	
-	int count;
+	gint count;
 	
 	for (count = secs; count > 0; --count)
 	{
