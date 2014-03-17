@@ -1,9 +1,12 @@
 
 #include "coordination.h"
 
+G_LOCK_DEFINE(photo_request);
+static GThreadPool * photo_request_thread_pool = NULL;
 
 G_DEFINE_QUARK(DMP_PB_COORDINATION_ERROR, dmp_pb_coordination_error)
 
+G_LOCK_DEFINE(strip_in_progress);
 static gboolean in_progress = FALSE;
 
 gchar * dmp_pb_coordination_get_epoch_filename(const gchar * prefix, const gchar * extension)
@@ -21,8 +24,7 @@ gchar * dmp_pb_coordination_get_epoch_filename(const gchar * prefix, const gchar
 	return g_string_free(working, FALSE);
 }
 
-G_LOCK_DEFINE(photo_request);
-static GThreadPool * photo_request_thread_pool = NULL;
+
 
 #define DMP_PB_COUNTDOWN_TIME 4
 #define DMP_PB_POS5_FILE_NAME "5_"
@@ -122,7 +124,7 @@ static GString * dmp_pb_photo_request_new_or_null(const gchar * working)
  */
 static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_data)
 {
-	in_progress = TRUE;
+	dmp_pb_coordination_set_is_processing(TRUE);
 	gint image_position_toggle = dmp_pb_config_read_int(DMP_PB_CONFIG_CORE_GROUP, DMP_PB_CONFIG_POSITION_TOGGLE);
 	GError * error = NULL;
 	
@@ -144,7 +146,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			in_progress = FALSE;
+			dmp_pb_coordination_set_is_processing(FALSE);
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -161,7 +163,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			in_progress = FALSE;
+			dmp_pb_coordination_set_is_processing(FALSE);
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -178,7 +180,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			in_progress = FALSE;
+			dmp_pb_coordination_set_is_processing(FALSE);
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -195,7 +197,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			in_progress = FALSE;
+			dmp_pb_coordination_set_is_processing(FALSE);
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -212,7 +214,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 			g_clear_error(&error);
 			dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 			g_string_free(working, TRUE);
-			in_progress = FALSE;
+			dmp_pb_coordination_set_is_processing(FALSE);
 			G_UNLOCK(photo_request);
 			return;
 		}
@@ -241,7 +243,7 @@ static void dmp_pb_photo_request_thread_function(gpointer data, gpointer user_da
 	
 	dmp_pb_photo_request_cleanup_file_names(file1, file2, file3, file4, file5);
 	g_string_free(working, TRUE);
-	in_progress = FALSE;
+	dmp_pb_coordination_set_is_processing(FALSE);
 	G_UNLOCK(photo_request);
 }
 
@@ -270,5 +272,16 @@ void dmp_pb_coordination_finalize(void)
 
 gboolean dmp_pb_coordination_is_processing(void)
 {
-	return in_progress;
+	gboolean return_value;
+	G_LOCK(strip_in_progress);
+	return_value = in_progress;
+	G_UNLOCK(strip_in_progress);
+	return return_value;
+}
+
+void dmp_pb_coordination_set_is_processing(gboolean value)
+{
+	G_LOCK(strip_in_progress);
+	in_progress = value;
+	G_UNLOCK(strip_in_progress);
 }

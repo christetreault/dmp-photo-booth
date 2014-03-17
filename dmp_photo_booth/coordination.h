@@ -55,10 +55,16 @@ extern "C" {
 	void dmp_pb_coordination_finalize(void);
 	
 	/**
-	 * Tests to see if a photo booth session is in progress
+	 * Tests to see if a photo booth session is in progress. Thread Safe
      * @return TRUE if so, FALSE if not
      */
 	gboolean dmp_pb_coordination_is_processing(void);
+	
+	/**
+	 * Sets weather a photo booth session is in progress or not. Thread Safe
+     * @param value TRUE if in progress, FALSE if not
+     */
+	void dmp_pb_coordination_set_is_processing(gboolean value);
 	
 #ifdef	__cplusplus
 }
