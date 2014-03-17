@@ -621,15 +621,13 @@ void dmp_pb_ui_launch(const gchar * ui_file, GError ** error)
 	g_object_unref(G_OBJECT(builder));
 
 	dmp_pb_mwd_init(status_icons);
-	g_timeout_add_seconds(1, dmp_pb_mwd_handle_message, NULL); 
+	g_timeout_add_seconds(1, dmp_pb_mwd_poll_modules, NULL);
 	g_timeout_add_seconds(1, dmp_pb_ui_check_for_strips, NULL);
 	g_timeout_add_seconds(1, dmp_pb_console_queue_flush_queue, dmp_pb_console_buffer);
 
 	gtk_widget_show(g_hash_table_lookup(dmp_pb_user_data, DMP_PB_MAIN_WINDOW));
 	
 	gtk_main();
-
-	dmp_pb_mwd_finalize();
 }
 
 dmp_pb_ui_status_icons * dmp_pb_ui_get_status_icons(void)
