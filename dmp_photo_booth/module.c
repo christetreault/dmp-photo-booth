@@ -283,7 +283,8 @@ static void dmp_pb_load_printer_module(const GString * module_location, GError *
 		g_set_error(error,
 				dmp_pb_module_error_quark(),
 				G_MODULE_LOAD_FAILURE,
-				"Failed to load module at: %s", module_location->str);
+				"Failed to load module at: %s; %s", module_location->str,
+				g_module_error());
 		G_UNLOCK(printer_module);
 		return;
 	}
