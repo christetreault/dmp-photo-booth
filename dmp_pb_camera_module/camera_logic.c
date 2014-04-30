@@ -77,6 +77,7 @@ gint dmp_cm_camera_capture(const gchar * location)
 	if (gp_camera_capture(camera, GP_CAPTURE_IMAGE, &camera_file_path, context) != GP_OK)
 	{
 		dmp_cm_console_write("Failed to capture image!\n");
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
@@ -86,6 +87,7 @@ gint dmp_cm_camera_capture(const gchar * location)
 		g_string_printf(scratch_pad, "Failed to create file: \"%s\"!\n", location);
 		dmp_cm_console_write(scratch_pad->str);
 		g_string_free(scratch_pad, TRUE);
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
@@ -109,6 +111,7 @@ gint dmp_cm_camera_capture(const gchar * location)
 			g_string_free(scratch_pad, TRUE);
 			g_clear_error(&error);
 		}
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
@@ -130,6 +133,7 @@ gint dmp_cm_camera_capture(const gchar * location)
 		dmp_cm_console_write(scratch_pad->str);
 		g_string_free(scratch_pad, TRUE);
 		gp_file_free(file);
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	
@@ -140,6 +144,7 @@ gint dmp_cm_camera_capture(const gchar * location)
 	{
 		dmp_cm_console_write("Failed to delete file from camera!\n");
 		gp_file_free(file);
+		dmp_cm_set_status(FALSE);
 		return DMP_PB_FAILURE;
 	}
 	gp_file_free(file);

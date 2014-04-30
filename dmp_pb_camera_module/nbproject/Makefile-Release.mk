@@ -65,13 +65,13 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_camera_module.${CND_DLIB_EX
 
 ${OBJECTDIR}/camera_logic.o: camera_logic.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_logic.o camera_logic.c
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -I. -I. -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/camera_logic.o camera_logic.c
 
 ${OBJECTDIR}/camera_module.o: camera_module.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -I. -I. `pkg-config --cflags glib-2.0 libgphoto2` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera_module.o camera_module.c
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -I. -I. -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/camera_module.o camera_module.c
 
 # Subprojects
 .build-subprojects:
