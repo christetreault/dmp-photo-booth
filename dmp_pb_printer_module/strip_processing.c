@@ -190,12 +190,14 @@ gint dmp_pm_process_print(const gchar * to_print)
 	{
 		dmp_pm_execute_print(temp_file);
 	
+/*
 		if (g_unlink(temp_file->str) != 0)
 		{
 			g_string_prepend(temp_file, "Failed to remove temporary file: ");
 			g_string_append(temp_file, "!\n");
 			dmp_pm_console_write(temp_file->str);
 		}
+*/
 	}
 
 	g_string_free(temp_file, TRUE);
