@@ -73,23 +73,23 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libdmp_pb_trigger_module.${CND_DLIB_E
 
 ${OBJECTDIR}/dmp_trigger_module.o: dmp_trigger_module.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_trigger_module.o dmp_trigger_module.c
+	${RM} "$@.d"
+	$(COMPILE.c) -g -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/dmp_trigger_module.o dmp_trigger_module.c
 
 ${OBJECTDIR}/lifecycle.o: lifecycle.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/lifecycle.o lifecycle.c
+	${RM} "$@.d"
+	$(COMPILE.c) -g -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lifecycle.o lifecycle.c
 
 ${OBJECTDIR}/serial_io.o: serial_io.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/serial_io.o serial_io.c
+	${RM} "$@.d"
+	$(COMPILE.c) -g -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/serial_io.o serial_io.c
 
 ${OBJECTDIR}/trigger_config.o: trigger_config.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/trigger_config.o trigger_config.c
+	${RM} "$@.d"
+	$(COMPILE.c) -g -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/trigger_config.o trigger_config.c
 
 # Subprojects
 .build-subprojects:
@@ -103,8 +103,8 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/trigger_module_tests.o ${OBJECTFILES:%
 
 ${TESTDIR}/tests/trigger_module_tests.o: tests/trigger_module_tests.c 
 	${MKDIR} -p ${TESTDIR}/tests
-	${RM} $@.d
-	$(COMPILE.c) -g -I. -I. `pkg-config --cflags gthread-2.0` -MMD -MP -MF $@.d -o ${TESTDIR}/tests/trigger_module_tests.o tests/trigger_module_tests.c
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/trigger_module_tests.o tests/trigger_module_tests.c
 
 
 ${OBJECTDIR}/dmp_trigger_module_nomain.o: ${OBJECTDIR}/dmp_trigger_module.o dmp_trigger_module.c 
@@ -114,8 +114,8 @@ ${OBJECTDIR}/dmp_trigger_module_nomain.o: ${OBJECTDIR}/dmp_trigger_module.o dmp_
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/dmp_trigger_module_nomain.o dmp_trigger_module.c;\
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -fPIC  -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/dmp_trigger_module_nomain.o dmp_trigger_module.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/dmp_trigger_module.o ${OBJECTDIR}/dmp_trigger_module_nomain.o;\
 	fi
@@ -127,8 +127,8 @@ ${OBJECTDIR}/lifecycle_nomain.o: ${OBJECTDIR}/lifecycle.o lifecycle.c
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/lifecycle_nomain.o lifecycle.c;\
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -fPIC  -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lifecycle_nomain.o lifecycle.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/lifecycle.o ${OBJECTDIR}/lifecycle_nomain.o;\
 	fi
@@ -140,8 +140,8 @@ ${OBJECTDIR}/serial_io_nomain.o: ${OBJECTDIR}/serial_io.o serial_io.c
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/serial_io_nomain.o serial_io.c;\
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -fPIC  -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/serial_io_nomain.o serial_io.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/serial_io.o ${OBJECTDIR}/serial_io_nomain.o;\
 	fi
@@ -153,8 +153,8 @@ ${OBJECTDIR}/trigger_config_nomain.o: ${OBJECTDIR}/trigger_config.o trigger_conf
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g `pkg-config --cflags gthread-2.0` -fPIC  -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/trigger_config_nomain.o trigger_config.c;\
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -fPIC  -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/trigger_config_nomain.o trigger_config.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/trigger_config.o ${OBJECTDIR}/trigger_config_nomain.o;\
 	fi

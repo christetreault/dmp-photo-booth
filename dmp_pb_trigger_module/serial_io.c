@@ -74,7 +74,8 @@ void dmp_tm_io_start_serial(void)
 
 	if ((serial_descriptor = open(serial_port, O_RDWR | O_NOCTTY)) < 0)
 	{
-		dmp_tm_console_write("Failed to open serial connection!\n");
+		if (errno == 13) dmp_tm_console_write("Failed to open serial connection! Is the current user a member of the dailout group?\n");
+		else dmp_tm_console_write("Failed to open serial connection!\n");
 		return;
 	}
 	

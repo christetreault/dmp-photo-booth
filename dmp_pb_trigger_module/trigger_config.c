@@ -52,8 +52,7 @@ gchar * dmp_tm_config_get_device_name(void)
 		{
 			error_builder = g_string_new(NULL);
 			g_string_printf(error_builder, 
-							"Device Name not set in configuration! Defaulting to \"/dev/ttyACM0\".\n",
-							return_value);
+							"Device Name not set in configuration! Defaulting to \"/dev/ttyACM0\".\n");
 			dmp_tm_console_write(error_builder->str);
 			warned = TRUE;
 			g_string_free(error_builder, TRUE);
