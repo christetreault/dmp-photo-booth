@@ -165,16 +165,12 @@ static gint dmp_pb_photo_strip_initialize_total_height(const struct photo_strip_
 	GString * working_path;
 	gint return_value = 0;
 	
-	if (builder->position_1_file_name != NULL && builder->position_2_file_name != NULL &&
-		 builder->position_3_file_name != NULL && builder->position_4_file_name != NULL &&
-		 builder->position_5_file_name != NULL) return return_value;
-	
 	if (builder->position_1_file_name != NULL) working_path = builder->position_1_file_name;
 	else if (builder->position_2_file_name != NULL) working_path = builder->position_2_file_name;
 	else if (builder->position_3_file_name != NULL) working_path = builder->position_3_file_name;
 	else if (builder->position_4_file_name != NULL) working_path = builder->position_4_file_name;
 	else if (builder->position_5_file_name != NULL) working_path = builder->position_5_file_name;
-	else return return_value; //Redundant, but stranger things have happened
+	else return return_value;
 	
 	working = NewMagickWand();
 	
