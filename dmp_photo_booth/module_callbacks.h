@@ -13,7 +13,6 @@ extern "C" {
 #endif
 
 #include <glib.h>
-#include <glib/gprintf.h>
 #include "global_defines.h"
 #include "console_queue.h"
 #include "user_interface.h"

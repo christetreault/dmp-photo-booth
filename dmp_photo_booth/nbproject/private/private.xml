@@ -2,10 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
         <activeConfTypeElem>1</activeConfTypeElem>
-        <activeConfIndexElem>0</activeConfIndexElem>
+        <activeConfIndexElem>1</activeConfIndexElem>
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/chris/NetBeansProjects/dmp-photo-booth/dmp_photo_booth/user_interface.h</file>
+            <file>file:/home/chris/NetBeansProjects/dmp-photo-booth/dmp_photo_booth/user_interface.c</file>
+        </group>
     </open-files>
 </project-private>
